@@ -9,8 +9,8 @@ const BasicInputStack = createStackNavigator();
 export function BasicInputFlow() {
 	return (
 		<BasicInputStack.Navigator>
-			<BasicInputStack.Screen name="ListCategories" component={ListCategoriesScreen} />
-			<BasicInputStack.Screen name="ListEvents" component={ListEventsScreen} />
+			<BasicInputStack.Screen name="ListCategories" component={ListCategoriesScreen} options={{title: 'uMetric'}} />
+			<BasicInputStack.Screen name="ListEvents" component={ListEventsScreen} options={{title: 'Eventos'}} />
 		</BasicInputStack.Navigator>
 	);
 }

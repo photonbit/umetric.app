@@ -1,7 +1,8 @@
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
 import Element from '../components/Element';
+import * as RootNavigation from '../navigation/RootNavigation';
 
 export default function EditListCategoriesScreen() {
 	const categorias = [
@@ -27,8 +28,30 @@ export default function EditListCategoriesScreen() {
 		},
 	];
 
+
+    const onNamePress = () => RootNavigation.navigate("ListEditEvents");
+    const onEditPress = () => RootNavigation.navigate("EditCategory");
+    const onDeletePress = () => Alert.alert(
+      'Borrar Categoría',
+      'Que la vas a borrar',
+      [
+        {
+          text: 'Vale, no',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: 'Sí', onPress: () => console.log('OK Pressed') }
+      ],
+      { cancelable: false }
+    );
+
 	const renderItem = ({item}) => (
-		<Element element={item} type="category" />
+		<Element
+		element={item}
+		type="category"
+		onNamePress={onNamePress}
+		onEditPress={onEditPress}
+		onDeletePress={onDeletePress} />
 	);
 	return (
 	        <FlatList
