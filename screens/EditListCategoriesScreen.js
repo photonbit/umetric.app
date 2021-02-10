@@ -48,7 +48,6 @@ export default function EditListCategoriesScreen() {
 	const renderItem = ({item}) => (
 		<EditableElement
 		element={item}
-		type="category"
 		onNamePress={onNamePress}
 		onEditPress={onEditPress}
 		onDeletePress={onDeletePress} />

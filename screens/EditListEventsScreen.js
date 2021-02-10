@@ -58,7 +58,6 @@ export default function EditListEventsScreen() {
 	const renderItem = ({item}) => (
 		<EditableElement
 		element={item}
-		type="event"
 		onNamePress={onNamePress}
 		onEditPress={onEditPress}
 		onDeletePress={onDeletePress} />
