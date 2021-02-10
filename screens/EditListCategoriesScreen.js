@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
-import Element from '../components/Element';
+import EditableElement from '../components/EditableElement';
 import * as RootNavigation from '../navigation/RootNavigation';
 
 export default function EditListCategoriesScreen() {
@@ -46,7 +46,7 @@ export default function EditListCategoriesScreen() {
     );
 
 	const renderItem = ({item}) => (
-		<Element
+		<EditableElement
 		element={item}
 		type="category"
 		onNamePress={onNamePress}

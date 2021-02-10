@@ -4,7 +4,7 @@ import { Octicons } from '@expo/vector-icons';
 
 import Icon from './Icon';
 
-export default function Element({element, type, onNamePress, onEditPress, onDeletePress}) {
+export default function EditableElement({element, type, onNamePress, onEditPress, onDeletePress}) {
 	return (
 		<View style={styles.element}>
 			<TouchableOpacity style={styles.icon} onPress={onNamePress} >
