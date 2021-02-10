@@ -1,47 +1,66 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 
 import * as RootNavigation from '../navigation/RootNavigation';
 import Icon from '../components/Icon';
+import Element from '../components/Element';
 
 export default function ListCategoriesScreen() {
+    const categorias = [
+		{
+			"id": "1",
+			"name": "Rutinas matutinas",
+			"icon": "mountain",
+		},
+		{
+			"id": "2",
+			"name": "Rutinas nocturnas",
+			"icon": "bed",
+		},
+		{
+			"id": "3",
+			"name": "Comportamientos evitativos",
+			"icon": "bad_habits",
+		},
+		{
+			"id": "4",
+			"name": "Rumiaciones",
+			"icon": "programation",
+		},
+		{
+			"id": "5",
+			"name": "Emociones",
+			"icon": "broken_heart",
+		},
+		{
+			"id": "6",
+			"name": "Deportes",
+			"icon": "tennis",
+		},
+	];
+
 	const onPress = () => RootNavigation.navigate("ListEvents");
+
+	const renderItem = ({item}) => (
+		<Element
+		element={item}
+		onPress={onPress} />
+	);
 	return (
-		<View style={styles.container}>
-			<TouchableOpacity style={styles.element} onPress={onPress}>
-					<Icon icon="mountain" />
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.element} onPress={onPress}>
-					<Icon icon="bed" />
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.element} onPress={onPress}>
-					<Icon icon="bad_habits" />
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.element} onPress={onPress}>
-					<Icon icon="learning" />
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.element} onPress={onPress}>
-					<Icon icon="tennis" />
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.element} onPress={onPress}>
-					<Icon icon="creativity" />
-			</TouchableOpacity>
-		</View>
+	        <FlatList
+	        style={styles.flatlist}
+			data={categorias}
+			renderItem={renderItem}
+			horizontal={false}
+		    numColumns={2}
+			keyExtractor={item => item.id}
+		/>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
+	flatlist: {
+	    paddingTop: 15,
 		flex: 1,
-		flexWrap: 'wrap',
-		flexDirection: 'row',
-		paddingTop: 50,
-	},
-	element: {
-		width: '50%',
-		padding: '5%',
-		height: '25%',
 	}
-		
 });
-
