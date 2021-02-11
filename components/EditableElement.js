@@ -43,8 +43,9 @@ const styles = StyleSheet.create({
 	    padding: 5
 	},
 	title: {
-	    width: 120,
+	    width: 180,
 		height: 40,
+		justifyContent: 'center',
 		overflow: 'hidden'
 	},
 	text: {
