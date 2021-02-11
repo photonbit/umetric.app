@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import t from 'tcomb-form-native';
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon';
@@ -8,29 +7,11 @@ import * as RootNavigation from '../navigation/RootNavigation';
 
 export default function EditCategoryScreen() {
 
-    const ejemplo = {
-        name: 'Rutinas matutinas',
-        icon: 'mountain',
-        action: 'https://open.spotify.com/playlist/1Mkih2p0wnc0Iwt3lqAWZP?si=_mwzJ8CURaOTiSzSl76uTA'
-    };
-
-    const formOptions = {
-        fields: {
-            name: { label: 'Nombre'},
-            action: { label: 'Acción'}
-        }
-    };
     const onPress = () => RootNavigation.navigate("ListEditCategories");
-
-    const Form = t.form.Form;
-
-    const Category = t.struct({
-        name: t.String,
-        action: t.maybe(t.String)
-    });
 
     const [modalVisible, setModalVisible] = useState(false);
     const [icon, setIcon] = useState("mountain");
+    const [name, setName] = useState("Rutinas matutinas")
 
 	return (
 		<View style={styles.container}>
@@ -41,7 +22,8 @@ export default function EditCategoryScreen() {
 		        setIcon={setIcon}
 		    />
 
-		    <Form type={Category} options={formOptions} value={ejemplo} />
+		    <Text style={styles.title}>Nombre</Text>
+		    <TextInput onChangeText={setName} defaultValue={name} style={styles.input}  />
 		    <Text style={styles.title}>Icono</Text>
 			<TouchableOpacity
 			    style={styles.icon}
@@ -50,6 +32,7 @@ export default function EditCategoryScreen() {
                 }} >
 				<Icon icon={icon} />
 			</TouchableOpacity>
+
 			<TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
@@ -80,11 +63,26 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 8,
         marginBottom: 10,
+        marginTop: 10,
         alignSelf: 'stretch',
         justifyContent: 'center'
     },
     title: {
         fontSize: 18
+    },
+    input: {
+        fontSize: 18,
+        width: '100%',
+        borderColor: '#CCCCCC',
+        color: '#111111',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
+        marginBottom: 10,
+        marginTop: 5
     }
 });
 

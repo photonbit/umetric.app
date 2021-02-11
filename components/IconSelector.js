@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import t from 'tcomb-form-native';
 
 import * as Icons from '../assets/icons';
 import Icon from '../components/Icon';
