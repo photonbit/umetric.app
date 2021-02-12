@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Goal from '../components/Goal';
 import * as RootNavigation from '../navigation/RootNavigation';
@@ -46,14 +46,17 @@ export default function ShowGoalsScreen() {
 		},
 	];
 
-    const onPress = () => RootNavigation.navigate("ListEvents");
+	const renderItem = ({item}) => {
+        const onPress = () => RootNavigation.navigate("Pomodoro", { category: item});
 
-	const renderItem = ({item}) => (
-		<Goal
-		category={item}
-		committed={item.committed}
-		done={item.done} />
-	);
+        return (
+            <TouchableOpacity onPress={onPress}>
+                <Goal
+                category={item}
+                committed={item.committed}
+                done={item.done} />
+            </TouchableOpacity>
+	)};
 
 	return (
 	        <FlatList
