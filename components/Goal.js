@@ -5,16 +5,16 @@ import Icon from '../components/Icon';
 
 export default function Goal({ category, committed, done }) {
 
-    const DoneSquare = () => {
-        return (<View style={styles.done}></View>);
+    const DoneSquare = (key) => {
+        return (<View style={styles.done} key ></View>);
     };
 
-    const NotDoneSquare = () => {
-        return (<View style={styles.notDone}></View>);
+    const NotDoneSquare = (key) => {
+        return (<View style={styles.notDone} key></View>);
     };
 
-    const OverdoneSquare = () => {
-        return (<View style={styles.overDone}></View>);
+    const OverdoneSquare = (key) => {
+        return (<View style={styles.overDone} key></View>);
     }
 
     const drawGoal = () => {
@@ -22,17 +22,17 @@ export default function Goal({ category, committed, done }) {
 
         if (committed > done ) {
             for (i=done;i<committed;i++) {
-                squares.push(<NotDoneSquare />);
+                squares.push(<NotDoneSquare key={i} />);
             }
             for (i=0;i<done;i++) {
-                squares.push(<DoneSquare />);
+                squares.push(<DoneSquare key={i} />);
             }
         } else {
             for (i=committed;i<done;i++) {
-                squares.push(<OverdoneSquare />);
+                squares.push(<OverdoneSquare key={i} />);
             }
             for (i=0;i<committed;i++) {
-                squares.push(<DoneSquare />);
+                squares.push(<DoneSquare key={i} />);
             }
         }
         return squares;
