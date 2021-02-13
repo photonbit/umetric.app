@@ -10,13 +10,12 @@ export default function PomodoroScreen({ route }) {
     const [ progress, setProgress ] = useState(1.0);
     const [ state, setState ] = useState("play");
     const [ progressTimer, setProgressTimer ] = useState();
-
-    const [timeLeft, setTimeLeft] = useState(10);
+    const [sound, setSound] = useState();
 
     const minutes = 25;
+    const seconds = minutes * 60;
+    const [timeLeft, setTimeLeft] = useState(seconds);
     const category = route.params.category;
-
-    const [sound, setSound] = useState();
 
     async function playSound() {
         const { sound } = await Audio.Sound.createAsync(
@@ -28,72 +27,103 @@ export default function PomodoroScreen({ route }) {
     }
 
     useEffect(() => {
+        return sound
+          ? () => {
+              sound.unloadAsync(); }
+          : undefined;
+    }, [sound]);
+
+    useEffect(() => {
         if (state != "square") return;
 
-        clearInterval(progressTimer);
-        setProgressTimer(setInterval(() => {
-          setTimeLeft(timeLeft - 1);
-          setProgress(timeLeft / 10);
-
-          if (!timeLeft) {
-            clearInterval(progressTimer);
-            setState("play");
+        setProgress(timeLeft / seconds);
+        if (!timeLeft) {
+            resetTimer("play");
             playSound();
-          }
-        }, 1000));
+        } else {
+            setProgressTimer(setTimeout(() => {
+              setTimeLeft(timeLeft - 1);
+            }, 1000));
+        }
 
-        return () => { clearInterval(progressTimer); if (sound) { sound.unloadAsync(); }};
-    }, [timeLeft, sound]);
+        return () => { clearTimeout(progressTimer) };
+    }, [timeLeft, state]);
 
+    const resetTimer = (newState) => {
+        if (progressTimer) {
+            clearTimeout(progressTimer);
+            setProgressTimer(undefined);
+        }
+        setState(newState);
+        setProgress(1.0);
+        setTimeLeft(seconds);
+    }
     const onPress = () => {
         if (state == "play") {
-            setTimeLeft(10);
-            setProgress(1.0);
-            setState("square");
+            resetTimer("square");
         } else {
-            clearInterval(progressTimer);
-            setTimeLeft(10);
-            setProgress(1.0);
-            setState("play");
+            resetTimer("play");
         }
     };
+
+    const focusMessage = () => {
+        if (state == "square") {
+            return (
+                <View>
+                    <Text style={styles.focusText}>Céntrate en {category.name}</Text>
+                </View>
+            )
+        }
+    }
 
 	return (
 		<View style={styles.container} >
 		    <View style={styles.progressArea}>
-			    <ProgressCircle style={styles.progress} progress={progress} progressColor={'rgb(134, 65, 244)'} />
+			    <ProgressCircle
+			        style={styles.progress}
+			        progress={progress}
+			        progressColor={'rgb(134, 65, 244)'}
+			        strokeWidth={10} />
 			    <View style={styles.progressIcon}>
 			        <Icon style={styles.icon} icon={category.icon} />
 			    </View>
 			</View>
 			<View style={styles.playArea}>
 			    <TouchableOpacity onPress={onPress} >
-			        <Feather name={state} size={48} color="black" />
+			        <Feather name={state} size={64} color="black" />
 			    </TouchableOpacity>
 			</View>
+			{focusMessage()}
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignItems: 'center'
     },
     progress: {
-        height: 200,
-        width: '80%'
+        height: 280,
+        width: '90%'
     },
     progressArea: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '80%',
-        height: '40%'
+        width: '100%',
+        height: '60%'
     },
     progressIcon: {
-        width: 140,
-        height: 140,
+        width: 200,
+        height: 200,
         position: 'absolute'
     },
+    focusText: {
+        marginTop: 50,
+        fontSize: 24,
+		fontWeight: 'bold',
+    },
     playArea: {
+        marginTop: 30
     },
 });
