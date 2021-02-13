@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Octicons } from '@expo/vector-icons'; 
+import { Feather } from '@expo/vector-icons';
 
 import Icon from './Icon';
 
@@ -14,10 +14,10 @@ export default function EditableElement({element, onNamePress, onEditPress, onDe
 				<Text numberOfLines={2} style={styles.text}>{element.name}</Text>
 			</TouchableOpacity>
 			<TouchableOpacity style={styles.actionIcon} onPress={onEditPress}>
-				<Octicons name="pencil" size={32} color="black" />
+				<Feather name="edit" size={30} color="black" />
 			</TouchableOpacity>
 			<TouchableOpacity style={styles.actionIcon} onPress={onDeletePress}>
-				<Octicons name="trashcan" size={32} color="black" />
+				<Feather name="trash-2" size={30} color="black" />
 			</TouchableOpacity>
 		</View>
 	);
