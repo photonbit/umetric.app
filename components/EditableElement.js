@@ -30,10 +30,12 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignContent: 'stretch',
 		flexWrap: 'wrap',
-		height: 60,
+		height: 80,
 		padding: 10,
+		paddingTop: 20,
+		paddingBottom: 20,
 		borderBottomWidth: 1,
-		borderBottomColor: 'black'
+		borderBottomColor: 'white'
 	},
 	icon: {
 		height: 40,
