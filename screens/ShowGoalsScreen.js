@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 import Goal from '../components/Goal';
 import * as RootNavigation from '../navigation/RootNavigation';
 import Icon from '../components/Icon';
 
 
-export default function ShowGoalsScreen() {
+export default function ShowGoalsScreen({ navigation }) {
 
     const categorias = [
 		{
@@ -46,6 +47,16 @@ export default function ShowGoalsScreen() {
 		},
 	];
 
+	useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity style={styles.actionIcon} onPress={() => RootNavigation.navigate("AddGoal")}>
+                <Feather name="plus" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        });
+    });
+
 	const renderItem = ({item}) => {
         const onPress = () => RootNavigation.navigate("Pomodoro", { category: item});
 
@@ -75,6 +86,11 @@ const styles = StyleSheet.create({
 	    paddingTop: 15,
 		flex: 1,
 		paddingBottom: 50
-	}
+	},
+    actionIcon: {
+	    padding: 5,
+	    marginTop: 5,
+	    marginRight: 10
+	},
 });
 
