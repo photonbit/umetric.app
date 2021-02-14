@@ -4,14 +4,16 @@ import { Feather } from '@expo/vector-icons';
 
 import Icon from './Icon';
 
-export default function EditableElement({element, onNamePress, onEditPress, onDeletePress}) {
+export default function EditableElement({element, onNamePress, onEditPress, onDeletePress, title}) {
+    var text = title ? title : element.name;
+
 	return (
 		<View style={styles.element}>
 			<TouchableOpacity style={styles.icon} onPress={onNamePress} >
 				<Icon icon={element.icon} />		
 			</TouchableOpacity>
 			<TouchableOpacity style={styles.title} onPress={onNamePress}>
-				<Text numberOfLines={2} style={styles.text}>{element.name}</Text>
+				<Text numberOfLines={2} style={styles.text}>{text}</Text>
 			</TouchableOpacity>
 			<TouchableOpacity style={styles.actionIcon} onPress={onEditPress}>
 				<Feather name="edit" size={30} color="black" />

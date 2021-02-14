@@ -1,10 +1,11 @@
-import React from 'react';
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 import EditableElement from '../components/EditableElement';
 import * as RootNavigation from '../navigation/RootNavigation';
 
-export default function EditListCategoriesScreen() {
+export default function EditListCategoriesScreen({ navigation }) {
 	const categorias = [
 		{
 			"id": "1",
@@ -45,6 +46,16 @@ export default function EditListCategoriesScreen() {
       { cancelable: false }
     );
 
+    useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity style={styles.actionIcon} onPress={() => RootNavigation.navigate("AddCategory")}>
+                <Feather name="folder-plus" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        });
+    });
+
 	const renderItem = ({item}) => (
 		<EditableElement
 		element={item}
@@ -65,6 +76,11 @@ export default function EditListCategoriesScreen() {
 const styles = StyleSheet.create({
 	flatlist: {
 		flex: 1,
-	}
+	},
+	actionIcon: {
+	    padding: 5,
+	    marginTop: 5,
+	    marginRight: 10
+	},
 });
 

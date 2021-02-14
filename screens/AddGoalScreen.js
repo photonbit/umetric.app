@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function ListGoalsScreen() {
+export default function AddGoalScreen() {
 	return (
 		<View>
-			<Text>ListGoalsScreen</Text>
+			<Text>AddGoalScreen</Text>
 		</View>
 	);
 }
