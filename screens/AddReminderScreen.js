@@ -19,7 +19,48 @@ export default function AddReminderScreen() {
 			"icon": "programation",
     });
     const [question, setQuestion] = useState("");
-    var checked = false;
+
+    const [ dayMode, setDayMode ] = useState(0);
+    const [ selectedDays, setSelectedDays ] = useState([
+        { "name": "L", "selected": false },
+        { "name": "M", "selected": false },
+        { "name": "X", "selected": false },
+        { "name": "J", "selected": false },
+        { "name": "V", "selected": false },
+        { "name": "S", "selected": false },
+        { "name": "D", "selected": false },
+    ]);
+    const [ timeMode, setTimeMode ] = useState(1);
+
+    const daySelected = (i) => {
+        return function() {
+            let items = [...selectedDays];
+            let item = {
+                ...selectedDays[i],
+                selected: !selectedDays[i]["selected"]
+            }
+            items[i] = item;
+            setSelectedDays(items);
+        }
+    };
+
+    const drawDays = () => {
+        var days = [];
+
+        for (var i=0; i<7; i++) {
+            days.push(
+                 <View style={styles.daySelection} key={i}>
+                    <Text>{selectedDays[i]["name"]}</Text>
+                    <CheckBox
+                      value={selectedDays[i]["selected"]}
+                      onValueChange={ daySelected(i) }
+                    />
+                </View>
+            );
+        }
+
+        return days;
+    };
 
 	return (
 		<View style={styles.container}>
@@ -35,26 +76,28 @@ export default function AddReminderScreen() {
 		    <Text style={styles.title}>Días de la semana</Text>
 		    <View>
               <SegmentedControl
+                style={styles.kindInput}
+                fontStyle={styles.kindInputText}
                 values={['Elegir', 'Todos']}
-                selectedIndex={0}
-                onChange={undefined}
+                selectedIndex={dayMode}
+                onChange={ (event) => {
+                  setDayMode(event.nativeEvent.selectedSegmentIndex);
+                }}
               />
-              <View>
-                    <View>
-                        <Text>L</Text>
-                        <CheckBox
-                          value={0}
-                          onValueChange={undefined}
-                        />
-                    </View>
+              <View style={styles.daysSelection}>
+                    {drawDays()}
               </View>
             </View>
 		    <Text style={styles.title}>Hora del día</Text>
 		    <View>
               <SegmentedControl
-                values={['Una específica', 'Mañana', 'Mediodía', 'Tarde', 'Noche']}
-                selectedIndex={1}
-                onChange={ undefined }
+                style={styles.kindInput}
+                fontStyle={styles.kindInputText}
+                values={['Mañana', 'Tarde', 'Noche', 'Otra']}
+                selectedIndex={timeMode}
+                onChange={ (event) => {
+                  setTimeMode(event.nativeEvent.selectedSegmentIndex);
+                }}
               />
             </View>
             <View>
@@ -120,6 +163,25 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     category: {
-        height: 200,
+        height: 180,
+    },
+    kindSelection: {
+        height: 70,
+        marginTop: 15
+    },
+    kindInput: {
+        height: 50
+    },
+    kindInputText: {
+        fontSize: 16
+    },
+    daySelection: {
+        alignItems: 'center',
+    },
+    daysSelection: {
+        marginTop: 10,
+        height: 60,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 });
