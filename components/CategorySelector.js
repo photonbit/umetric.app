@@ -36,6 +36,16 @@ export default function CategorySelector({visible, setVisible, selected, setCate
 			"name": "Deportes",
 			"icon": "tennis",
 		},
+		{
+			"id": "7",
+			"name": "Desayunar",
+			"icon": "egg",
+		},
+		{
+			"id": "8",
+			"name": "Meditar",
+			"icon": "meditation",
+		},
 	];
 
     const renderItem = ({item}) => {
@@ -65,8 +75,8 @@ export default function CategorySelector({visible, setVisible, selected, setCate
                     data={categorias}
                     renderItem={renderItem}
                     horizontal={false}
-                    numColumns={3}
-                    keyExtractor={item => item}
+                    numColumns={2}
+                    keyExtractor={item => item.id}
                 />
 
                 <TouchableOpacity
@@ -92,10 +102,12 @@ const styles = StyleSheet.create({
         marginTop: 22,
       },
       modalView: {
-        margin: 20,
+        marginTop: 20,
+        marginBottom: 20,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 15,
+        paddingTop: 15,
+        paddingBottom: 15,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -119,19 +131,6 @@ const styles = StyleSheet.create({
       },
       flatlist: {
         flex: 1,
-        marginBottom: 10
-      },
-      icon: {
-        height: 90,
-        width: 90,
-        padding: 10
-      },
-      selected: {
-        borderRadius: 25,
-        backgroundColor: '#99d9f4',
-        height: 90,
-        width: 90,
-        padding: 10
       },
       button: {
         height: 36,
@@ -139,8 +138,11 @@ const styles = StyleSheet.create({
         borderColor: '#48BBEC',
         borderWidth: 1,
         borderRadius: 8,
-        marginBottom: 10,
+        margin: 10,
         alignSelf: 'stretch',
         justifyContent: 'center'
+      },
+      icon: {
+
       }
 });

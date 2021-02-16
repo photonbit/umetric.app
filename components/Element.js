@@ -16,8 +16,8 @@ export default function Element({element, onPress}) {
 
 const styles = StyleSheet.create({
 	element: {
-	    height: '100%',
-	    width: '50%',
+	    height: 150,
+	    width: 170,
 	    padding: 10,
 		alignItems: 'center',
 	},
