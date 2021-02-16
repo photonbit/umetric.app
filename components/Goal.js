@@ -1,9 +1,12 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from '../components/Icon';
+import * as RootNavigation from '../navigation/RootNavigation';
 
 export default function Goal({ category, committed, done }) {
+
+    const [ action, setAction ] = useState(false)
 
     const DoneSquare = (key) => {
         return (<View style={styles.done} key ></View>);
@@ -38,12 +41,35 @@ export default function Goal({ category, committed, done }) {
         return squares;
     }
 
+    const drawFooter = () => {
+        const goToPomodoro = () => RootNavigation.navigate("Pomodoro", { category: category});
+        const gotoEdit = () => RootNavigation.navigate("EditGoal", { category: category});
+
+        if (action) {
+            return (
+                <View>
+                    <TouchableOpacity onPress={goToPomodoro} style={styles.icon}>
+                        <Icon icon="focused" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={gotoEdit} style={styles.icon}>
+                        <Icon icon="pencil" />
+                    </TouchableOpacity>
+                </View>
+            )
+        } else
+            return (
+                <TouchableOpacity style={styles.icon} onPress={ () => setAction(!action)} >
+                    <Icon icon={category.icon} />
+                </TouchableOpacity>
+            );
+    }
+
 	return (
 	    <View style={styles.container}>
-	        {drawGoal()}
-	        <View style={styles.icon}>
-	            <Icon icon={category.icon} />
-	        </View>
+	        <TouchableOpacity onPress={ () => setAction(!action)} >
+	            {drawGoal()}
+	        </TouchableOpacity>
+	        {drawFooter()}
 	    </View>
 	);
 }
