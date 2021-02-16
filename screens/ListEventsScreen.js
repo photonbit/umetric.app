@@ -49,6 +49,7 @@ export default function ListCategoriesScreen() {
 	return (
 	        <FlatList
 	        style={styles.flatlist}
+	        contentContainerStyle={{alignItems: 'center'}}
 			data={eventos}
 			renderItem={renderItem}
 			horizontal={false}

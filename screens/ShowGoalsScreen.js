@@ -40,8 +40,8 @@ export default function ShowGoalsScreen({ navigation }) {
 		},
 		{
 		    "id": "5",
-		    "name": "Arte",
-		    "icon": "visualization",
+		    "name": "Meditación",
+		    "icon": "meditation",
 		    "committed": 3,
 		    "done": 0
 		},
@@ -57,17 +57,12 @@ export default function ShowGoalsScreen({ navigation }) {
         });
     });
 
-	const renderItem = ({item}) => {
-        const onPress = () => RootNavigation.navigate("Pomodoro", { category: item});
-
-        return (
-            <TouchableOpacity onPress={onPress}>
-                <Goal
-                category={item}
-                committed={item.committed}
-                done={item.done} />
-            </TouchableOpacity>
-	)};
+	const renderItem = ({item}) => (
+        <Goal
+        category={item}
+        committed={item.committed}
+        done={item.done} />
+	);
 
 	return (
 	        <FlatList
