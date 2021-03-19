@@ -15,13 +15,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import React from 'react';
+import React from 'react'
 
-import CompleteFlow from './navigation/CompleteFlow';
+import CompleteFlow from './navigation/CompleteFlow'
 
-export default function App() {
+export default function App () {
   return (
     <CompleteFlow />
-  );
+  )
 }
-

@@ -1,17 +1,16 @@
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react'
+import { createStackNavigator } from '@react-navigation/stack'
 
-import ListCategoriesScreen from '../screens/ListCategoriesScreen';
-import ListEventsScreen from '../screens/ListEventsScreen';
+import ListCategoriesScreen from '../screens/ListCategoriesScreen'
+import ListEventsScreen from '../screens/ListEventsScreen'
 
-const BasicInputStack = createStackNavigator();
+const BasicInputStack = createStackNavigator()
 
-export function BasicInputFlow() {
-	return (
-		<BasicInputStack.Navigator>
-			<BasicInputStack.Screen name="ListCategories" component={ListCategoriesScreen} options={{title: 'uMetric'}} />
-			<BasicInputStack.Screen name="ListEvents" component={ListEventsScreen} options={{title: 'Eventos'}} />
-		</BasicInputStack.Navigator>
-	);
+export function BasicInputFlow () {
+  return (
+    <BasicInputStack.Navigator>
+      <BasicInputStack.Screen name="ListCategories" component={ListCategoriesScreen} options={{ title: 'uMetric' }} />
+      <BasicInputStack.Screen name="ListEvents" component={ListEventsScreen} options={{ title: 'Eventos' }} />
+    </BasicInputStack.Navigator>
+  )
 }
-
