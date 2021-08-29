@@ -1,7 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native'
 
+import * as RootNavigation from '../navigation/RootNavigation'
+import { login } from '../services/UmetricAPI'
+
 export default function LoginScreen () {
+  [user, setUser] = useState('');
+  [password, setPassword] = useState('')
+
+  function errorLogin (response) {
+    console.error(response)
+  }
+
+  function successLogin () {
+    RootNavigation.navigate('ListCategories')
+  }
+
+  function doLogin () {
+    login(user, password, successLogin, errorLogin)
+  }
+
   return (
     <View style={styles.container}>
         <View style={styles.headerContainer}>
@@ -10,17 +28,24 @@ export default function LoginScreen () {
         <View style={styles.formContainer}>
             <TextInput
                 style={styles.inputText}
+                value={user}
+                onChangeText={setUser}
+                textContentType={'username'}
                 placeholder="Usuario..."
                 placeholderTextColor="#003f5c" />
 
                 <TextInput
                 style={styles.inputText}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={true}
+                textContentType={'password'}
                 placeholder="Contraseña..."
                 placeholderTextColor="#003f5c" />
         </View>
 
         <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} >
+            <TouchableOpacity style={styles.button} onPress={doLogin}>
                 <Text style={styles.buttonText}>Acceder</Text>
             </TouchableOpacity>
         </View>

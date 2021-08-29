@@ -7,7 +7,20 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "lint": "eslint App.js components/ navigation/ screens/",
-    "fixlint": "eslint --fix App.js components/ navigation/ screens/"
+    "fixlint": "eslint --fix App.js components/ navigation/ screens/",
+    "test": "jest"
+  },
+  "jest": {
+    "setupFiles": [
+      "./tests/mock.js"
+    ],
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|@react-native-segmented-control|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ]
+  },
+  "detox": {
+    "test-runner": "jest"
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
@@ -33,16 +46,20 @@
     "react-native-screens": "~2.15.0",
     "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "~0.13.12",
+    "react-test-renderer": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "detox": "^18.8.0",
+    "detox-expo-helpers": "^0.6.0",
     "eslint": "^7.22.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-react": "^7.22.0",
+    "expo-detox-hook": "^1.0.10",
     "jest-expo": "^40.0.2"
   },
   "private": true
