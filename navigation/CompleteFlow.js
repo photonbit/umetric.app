@@ -5,7 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import LoginScreen from '../screens/LoginScreen'
 
-
 import { BasicInputFlow } from './InputFlow'
 import { EditFlow } from './EditFlow'
 import { GoalsFlow } from './GoalsFlow'
