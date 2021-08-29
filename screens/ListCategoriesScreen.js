@@ -1,55 +1,33 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { FlatList, StyleSheet } from 'react-native'
 
 import * as RootNavigation from '../navigation/RootNavigation'
+import { get_categories } from '../services/UmetricAPI'
 import Element from '../components/Element'
 
 export default function ListCategoriesScreen () {
-  const categorias = [
-    {
-      id: '1',
-      name: 'Rutinas matutinas',
-      icon: 'mountain'
-    },
-    {
-      id: '2',
-      name: 'Rutinas nocturnas',
-      icon: 'bed'
-    },
-    {
-      id: '3',
-      name: 'Comportamientos evitativos',
-      icon: 'bad_habits'
-    },
-    {
-      id: '4',
-      name: 'Rumiaciones',
-      icon: 'programation'
-    },
-    {
-      id: '5',
-      name: 'Emociones',
-      icon: 'broken_heart'
-    },
-    {
-      id: '6',
-      name: 'Deportes',
-      icon: 'tennis'
-    }
-  ]
+  const [categories, setCategories] = useState([])
 
-  const onPress = () => RootNavigation.navigate('ListEvents')
+  function set_categories(response) {
+    setCategories(response.data)
+  }
+
+  useEffect(() => {
+    get_categories(set_categories, console.error)
+  })
+
+  const go_to_events = (item) => RootNavigation.navigate('ListEvents', {category_id: item.id})
 
   const renderItem = ({ item }) => (
     <Element
     element={item}
-    onPress={onPress} />
+    onPress={() => go_to_events(item)} />
   )
   return (
           <FlatList
           style={styles.flatlist}
           contentContainerStyle={{ alignItems: 'center' }}
-      data={categorias}
+      data={categories}
       renderItem={renderItem}
       horizontal={false}
         numColumns={2}

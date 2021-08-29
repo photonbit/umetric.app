@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
+import React, {useContext, useState} from 'react'
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native'
 
 import * as RootNavigation from '../navigation/RootNavigation'
 import { login } from '../services/UmetricAPI'
+import { Context } from '../filters/Store'
 
 export default function LoginScreen () {
-  [user, setUser] = useState('');
-  [password, setPassword] = useState('')
+  const [user, setUser] = useState('');
+  const [password, setPassword] = useState('')
+  const [state, dispatch ] = useContext(Context)
 
   function errorLogin (response) {
+    dispatch({ type: 'SET_LOGIN', payload: false })
     console.error(response)
   }
 
   function successLogin () {
-    RootNavigation.navigate('ListCategories')
+    dispatch({ type: 'SET_LOGIN', payload: true })
   }
 
   function doLogin () {
