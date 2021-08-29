@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -11,15 +11,18 @@ import { GoalsFlow } from './GoalsFlow'
 import { RemindersFlow } from './RemindersFlow'
 import { navigationRef } from './RootNavigation'
 
+import { Context } from '../filters/Store'
+
 const Drawer = createDrawerNavigator()
 const Stack = createStackNavigator()
 
 export default function CompleteFlow () {
-  const userToken = undefined
+
+  const [state, dispatch ] = useContext(Context)
 
   return (
     <NavigationContainer ref={navigationRef}>
-    {userToken === undefined
+    {state.login === false
       ? (
         <Stack.Navigator>
             <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'uMetric' }} />
