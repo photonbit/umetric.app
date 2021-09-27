@@ -6,30 +6,30 @@ let UmetricAPI = axios.create({
 });
 
 
-export function login(username, password, onSuccess, onFailure) {
-    UmetricAPI.post("/api/auth",
+export async function login(username, password) {
+    const response = await UmetricAPI.post("/api/auth",
         {"username": username, "password": password}
     )
-        .then(onSuccess)
-        .catch(onFailure)
+
+    return response
 }
 
-export function get_categories(onSuccess, onFailure) {
-    UmetricAPI.get("/api/categories")
-        .then(onSuccess)
-        .catch(onFailure)
+export async function get_categories() {
+    const { data } = await UmetricAPI.get("/api/categories")
+
+    return data
 }
 
-export function get_icon(icon, onSuccess, onFailure) {
-    UmetricAPI.get("/static/" + icon)
-        .then(onSuccess)
-        .catch(onFailure)
+export async function get_icon(icon) {
+    const { data } = await UmetricAPI.get("/static/" + icon)
+
+    return data
 }
 
-export function get_events(category, onSuccess, onFailure) {
-    UmetricAPI.get("/api/categories/" + category)
-        .then(onSuccess)
-        .catch(onFailure)
+export async function get_events({queryKey}) {
+    const [_key, category_id] = queryKey
+    const {data} = await UmetricAPI.get("/api/categories/" + category_id)
+    return data
 }
 
 export default UmetricAPI;
