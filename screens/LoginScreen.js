@@ -19,8 +19,13 @@ export default function LoginScreen () {
     dispatch({ type: 'SET_LOGIN', payload: true })
   }
 
-  function doLogin () {
-    login(user, password, successLogin, errorLogin)
+  async function doLogin () {
+    try {
+        const response = await login(user, password)
+        successLogin()
+    } catch (error) {
+        errorLogin(error)
+    }
   }
 
   return (
