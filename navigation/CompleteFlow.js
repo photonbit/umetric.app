@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, { useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -17,8 +17,7 @@ const Drawer = createDrawerNavigator()
 const Stack = createStackNavigator()
 
 export default function CompleteFlow () {
-
-  const [state, dispatch ] = useContext(Context)
+  const [state] = useContext(Context)
 
   return (
     <NavigationContainer ref={navigationRef}>

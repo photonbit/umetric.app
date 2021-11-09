@@ -15,6 +15,3 @@ web-build/
 # IDEs
 .idea
 .vscode
-
-# Until the license issues are addressed
-assets/

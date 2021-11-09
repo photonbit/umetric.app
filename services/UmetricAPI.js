@@ -14,19 +14,19 @@ export async function login(username, password) {
     return response
 }
 
-export async function get_categories() {
+export async function getCategories() {
     const { data } = await UmetricAPI.get("/api/categories")
 
     return data
 }
 
-export async function get_icon(icon) {
+export async function getIcon(icon) {
     const { data } = await UmetricAPI.get("/static/" + icon)
 
     return data
 }
 
-export async function get_events({queryKey}) {
+export async function getEvents({queryKey}) {
     const [_key, category_id] = queryKey
     const {data} = await UmetricAPI.get("/api/categories/" + category_id)
     return data
