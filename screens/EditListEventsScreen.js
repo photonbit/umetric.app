@@ -1,17 +1,37 @@
 import React, { useLayoutEffect } from 'react'
-import { Alert, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
+import {useQuery} from "react-query";
+import {getEvents} from "../services/UmetricAPI";
 
-export default function EditListEventsScreen ({ navigation }) {
-  const eventos = []
+export default function EditListEventsScreen ({ navigation, route }) {
+  const categoryId = route.params.category_id
+  const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
 
-  const onNamePress = () => RootNavigation.navigate('OpenAction')
-  const onEditPress = () => RootNavigation.navigate('EditEvent')
-  const onDeletePress = () => Alert.alert(
-    'Borrar Evento',
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+            <TouchableOpacity style={styles.actionIcon} onPress={() => RootNavigation.navigate('AddEvent')}>
+                <Feather name="file-plus" size={30} color="black" />
+            </TouchableOpacity>
+      )
+    })
+  }, [])
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
+
+  const onNamePress = (item) => RootNavigation.navigate('OpenAction', { item_id: item.id })
+  const onEditPress = (item) => RootNavigation.navigate('EditEvent', { item_id: item.id })
+  const onDeletePress = (item) => Alert.alert(
+    'Borrar ' + item.name + '?',
     'Que la vas a borrar',
     [
       {
@@ -24,16 +44,6 @@ export default function EditListEventsScreen ({ navigation }) {
     { cancelable: false }
   )
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-            <TouchableOpacity style={styles.actionIcon} onPress={() => RootNavigation.navigate('AddEvent')}>
-                <Feather name="file-plus" size={30} color="black" />
-            </TouchableOpacity>
-      )
-    })
-  }, [])
-
   const renderItem = ({ item }) => (
     <EditableElement
     element={item}
@@ -44,7 +54,7 @@ export default function EditListEventsScreen ({ navigation }) {
   return (
           <FlatList
       style={styles.flatlist}
-      data={eventos}
+      data={data}
       renderItem={renderItem}
       keyExtractor={item => item.id}
     />
