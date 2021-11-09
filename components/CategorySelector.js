@@ -4,49 +4,7 @@ import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react
 import Element from '../components/Element'
 
 export default function CategorySelector ({ visible, setVisible, selected, setCategory }) {
-  const categorias = [
-    {
-      id: '1',
-      name: 'Rutinas matutinas',
-      icon: 'mountain'
-    },
-    {
-      id: '2',
-      name: 'Rutinas nocturnas',
-      icon: 'bed'
-    },
-    {
-      id: '3',
-      name: 'Comportamientos evitativos',
-      icon: 'bad_habits'
-    },
-    {
-      id: '4',
-      name: 'Rumiaciones',
-      icon: 'programation'
-    },
-    {
-      id: '5',
-      name: 'Emociones',
-      icon: 'broken_heart'
-    },
-    {
-      id: '6',
-      name: 'Deportes',
-      icon: 'tennis'
-    },
-    {
-      id: '7',
-      name: 'Desayunar',
-      icon: 'egg'
-    },
-    {
-      id: '8',
-      name: 'Meditar',
-      icon: 'meditation'
-    }
-  ]
-
+  const categorias = []
   const renderItem = ({ item }) => {
     const style = item.id === selected ? styles.selected : styles.icon
     return (

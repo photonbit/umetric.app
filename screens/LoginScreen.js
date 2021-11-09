@@ -1,14 +1,13 @@
-import React, {useContext, useState} from 'react'
+import React, { useContext, useState } from 'react'
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native'
 
-import * as RootNavigation from '../navigation/RootNavigation'
 import { login } from '../services/UmetricAPI'
 import { Context } from '../filters/Store'
 
 export default function LoginScreen () {
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState('')
   const [password, setPassword] = useState('')
-  const [state, dispatch ] = useContext(Context)
+  const [, dispatch] = useContext(Context)
 
   function errorLogin (response) {
     dispatch({ type: 'SET_LOGIN', payload: false })
@@ -21,10 +20,10 @@ export default function LoginScreen () {
 
   async function doLogin () {
     try {
-        const response = await login(user, password)
-        successLogin()
+      await login(user, password)
+      successLogin()
     } catch (error) {
-        errorLogin(error)
+      errorLogin(error)
     }
   }
 

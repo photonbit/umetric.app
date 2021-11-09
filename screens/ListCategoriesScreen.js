@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react'
-import {useQuery} from 'react-query'
+import React from 'react'
+import { useQuery } from 'react-query'
 import { FlatList, Text, StyleSheet, View } from 'react-native'
 
 import * as RootNavigation from '../navigation/RootNavigation'
-import { get_categories } from '../services/UmetricAPI'
+import { getCategories } from '../services/UmetricAPI'
 import Element from '../components/Element'
 
 export default function ListCategoriesScreen () {
-  const { data, error, isError, isLoading } = useQuery('categories', get_categories)
+  const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 
   if (isLoading) {
     return <View><Text>Loading...</Text></View>
@@ -16,12 +16,12 @@ export default function ListCategoriesScreen () {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
   }
 
-  const go_to_events = (item) => RootNavigation.navigate('ListEvents', {category_id: item.id})
+  const goToEvents = (item) => RootNavigation.navigate('ListEvents', { category_id: item.id })
 
   const renderItem = ({ item }) => (
     <Element
     element={item}
-    onPress={() => go_to_events(item)} />
+    onPress={() => goToEvents(item)} />
   )
 
   return (
