@@ -1,11 +1,10 @@
 import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-import * as Icons from '../assets/icons'
 import Icon from '../components/Icon'
 
 export default function IconSelector ({ visible, setVisible, selected, setIcon }) {
-  const iconNames = Object.keys(Icons)
+  const iconNames = Object.keys([])
 
   const renderItem = ({ item }) => {
     const style = item === selected ? styles.selected : styles.icon
