@@ -5,11 +5,11 @@ import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 
-export default function EditCategoryScreen () {
+export default function EditCategoryScreen ({ route }) {
   const onPress = () => RootNavigation.navigate('ListEditCategories')
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('mountain')
+  const [icon, setIcon] = useState('build/img/mountain.svg')
   const [name, setName] = useState('Rutinas matutinas')
 
   return (

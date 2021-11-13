@@ -10,7 +10,11 @@ export default function Icon ({ icon }) {
   useEffect(() => {
     const fetchIconData = async () => {
       const iconData = await getIcon(icon)
-      setIconData(iconData)
+      if (iconData) {
+        setIconData(iconData)
+      } else {
+        setIconData(emptySVG)
+      }
     }
 
     fetchIconData()

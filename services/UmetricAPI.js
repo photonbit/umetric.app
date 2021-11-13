@@ -20,6 +20,12 @@ export async function getCategories() {
     return data
 }
 
+export async function getIcons() {
+    const { data } = await UmetricAPI.get("/api/icons")
+
+    return data
+}
+
 export async function getIcon(icon) {
     const { data } = await UmetricAPI.get("/static/" + icon)
 

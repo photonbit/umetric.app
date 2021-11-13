@@ -2,9 +2,18 @@ import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import Icon from '../components/Icon'
+import {getIcons} from '../services/UmetricAPI'
+import {useQuery} from "react-query";
 
 export default function IconSelector ({ visible, setVisible, selected, setIcon }) {
-  const iconNames = Object.keys([])
+    const { data, error, isError, isLoading } = useQuery('categories', getIcons)
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
 
   const renderItem = ({ item }) => {
     const style = item === selected ? styles.selected : styles.icon
@@ -30,7 +39,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
                 <Text style={styles.modalText}>Elije el icono</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={iconNames}
+                    data={data}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={3}
