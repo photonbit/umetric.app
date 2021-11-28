@@ -1,7 +1,5 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useContext} from "react";
-import {Context} from "../filters/Store";
 
 
 let UmetricAPI = axios.create({
@@ -35,6 +33,14 @@ export async function getCategories() {
     const { data } = await UmetricAPI.get("/api/categories")
 
     return data
+}
+
+export async function addCategory(category) {
+    return await UmetricAPI.post("/api/categories", category)
+}
+
+export async function editCategory({categoryId, categoryChanges}) {
+    return await UmetricAPI.put("/api/categories/" + categoryId, categoryChanges)
 }
 
 export async function getIcons() {

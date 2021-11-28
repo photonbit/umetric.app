@@ -4,13 +4,26 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
+import {addCategory} from "../services/UmetricAPI";
+import {useMutation} from "react-query";
 
 export default function AddCategoryScreen () {
-  const onPress = () => RootNavigation.navigate('ListEditCategories')
-
   const [modalVisible, setModalVisible] = useState(false)
   const [icon, setIcon] = useState('mountain')
   const [name, setName] = useState('')
+  const mutation = useMutation((newCategory) => addCategory(newCategory))
+  const { isSuccess } = mutation
+
+  const saveCategory = () => {
+    mutation.mutate({
+      name: name,
+      icon: icon
+    })
+  }
+
+  if (isSuccess) {
+        RootNavigation.navigate('ListEditCategories')
+  }
 
   return (
     <View style={styles.container}>
@@ -32,7 +45,7 @@ export default function AddCategoryScreen () {
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
+      <TouchableOpacity style={styles.button} onPress={saveCategory} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
     </View>
