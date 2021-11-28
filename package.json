@@ -1,9 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "web": "expo start --web",
     "eject": "expo eject",
     "lint": "eslint App.js components/ navigation/ screens/",
@@ -24,6 +23,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
+    "@react-native-async-storage/async-storage": "^1.15.13",
     "@react-native-community/checkbox": "^0.5.7",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-segmented-control/segmented-control": "^2.3.0",
@@ -34,11 +34,13 @@
     "expo": "~40.0.0",
     "expo-av": "~8.7.0",
     "expo-linking": "~2.0.0",
+    "expo-splash-screen": "~0.8.0",
     "expo-status-bar": "~1.0.3",
+    "expo-updates": "~0.4.0",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
+    "react-native": "~0.63.4",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-numeric-input": "^1.8.3",
     "react-native-reanimated": "~1.13.0",
@@ -47,12 +49,14 @@
     "react-native-screens": "~2.15.0",
     "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
+    "react-native-unimodules": "~0.12.0",
     "react-native-web": "~0.13.12",
     "react-query": "^3.24.4",
     "react-test-renderer": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "babel-jest": "~25.2.6",
     "detox": "^18.8.0",
     "detox-expo-helpers": "^0.6.0",
     "eslint": "^7.22.0",
@@ -62,7 +66,11 @@
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-react": "^7.22.0",
     "expo-detox-hook": "^1.0.10",
-    "jest-expo": "^40.0.2"
+    "jest": "~25.2.6",
+    "jest-expo": "^40.0.2",
+    "react-test-renderer": "~16.13.1"
   },
-  "private": true
+  "private": true,
+  "name": "app",
+  "version": "1.0.0"
 }
