@@ -8,15 +8,15 @@ export default function Goal ({ category, committed, done }) {
   const [action, setAction] = useState(false)
 
   const DoneSquare = (key) => {
-    return (<View style={styles.done} key ></View>)
+    return (<View style={styles.done} key={key} ></View>)
   }
 
   const NotDoneSquare = (key) => {
-    return (<View style={styles.notDone} key></View>)
+    return (<View style={styles.notDone} key={key}></View>)
   }
 
   const OverdoneSquare = (key) => {
-    return (<View style={styles.overDone} key></View>)
+    return (<View style={styles.overDone} key={key}></View>)
   }
 
   const drawGoal = () => {
