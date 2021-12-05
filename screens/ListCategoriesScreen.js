@@ -10,7 +10,7 @@ export default function ListCategoriesScreen () {
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><Text>...</Text></View>
   }
   if (isError) {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
