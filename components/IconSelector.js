@@ -6,7 +6,7 @@ import {getIcons} from '../services/UmetricAPI'
 import {useQuery} from "react-query";
 
 export default function IconSelector ({ visible, setVisible, selected, setIcon }) {
-    const { data, error, isError, isLoading } = useQuery('categories', getIcons)
+    const { data, error, isError, isLoading } = useQuery('icons', getIcons)
 
   if (isLoading) {
     return <View><Text>Loading...</Text></View>
@@ -18,9 +18,9 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
   const renderItem = ({ item }) => {
     const style = item === selected ? styles.selected : styles.icon
     return (
-    <TouchableOpacity onPress={() => { setIcon(item); setVisible(false) }} >
+    <TouchableOpacity onPress={() => { setIcon("build/img/"+item); setVisible(false) }} >
     <View style={style}>
-            <Icon icon={item} />
+            <Icon icon={"build/img/"+item} />
         </View>
     </TouchableOpacity>
     )
