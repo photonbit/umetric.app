@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {addCategory} from "../services/UmetricAPI";
-import {useMutation} from "react-query";
+import {useMutation, useQueryClient} from "react-query";
 
 export default function AddCategoryScreen () {
   const [modalVisible, setModalVisible] = useState(false)
   const [icon, setIcon] = useState('build/img/mountain.svg')
   const [name, setName] = useState('')
   const mutation = useMutation((newCategory) => addCategory(newCategory))
+  const queryClient = useQueryClient()
   const { isSuccess } = mutation
 
   const saveCategory = () => {
@@ -21,9 +22,12 @@ export default function AddCategoryScreen () {
     })
   }
 
-  if (isSuccess) {
-        RootNavigation.navigate('ListEditCategories')
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('categories')
+      RootNavigation.navigate('ListEditCategories')
+    }
+   });
 
   return (
     <View style={styles.container}>
@@ -45,7 +49,7 @@ export default function AddCategoryScreen () {
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={saveCategory} underlayColor='#99d9f4'>
+      <TouchableOpacity style={styles.button} onPress={saveCategory} underlayColor='#99d9f4' disabled={name.length===0}>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
     </View>
