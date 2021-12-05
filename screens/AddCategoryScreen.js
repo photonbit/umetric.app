@@ -9,7 +9,7 @@ import {useMutation} from "react-query";
 
 export default function AddCategoryScreen () {
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('mountain')
+  const [icon, setIcon] = useState('build/img/mountain.svg')
   const [name, setName] = useState('')
   const mutation = useMutation((newCategory) => addCategory(newCategory))
   const { isSuccess } = mutation
