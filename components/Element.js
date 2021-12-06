@@ -16,7 +16,6 @@ export default function Element ({ element, onPress }) {
 
 const styles = StyleSheet.create({
   element: {
-    height: 150,
     width: 170,
     padding: 10,
     alignItems: 'center'
@@ -27,6 +26,7 @@ const styles = StyleSheet.create({
   },
   text: {
     paddingTop: 10,
+    paddingBottom: 10,
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center'
