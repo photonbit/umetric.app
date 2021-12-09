@@ -53,9 +53,9 @@ export async function addCategory(category) {
     }
 }
 
-export async function editCategory({categoryId, categoryChanges}) {
+export async function editCategory({categoryId, modifiedCategory}) {
     try {
-        return await UmetricAPI.put("/api/categories/" + categoryId, categoryChanges)
+        return await UmetricAPI.put("/api/categories/" + categoryId, modifiedCategory)
     } catch (e) {
         console.log("editCateory(" + categoryId + "): " + e.message)
         return null
@@ -88,10 +88,32 @@ export async function getIcon({queryKey}) {
     }
 }
 
-export async function getEvents({queryKey}) {
+export async function getEvent({queryKey}) {
+    const event_id = queryKey[1]
+    try {
+        const {data} = await UmetricAPI.get("/api/events/" + event_id)
+        return data
+    } catch (e) {
+        console.log("getEvent(" + event_id + "): " + e.message)
+        return null
+    }
+}
+
+export async function getCategory({queryKey}) {
     const category_id = queryKey[1]
     try {
         const {data} = await UmetricAPI.get("/api/categories/" + category_id)
+        return data
+    } catch (e) {
+        console.log("getCategory(" + category_id + "): " + e.message)
+        return null
+    }
+}
+
+export async function getEvents({queryKey}) {
+    const category_id = queryKey[1]
+    try {
+        const {data} = await UmetricAPI.get("/api/categories/" + category_id + "/events")
         return data
     } catch (e) {
         console.log("getEvents(" + category_id + "): " + e.message)
