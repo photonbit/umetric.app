@@ -24,10 +24,11 @@ export default function AddCategoryScreen () {
 
   useEffect(() => {
     if (isSuccess) {
-      queryClient.invalidateQueries('categories')
-      RootNavigation.navigate('ListEditCategories')
+      queryClient.invalidateQueries('categories').then(()=>
+        RootNavigation.navigate('ListEditCategories')
+      )
     }
-   });
+   }, [isSuccess]);
 
   return (
     <View style={styles.container}>
