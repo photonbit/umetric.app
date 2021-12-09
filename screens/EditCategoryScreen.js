@@ -1,16 +1,54 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {editCategory, getCategory} from "../services/UmetricAPI";
 
 export default function EditCategoryScreen ({ route }) {
-  const onPress = () => RootNavigation.navigate('ListEditCategories')
+  const categoryId = route.params.category_id
+  const { data, error, isError, isLoading } = useQuery(['category', categoryId],
+      ({queryKey}) => {
+        return getCategory({queryKey}).then((cat)=> {
+        setName(cat.name)
+        setIcon(cat.icon)
+        return cat
+      })
+  })
+  const mutation = useMutation(
+      (modifiedCategory) => editCategory({categoryId, modifiedCategory}))
+  const { isSuccess } = mutation
+  const queryClient = useQueryClient()
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('build/img/mountain.svg')
-  const [name, setName] = useState('Rutinas matutinas')
+  const [icon, setIcon] = useState("")
+  const [name, setName] = useState("")
+
+  const saveCategory = () => {
+    mutation.mutate({
+      name: name,
+      icon: icon
+    })
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('category', categoryId).then(()=>
+          queryClient.invalidateQueries('categories').then(()=>
+        RootNavigation.navigate('ListEditCategories')
+      ))
+    }
+
+   }, [isSuccess]);
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
 
   return (
     <View style={styles.container}>
@@ -22,7 +60,7 @@ export default function EditCategoryScreen ({ route }) {
         />
 
         <Text style={styles.title}>Nombre</Text>
-        <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
+        <TextInput onChangeText={setName} defaultValue={data.name} style={styles.input} />
         <Text style={styles.title}>Icono</Text>
       <TouchableOpacity
           style={styles.icon}
@@ -32,7 +70,7 @@ export default function EditCategoryScreen ({ route }) {
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
+      <TouchableOpacity style={styles.button} onPress={saveCategory} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
     </View>
