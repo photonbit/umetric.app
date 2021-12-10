@@ -14,7 +14,8 @@ export default function EditListEventsScreen ({ navigation, route }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-            <TouchableOpacity style={styles.actionIcon} onPress={() => RootNavigation.navigate('AddEvent')}>
+            <TouchableOpacity style={styles.actionIcon} onPress={() =>
+                RootNavigation.navigate('AddEvent', { category_id: categoryId })}>
                 <Feather name="file-plus" size={30} color="black" />
             </TouchableOpacity>
       )
@@ -56,7 +57,7 @@ export default function EditListEventsScreen ({ navigation, route }) {
       style={styles.flatlist}
       data={data}
       renderItem={renderItem}
-      keyExtractor={item => item.id}
+      keyExtractor={item => "" + item.id}
     />
   )
 }

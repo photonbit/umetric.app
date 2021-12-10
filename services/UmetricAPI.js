@@ -88,6 +88,17 @@ export async function getIcon({queryKey}) {
     }
 }
 
+
+export async function addEvent({categoryId, newEvent}) {
+    try {
+        return await UmetricAPI.post("/api/categories/" + categoryId + "/events", newEvent)
+    } catch (e) {
+        console.log("addEvent("+categoryId+"): " + e.message)
+        console.log(newEvent)
+        return null
+    }
+}
+
 export async function getEvent({queryKey}) {
     const event_id = queryKey[1]
     try {

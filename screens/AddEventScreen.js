@@ -1,17 +1,37 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
+import {useMutation, useQueryClient} from "react-query";
+import {addEvent} from "../services/UmetricAPI";
 
-export default function AddEventScreen () {
-  const onPress = () => RootNavigation.navigate('ListEditCategories')
-
+export default function AddEventScreen ({ route }) {
+  const categoryId = route.params.category_id
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('egg')
+  const [icon, setIcon] = useState('build/img/mountain.svg')
   const [name, setName] = useState('')
   const [action, setAction] = useState('')
+  const mutation = useMutation((newEvent) => addEvent({ categoryId, newEvent}))
+  const queryClient = useQueryClient()
+  const { isSuccess } = mutation
+
+  const saveEvent = () => {
+    mutation.mutate({
+      name: name,
+      icon: icon,
+      playlist: action
+    })
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('events', categoryId).then(()=>
+        RootNavigation.navigate('ListEditEvents', { category_id: categoryId })
+      )
+    }
+   }, [isSuccess]);
 
   return (
     <View style={styles.container}>
@@ -35,7 +55,7 @@ export default function AddEventScreen () {
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
+      <TouchableOpacity style={styles.button} onPress={saveEvent} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
     </View>
