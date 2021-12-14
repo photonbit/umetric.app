@@ -6,6 +6,7 @@ import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {useQuery} from "react-query";
 import {getEvents} from "../services/UmetricAPI";
+import * as Linking from "expo-linking";
 
 export default function EditListEventsScreen ({ navigation, route }) {
   const categoryId = route.params.category_id
@@ -29,8 +30,8 @@ export default function EditListEventsScreen ({ navigation, route }) {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
   }
 
-  const onNamePress = (item) => RootNavigation.navigate('OpenAction', { item_id: item.id })
-  const onEditPress = (item) => RootNavigation.navigate('EditEvent', { item_id: item.id })
+  const onNamePress = (item) => Linking.openURL(item.playlist)
+  const onEditPress = (item) => RootNavigation.navigate('EditEvent', { event_id: item.id, category_id: categoryId })
   const onDeletePress = (item) => Alert.alert(
     'Borrar ' + item.name + '?',
     'Que la vas a borrar',
@@ -48,9 +49,9 @@ export default function EditListEventsScreen ({ navigation, route }) {
   const renderItem = ({ item }) => (
     <EditableElement
     element={item}
-    onNamePress={onNamePress}
-    onEditPress={onEditPress}
-    onDeletePress={onDeletePress} />
+    onNamePress={() => onNamePress(item)}
+    onEditPress={() => onEditPress(item)}
+    onDeletePress={() => onDeletePress(item)} />
   )
   return (
           <FlatList

@@ -110,6 +110,15 @@ export async function getEvent({queryKey}) {
     }
 }
 
+export async function editEvent({eventId, modifiedEvent}) {
+    try {
+        return await UmetricAPI.put("/api/events/" + eventId, modifiedEvent)
+    } catch (e) {
+        console.log("editEvent(" + eventId + "): " + e.message)
+        return null
+    }
+}
+
 export async function getCategory({queryKey}) {
     const category_id = queryKey[1]
     try {
