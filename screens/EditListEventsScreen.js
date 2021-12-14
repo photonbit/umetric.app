@@ -30,7 +30,7 @@ export default function EditListEventsScreen ({ navigation, route }) {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
   }
 
-  const onNamePress = (item) => Linking.openURL(item.playlist)
+  const onNamePress = (item) => Linking.openURL(item.action)
   const onEditPress = (item) => RootNavigation.navigate('EditEvent', { event_id: item.id, category_id: categoryId })
   const onDeletePress = (item) => Alert.alert(
     'Borrar ' + item.name + '?',

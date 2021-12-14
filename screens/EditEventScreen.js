@@ -15,7 +15,7 @@ export default function EditEventScreen ({ route }) {
         return getEvent({queryKey}).then((ev)=> {
         setName(ev.name)
         setIcon(ev.icon)
-        setAction(ev.playlist)
+        setAction(ev.action)
         return ev
       })
   })
@@ -33,7 +33,7 @@ export default function EditEventScreen ({ route }) {
     mutation.mutate({
       name: name,
       icon: icon,
-      playlist: action
+      action: action
     })
   }
 

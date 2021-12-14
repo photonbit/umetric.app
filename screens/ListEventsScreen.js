@@ -8,7 +8,7 @@ import Element from '../components/Element'
 import { getEvents } from '../services/UmetricAPI'
 
 export default function ListCategoriesScreen ({ route }) {
-  const onPress = (item) => Linking.openURL(item.playlist)
+  const onPress = (item) => Linking.openURL(item.action)
   const categoryId = route.params.category_id
 
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)

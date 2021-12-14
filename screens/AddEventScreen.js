@@ -21,7 +21,7 @@ export default function AddEventScreen ({ route }) {
     mutation.mutate({
       name: name,
       icon: icon,
-      playlist: action
+      action: action
     })
   }
 
