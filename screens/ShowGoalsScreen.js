@@ -10,35 +10,35 @@ export default function ShowGoalsScreen ({ navigation }) {
     {
       id: '1',
       name: 'Cuidados',
-      icon: 'garden',
+      icon: 'build/img/garden.svg',
       committed: 6,
       done: 2
     },
     {
       id: '2',
       name: 'Aprendizaje',
-      icon: 'thinking',
+      icon: 'build/img/thinking.svg',
       committed: 5,
       done: 3
     },
     {
       id: '3',
       name: 'Empresa',
-      icon: 'online',
+      icon: 'build/img/online.svg',
       committed: 2,
       done: 5
     },
     {
       id: '4',
       name: 'Deporte',
-      icon: 'running',
+      icon: 'build/img/running.svg',
       committed: 7,
       done: 6
     },
     {
       id: '5',
       name: 'Meditación',
-      icon: 'meditation',
+      icon: 'build/img/meditation.svg',
       committed: 3,
       done: 0
     }
