@@ -15,7 +15,7 @@ export default function EditGoalScreen () {
   const [category, setCategory] = useState({
     id: '4',
     name: 'Meditación',
-    icon: 'meditation'
+    icon: 'build/img/meditation.svg'
   })
   const [number, setNumber] = useState('4')
   const [unit, setUnit] = useState(1)

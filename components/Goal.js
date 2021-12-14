@@ -8,15 +8,15 @@ export default function Goal ({ category, committed, done }) {
   const [action, setAction] = useState(false)
 
   const DoneSquare = (key) => {
-    return (<View style={styles.done} key={key} ></View>)
+    return (<View style={styles.done} key={key} />)
   }
 
   const NotDoneSquare = (key) => {
-    return (<View style={styles.notDone} key={key}></View>)
+    return (<View style={styles.notDone} key={key}/>)
   }
 
   const OverdoneSquare = (key) => {
-    return (<View style={styles.overDone} key={key}></View>)
+    return (<View style={styles.overDone} key={key}/>)
   }
 
   const drawGoal = () => {
@@ -48,10 +48,10 @@ export default function Goal ({ category, committed, done }) {
       return (
                 <View>
                     <TouchableOpacity onPress={goToPomodoro} style={styles.icon}>
-                        <Icon icon="focused" />
+                        <Icon icon="build/img/focused.svg" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={gotoEdit} style={styles.icon}>
-                        <Icon icon="pencil" />
+                        <Icon icon="build/img/pencil.svg" />
                     </TouchableOpacity>
                 </View>
       )

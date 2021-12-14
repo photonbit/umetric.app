@@ -15,7 +15,7 @@ export default function EditReminderScreen () {
   const [category, setCategory] = useState({
     id: '4',
     name: 'Sentimientos',
-    icon: 'love_and_romance'
+    icon: 'build/img/love_and_romance.svg'
   })
   const [question, setQuestion] = useState('¿Cómo te sientes ahora?')
 
