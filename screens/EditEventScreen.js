@@ -1,17 +1,58 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {editEvent, getEvent} from "../services/UmetricAPI";
 
-export default function EditEventScreen () {
-  const onPress = () => RootNavigation.navigate('ListEditCategories')
+export default function EditEventScreen ({ route }) {
+  const eventId = route.params.event_id
+  const categoryId = route.params.category_id
+  const { data, error, isError, isLoading } = useQuery(['event', eventId],
+      ({queryKey}) => {
+        return getEvent({queryKey}).then((ev)=> {
+        setName(ev.name)
+        setIcon(ev.icon)
+        setAction(ev.playlist)
+        return ev
+      })
+  })
+  const mutation = useMutation(
+      (modifiedEvent) => editEvent({eventId, modifiedEvent}))
+  const { isSuccess } = mutation
+  const queryClient = useQueryClient()
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('egg')
-  const [name, setName] = useState('Desayuno')
-  const [action, setAction] = useState('https://open.spotify.com/playlist/3nmxhZ8KAna4mG5HmSaERR?si=rCF54mgtT1uYLNzM3SF87Q')
+  const [icon, setIcon] = useState("")
+  const [name, setName] = useState("")
+  const [action, setAction] = useState("")
+
+  const saveEvent = () => {
+    mutation.mutate({
+      name: name,
+      icon: icon,
+      playlist: action
+    })
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('event', eventId).then(()=>
+          queryClient.invalidateQueries('events').then(()=>
+        RootNavigation.navigate('ListEditEvents', { category_id: categoryId })
+      ))
+    }
+
+   }, [isSuccess]);
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
 
   return (
     <View style={styles.container}>
@@ -23,7 +64,7 @@ export default function EditEventScreen () {
         />
 
         <Text style={styles.title}>Nombre</Text>
-        <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
+        <TextInput onChangeText={setName} defaultValue={data.name} style={styles.input} />
         <Text style={styles.title}>Acción (opcional)</Text>
         <TextInput onChangeText={setAction} defaultValue={action} style={styles.input} />
         <Text style={styles.title}>Icono</Text>
@@ -35,7 +76,7 @@ export default function EditEventScreen () {
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
+      <TouchableOpacity style={styles.button} onPress={saveEvent} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
     </View>
