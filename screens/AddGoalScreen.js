@@ -15,7 +15,7 @@ export default function AddGoalScreen () {
   const [category, setCategory] = useState({
     id: '4',
     name: 'Rumiaciones',
-    icon: 'programation'
+    icon: 'build/img/programation.svg'
   })
   const [number, setNumber] = useState('1')
   const [unit, setUnit] = useState(1)

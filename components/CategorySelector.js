@@ -2,9 +2,19 @@ import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import Element from '../components/Element'
+import {useQuery} from "react-query";
+import {getCategories} from "../services/UmetricAPI";
 
 export default function CategorySelector ({ visible, setVisible, selected, setCategory }) {
-  const categorias = []
+  const { data, error, isError, isLoading } = useQuery('categories', getCategories)
+
+  if (isLoading) {
+    return <View><Text>...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
+
   const renderItem = ({ item }) => {
     const style = item.id === selected ? styles.selected : styles.icon
     return (
@@ -29,7 +39,7 @@ export default function CategorySelector ({ visible, setVisible, selected, setCa
                 <Text style={styles.modalText}>Elije la categoría</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={categorias}
+                    data={data}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={2}

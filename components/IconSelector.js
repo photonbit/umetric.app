@@ -1,18 +1,26 @@
 import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-import * as Icons from '../assets/icons'
 import Icon from '../components/Icon'
+import {getIcons} from '../services/UmetricAPI'
+import {useQuery} from "react-query";
 
 export default function IconSelector ({ visible, setVisible, selected, setIcon }) {
-  const iconNames = Object.keys(Icons)
+    const { data, error, isError, isLoading } = useQuery('icons', getIcons)
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
 
   const renderItem = ({ item }) => {
     const style = item === selected ? styles.selected : styles.icon
     return (
-    <TouchableOpacity onPress={() => { setIcon(item); setVisible(false) }} >
+    <TouchableOpacity onPress={() => { setIcon("build/img/"+item); setVisible(false) }} >
     <View style={style}>
-            <Icon icon={item} />
+            <Icon icon={"build/img/"+item} />
         </View>
     </TouchableOpacity>
     )
@@ -31,7 +39,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
                 <Text style={styles.modalText}>Elije el icono</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={iconNames}
+                    data={data}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={3}
