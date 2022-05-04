@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 
-export default function Goal ({ category, committed, done }) {
+export default function Goal ({ goal }) {
   const [action, setAction] = useState(false)
 
   const DoneSquare = (key) => {
@@ -22,18 +22,18 @@ export default function Goal ({ category, committed, done }) {
   const drawGoal = () => {
     const squares = []
 
-    if (committed > done) {
-      for (let i = done; i < committed; i++) {
+    if (goal.committed > goal.done) {
+      for (let i = goal.done; i < goal.committed; i++) {
         squares.push(<NotDoneSquare key={i} />)
       }
-      for (let i = 0; i < done; i++) {
+      for (let i = 0; i < goal.done; i++) {
         squares.push(<DoneSquare key={i} />)
       }
     } else {
-      for (let i = committed; i < done; i++) {
+      for (let i = goal.committed; i < goal.done; i++) {
         squares.push(<OverdoneSquare key={i} />)
       }
-      for (let i = 0; i < committed; i++) {
+      for (let i = 0; i < goal.committed; i++) {
         squares.push(<DoneSquare key={i} />)
       }
     }
@@ -41,8 +41,8 @@ export default function Goal ({ category, committed, done }) {
   }
 
   const drawFooter = () => {
-    const goToPomodoro = () => RootNavigation.navigate('Pomodoro', { category: category })
-    const gotoEdit = () => RootNavigation.navigate('EditGoal', { category: category })
+    const goToPomodoro = () => RootNavigation.navigate('Pomodoro', { event: goal.event })
+    const gotoEdit = () => RootNavigation.navigate('EditGoal', { goal_id: goal.goal_id })
 
     if (action) {
       return (
@@ -58,7 +58,7 @@ export default function Goal ({ category, committed, done }) {
     } else {
       return (
                 <TouchableOpacity style={styles.icon} onPress={ () => setAction(!action)} >
-                    <Icon icon={category.icon} />
+                    <Icon icon={goal.event.icon} />
                 </TouchableOpacity>
       )
     }

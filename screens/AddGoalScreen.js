@@ -1,32 +1,72 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import { Feather } from '@expo/vector-icons'
+import { useQueryClient, useMutation } from 'react-query'
 
 import CategorySelector from '../components/CategorySelector'
+import EventSelector from '../components/EventSelector'
 import Element from '../components/Element'
 import * as RootNavigation from '../navigation/RootNavigation'
+import { addGoal } from '../services/UmetricAPI'
 
 export default function AddGoalScreen () {
-  const onPress = () => RootNavigation.navigate('ShowGoals')
 
-  const [modalVisible, setModalVisible] = useState(false)
-  const [category, setCategory] = useState({
-    id: '4',
-    name: 'Rumiaciones',
-    icon: 'build/img/programation.svg'
-  })
   const [number, setNumber] = useState('1')
   const [unit, setUnit] = useState(1)
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false)
+  const [eventModalVisible, setEventModalVisible] = useState(false)
+  const [category, setCategory] = useState({
+    id: '',
+    name: '',
+    icon: ''
+  })
+  const [event, setEvent] = useState({
+    id: '',
+    name: '',
+    icon: ''
+  })
+
+  const mutation = useMutation((newGoal) => addGoal({ newGoal }))
+  const queryClient = useQueryClient()
+  const { isSuccess } = mutation
+
+  const saveGoal = () => {
+    mutation.mutate({
+      number: number,
+      unit: unit,
+      event_id: event.id
+    })
+  }
+
+  const saveCategory = (category) => {
+    setCategory(category)
+    setEventModalVisible(true)
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('commitments').then(() =>
+        RootNavigation.navigate('ShowGoals')
+      )
+    }
+  }, [isSuccess])
 
   return (
     <View style={styles.container}>
      <CategorySelector
-            visible={modalVisible}
-            setVisible={setModalVisible}
+            visible={categoryModalVisible}
+            setVisible={setCategoryModalVisible}
             selected={category.id}
-            setCategory={setCategory}
+            setCategory={saveCategory}
+           />
+      <EventSelector
+            visible={eventModalVisible}
+            categoryId={category.id}
+            setVisible={setEventModalVisible}
+            selected={event.id}
+            setEvent={setEvent}
            />
           <Text style={styles.title}>Quieres dedicar</Text>
           <View style={styles.numberSelection}>
@@ -63,10 +103,10 @@ export default function AddGoalScreen () {
            <View style={styles.categorySelection}>
         <Text style={styles.title}>a la semana a:</Text>
                 <Element
-                    element={category}
-                    onPress={() => { setModalVisible(true) }} />
+                    element={event}
+                    onPress={() => { setCategoryModalVisible(true) }} />
             </View>
-            <TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
+            <TouchableOpacity style={styles.button} onPress={saveGoal} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
         </View>
