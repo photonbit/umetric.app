@@ -1,11 +1,11 @@
-import React, { useLayoutEffect } from 'react'
-import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import React, { useEffect, useLayoutEffect } from 'react'
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
-import {useQuery} from "react-query";
-import {getCategories} from "../services/UmetricAPI";
+import { useQuery, useQueryClient, useMutation } from 'react-query'
+import { deleteCategory, getCategories } from '../services/UmetricAPI'
 
 export default function EditListCategoriesScreen ({ navigation }) {
 
@@ -16,6 +16,11 @@ export default function EditListCategoriesScreen ({ navigation }) {
   if (isError) {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
   }
+
+  const mutation = useMutation(
+    (categoryId) => deleteCategory({ categoryId }))
+  const { isSuccess } = mutation
+  const queryClient = useQueryClient()
 
   const onNamePress = (item) => RootNavigation.navigate('ListEditEvents', { category_id: item.id })
   const onEditPress = (item) => RootNavigation.navigate('EditCategory', { category_id: item.id })
@@ -28,7 +33,7 @@ export default function EditListCategoriesScreen ({ navigation }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: 'Sí', onPress: () => console.log('OK Pressed') }
+      { text: 'Sí', onPress: () => mutation.mutate(item.id) }
     ],
     { cancelable: false }
   )
@@ -42,6 +47,14 @@ export default function EditListCategoriesScreen ({ navigation }) {
       )
     })
   }, [])
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('categories').then(() =>
+        RootNavigation.navigate('ListEditCategories')
+      )
+    }
+  }, [isSuccess])
 
   const renderItem = ({ item }) => (
     <EditableElement
