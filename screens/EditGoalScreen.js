@@ -1,49 +1,98 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import { Feather } from '@expo/vector-icons'
+import { useQuery, useQueryClient, useMutation } from 'react-query'
 
-import CategorySelector from '../components/CategorySelector'
+import EventSelector from '../components/EventSelector'
 import Element from '../components/Element'
 import * as RootNavigation from '../navigation/RootNavigation'
+import { getGoal, editGoal } from '../services/UmetricAPI'
 
-export default function EditGoalScreen () {
-  const onPress = () => RootNavigation.navigate('ShowGoals')
-
+export default function EditGoalScreen ({ route }) {
+  const goalId = route.params.goal_id
   const [modalVisible, setModalVisible] = useState(false)
-  const [category, setCategory] = useState({
-    id: '4',
-    name: 'Meditación',
-    icon: 'build/img/meditation.svg'
+  const [number, setNumber] = useState('')
+  const [unit, setUnit] = useState('')
+  const [event, setEvent] = useState({
+    id: '',
+    name: '',
+    icon: ''
   })
-  const [number, setNumber] = useState('4')
-  const [unit, setUnit] = useState(1)
+
+  const { data, error, isError, isLoading } = useQuery(['goal', goalId],
+    ({ queryKey }) => {
+      return getGoal({ queryKey }).then((goal) => {
+        setNumber('' + goal.number)
+        setUnit(goal.unit)
+        setEvent(goal.event)
+        return goal
+      })
+    })
+  const mutation = useMutation(
+    (modifiedGoal) => editGoal({ goalId, modifiedGoal }))
+  const { isSuccess } = mutation
+  const queryClient = useQueryClient()
+
+  const saveGoal = () => {
+    mutation.mutate({
+      number: number,
+      unit: unit,
+      event_id: event.id
+    })
+  }
+
+  const plusOne = () => {
+    const newNumber = (Number(number) - 1).toString()
+    setNumber(newNumber)
+  }
+
+  const minusOne = () => {
+    const newNumber = (Number(number) + 1).toString()
+    setNumber(newNumber)
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('goal', goalId).then(() =>
+        queryClient.invalidateQueries('commitments').then(() =>
+          RootNavigation.navigate('ShowGoals')
+        ))
+    }
+  }, [isSuccess])
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
 
   return (
     <View style={styles.container}>
-     <CategorySelector
+     <EventSelector
             visible={modalVisible}
             setVisible={setModalVisible}
-            selected={category.id}
-            setCategory={setCategory}
+            selected={event.id}
+            setEvent={setEvent}
            />
           <Text style={styles.title}>Quieres dedicar</Text>
           <View style={styles.numberSelection}>
             <TouchableOpacity
-                onPress={ () => setNumber((Number(number) - 1).toString())}
+                onPress={plusOne}
                 style={styles.numberButton}
             >
                 <Feather name="minus-circle" size={40} color="black" />
             </TouchableOpacity>
             <TextInput
                 onChangeText={setNumber}
-                defaultValue={number}
+                defaultValue={data.number.toString()}
                 style={styles.numberInput}
                 keyboardType="number-pad"
             />
             <TouchableOpacity
-                onPress={ () => setNumber((Number(number) + 1).toString())}
+                onPress={minusOne}
                 style={styles.numberButton}
             >
                 <Feather name="plus-circle" size={40} color="black" />
@@ -63,10 +112,10 @@ export default function EditGoalScreen () {
            <View style={styles.categorySelection}>
         <Text style={styles.title}>a la semana a:</Text>
                 <Element
-                    element={category}
+                    element={event}
                     onPress={() => { setModalVisible(true) }} />
             </View>
-            <TouchableOpacity style={styles.button} onPress={onPress} underlayColor='#99d9f4'>
+            <TouchableOpacity style={styles.button} onPress={saveGoal} underlayColor='#99d9f4'>
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
         </View>

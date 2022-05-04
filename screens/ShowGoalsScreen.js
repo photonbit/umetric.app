@@ -1,48 +1,14 @@
 import React, { useLayoutEffect } from 'react'
-import { FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { useQuery } from 'react-query'
+import { FlatList, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import Goal from '../components/Goal'
 import * as RootNavigation from '../navigation/RootNavigation'
+import { getCommitments } from '../services/UmetricAPI'
 
 export default function ShowGoalsScreen ({ navigation }) {
-  const categorias = [
-    {
-      id: '1',
-      name: 'Cuidados',
-      icon: 'build/img/garden.svg',
-      committed: 6,
-      done: 2
-    },
-    {
-      id: '2',
-      name: 'Aprendizaje',
-      icon: 'build/img/thinking.svg',
-      committed: 5,
-      done: 3
-    },
-    {
-      id: '3',
-      name: 'Empresa',
-      icon: 'build/img/online.svg',
-      committed: 2,
-      done: 5
-    },
-    {
-      id: '4',
-      name: 'Deporte',
-      icon: 'build/img/running.svg',
-      committed: 7,
-      done: 6
-    },
-    {
-      id: '5',
-      name: 'Meditación',
-      icon: 'build/img/meditation.svg',
-      committed: 3,
-      done: 0
-    }
-  ]
+  const { data, error, isError, isLoading } = useQuery('commitments', getCommitments)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,20 +21,24 @@ export default function ShowGoalsScreen ({ navigation }) {
   }, [])
 
   const renderItem = ({ item }) => (
-        <Goal
-        category={item}
-        committed={item.committed}
-        done={item.done} />
+        <Goal goal={item} />
   )
+
+  if (isLoading) {
+    return <View><Text>Loading...</Text></View>
+  }
+  if (isError) {
+    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  }
 
   return (
           <FlatList
           style={styles.flatlist}
           contentContainerStyle={{ alignItems: 'flex-end', justifyContent: 'space-between' }}
-      data={categorias}
+      data={data}
       renderItem={renderItem}
       horizontal={true}
-      keyExtractor={item => item.id}
+      keyExtractor={item => item.goal_id}
     />
   )
 }
