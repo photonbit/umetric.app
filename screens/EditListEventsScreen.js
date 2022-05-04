@@ -1,27 +1,40 @@
-import React, { useLayoutEffect } from 'react'
+import React, {useEffect, useLayoutEffect} from 'react'
 import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
-import {useQuery} from "react-query";
-import {getEvents} from "../services/UmetricAPI";
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {deleteEvent, getEvents} from "../services/UmetricAPI";
 import * as Linking from "expo-linking";
 
 export default function EditListEventsScreen ({ navigation, route }) {
   const categoryId = route.params.category_id
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
 
+  const mutation = useMutation(
+    (eventId) => deleteEvent({ eventId }))
+  const { isSuccess } = mutation
+  const queryClient = useQueryClient()
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
             <TouchableOpacity style={styles.actionIcon} onPress={() =>
-                RootNavigation.navigate('AddEvent', { category_id: categoryId })}>
+              RootNavigation.navigate('AddEvent', { category_id: categoryId })}>
                 <Feather name="file-plus" size={30} color="black" />
             </TouchableOpacity>
       )
     })
   }, [])
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('events').then(() =>
+        RootNavigation.navigate('ListEditEvents', { category_id: categoryId })
+      )
+    }
+  }, [isSuccess])
 
   if (isLoading) {
     return <View><Text>Loading...</Text></View>
@@ -41,7 +54,7 @@ export default function EditListEventsScreen ({ navigation, route }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: 'Sí', onPress: () => console.log('OK Pressed') }
+      { text: 'Sí', onPress: () => mutation.mutate(item.id) }
     ],
     { cancelable: false }
   )
