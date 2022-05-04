@@ -52,13 +52,22 @@ export async function addCategory (category) {
   }
 }
 
-export async function editCategory({categoryId, modifiedCategory}) {
-    try {
-        return await UmetricAPI.put("/api/categories/" + categoryId, modifiedCategory)
-    } catch (e) {
-        console.log("editCateory(" + categoryId + "): " + e.message)
-        return null
-    }
+export async function editCategory ({ categoryId, modifiedCategory }) {
+  try {
+    return await UmetricAPI.put('/api/categories/' + categoryId, modifiedCategory)
+  } catch (e) {
+    console.log('editCateory(' + categoryId + '): ' + e.message)
+    return null
+  }
+}
+
+export async function deleteCategory ({ categoryId }) {
+  try {
+    return await UmetricAPI.delete('/api/categories/' + categoryId)
+  } catch (e) {
+    console.log('deleteCategory(' + categoryId + '): ' + e.message)
+    return null
+  }
 }
 
 export async function getIcons () {
@@ -108,24 +117,46 @@ export async function getEvent ({ queryKey }) {
   }
 }
 
-export async function editEvent({eventId, modifiedEvent}) {
-    try {
-        return await UmetricAPI.put("/api/events/" + eventId, modifiedEvent)
-    } catch (e) {
-        console.log("editEvent(" + eventId + "): " + e.message)
-        return null
-    }
+export async function editEvent ({ eventId, modifiedEvent }) {
+  try {
+    return await UmetricAPI.put('/api/events/' + eventId, modifiedEvent)
+  } catch (e) {
+    console.log('editEvent(' + eventId + '): ' + e.message)
+    return null
+  }
 }
 
-export async function getCategory({queryKey}) {
-    const category_id = queryKey[1]
-    try {
-        const {data} = await UmetricAPI.get("/api/categories/" + category_id)
-        return data
-    } catch (e) {
-        console.log("getCategory(" + category_id + "): " + e.message)
-        return null
-    }
+export async function deleteEvent ({ eventId }) {
+  try {
+    return await UmetricAPI.delete('/api/events/' + eventId)
+  } catch (e) {
+    console.log('deleteEvent(' + eventId + '): ' + e.message)
+    return null
+  }
+}
+
+export async function logEvent ({ eventId, duration }) {
+  const uri = '/api/events/' + eventId + '/logs'
+  const body = {}
+  if (duration) {
+    body.duration = duration
+  }
+  try {
+    return await UmetricAPI.post(uri, body)
+  } catch (e) {
+    console.log('logEvent(' + eventId + '): ' + e.message)
+  }
+}
+
+export async function getCategory ({ queryKey }) {
+  const category_id = queryKey[1]
+  try {
+    const { data } = await UmetricAPI.get('/api/categories/' + category_id)
+    return data
+  } catch (e) {
+    console.log('getCategory(' + category_id + '): ' + e.message)
+    return null
+  }
 }
 
 export async function getEvents ({ queryKey }) {
