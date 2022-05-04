@@ -5,6 +5,8 @@ import { Feather } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
 
 import Icon from '../components/Icon'
+import { useMutation, useQueryClient } from 'react-query'
+import { logEvent } from '../services/UmetricAPI'
 
 export default function PomodoroScreen ({ route }) {
   const [progress, setProgress] = useState(1.0)
@@ -15,7 +17,7 @@ export default function PomodoroScreen ({ route }) {
   const minutes = 25
   const seconds = minutes * 60
   const [timeLeft, setTimeLeft] = useState(seconds)
-  const category = route.params.category
+  const event = route.params.event
 
   async function playSound () {
     const { sound } = await Audio.Sound.createAsync(
@@ -25,6 +27,20 @@ export default function PomodoroScreen ({ route }) {
 
     await sound.playAsync()
   }
+
+  const mutation = useMutation((duration) => logEvent({ eventId: event.id, duration: duration }))
+  const { isSuccess } = mutation
+  const queryClient = useQueryClient()
+
+  const sendDurationLog = (time) => {
+    mutation.mutate(time)
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.invalidateQueries('commitments')
+    }
+  }, [isSuccess])
 
   useEffect(() => {
     return sound
@@ -51,6 +67,9 @@ export default function PomodoroScreen ({ route }) {
   }, [timeLeft, state])
 
   const resetTimer = (newState) => {
+    if (newState === 'play') {
+      sendDurationLog(seconds - timeLeft)
+    }
     if (progressTimer) {
       clearTimeout(progressTimer)
       setProgressTimer(undefined)
@@ -71,7 +90,7 @@ export default function PomodoroScreen ({ route }) {
     if (state === 'square') {
       return (
                 <View>
-                    <Text style={styles.focusText}>Céntrate en {category.name}</Text>
+                    <Text style={styles.focusText}>Céntrate en {event.name}</Text>
                 </View>
       )
     }
@@ -86,7 +105,7 @@ export default function PomodoroScreen ({ route }) {
               progressColor={'rgb(134, 65, 244)'}
               strokeWidth={10} />
           <View style={styles.progressIcon}>
-              <Icon style={styles.icon} icon={category.icon} />
+              <Icon style={styles.icon} icon={event.icon} />
           </View>
       </View>
       <View style={styles.playArea}>
