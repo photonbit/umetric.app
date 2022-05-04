@@ -4,8 +4,16 @@ import { Feather } from '@expo/vector-icons'
 
 import Icon from './Icon'
 
-export default function EditableElement ({ element, onNamePress, onEditPress, onDeletePress, title }) {
-  const text = title || element.name
+export default function EditableElement({
+                                            element,
+                                            onNamePress,
+                                            onUpPress,
+                                            onDownPress,
+                                            onEditPress,
+                                            onDeletePress,
+                                            title
+                                        }) {
+    const text = title || element.name
 
   return (
     <View style={styles.element}>
@@ -15,6 +23,14 @@ export default function EditableElement ({ element, onNamePress, onEditPress, on
       <TouchableOpacity style={styles.title} onPress={onNamePress}>
         <Text numberOfLines={2} style={styles.text}>{text}</Text>
       </TouchableOpacity>
+      <View style={styles.order}>
+        <TouchableOpacity styles={styles.upIcon} onPress={onUpPress}>
+          <Feather name="chevron-up" size={20} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity styles={styles.downIcon} onPress={onDownPress}>
+          <Feather name="chevron-down" size={20} color="black" />
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity style={styles.actionIcon} onPress={onEditPress}>
         <Feather name="edit" size={30} color="black" />
       </TouchableOpacity>
@@ -46,11 +62,22 @@ const styles = StyleSheet.create({
   actionIcon: {
     padding: 5
   },
+  order: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  upIcon: {
+    paddingBottom: 1,
+  },
+  downIcon: {
+    paddingTop: 1,
+  },
   title: {
     width: 180,
     height: 40,
     justifyContent: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    paddingLeft: 10,
   },
   text: {
     fontSize: 16,
