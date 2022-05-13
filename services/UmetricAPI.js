@@ -221,9 +221,9 @@ export async function deleteGoal ({ goalId }) {
 
 export async function getCommitments ({ queryKey }) {
   const week = queryKey[1]
-  let url = '/api/commitments/'
+  let url = '/api/commitments'
   if (parseInt(week) > 0) {
-    url += week
+    url += '/'+week
   }
   try {
     const { data } = await UmetricAPI.get(url)

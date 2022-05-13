@@ -72,7 +72,7 @@ export default function EditListEventsScreen ({ navigation, route }) {
       style={styles.flatlist}
       data={data}
       renderItem={renderItem}
-      keyExtractor={item => "" + item.id}
+      keyExtractor={item => "" + item.order}
     />
   )
 }

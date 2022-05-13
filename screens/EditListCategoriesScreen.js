@@ -69,7 +69,7 @@ export default function EditListCategoriesScreen ({ navigation }) {
       style={styles.flatlist}
       data={data}
       renderItem={renderItem}
-      keyExtractor={item => ""+item.id}
+      keyExtractor={item => ""+item.order}
     />
   )
 }
