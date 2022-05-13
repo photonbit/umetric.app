@@ -57,7 +57,7 @@ export default function ListCategoriesScreen ({ route }) {
       renderItem={renderItem}
       horizontal={false}
         numColumns={2}
-      keyExtractor={item => item.id}
+      keyExtractor={item => item.order}
     />
   )
 }
