@@ -17,7 +17,7 @@ export default function ListCategoriesScreen () {
     return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
-  const goToEvents = (item) => RootNavigation.navigate('ListEvents', { category_id: item.id })
+  const goToEvents = (item) => RootNavigation.navigate('ListEvents', { category_id: item.id, category_name: item.name })
 
   const renderItem = ({ item }) => (
     <Element

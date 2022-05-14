@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import React, {useEffect, useLayoutEffect, useState} from 'react'
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { useMutation, useQuery } from 'react-query'
 import * as Linking from 'expo-linking'
 import i18n from 'i18n-js'
@@ -8,8 +8,9 @@ import Element from '../components/Element'
 
 import { getEvents, logEvent } from '../services/UmetricAPI'
 import * as RootNavigation from "../navigation/RootNavigation";
+import {Feather} from "@expo/vector-icons";
 
-export default function ListCategoriesScreen ({ route }) {
+export default function ListCategoriesScreen ({ navigation, route }) {
   const categoryId = route.params.category_id
   const [event, setEvent] = useState({
     id: '',
@@ -41,6 +42,12 @@ export default function ListCategoriesScreen ({ route }) {
       RootNavigation.navigate('ListCategories')
     }
   }, [isSuccess])
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: route.params.category_name
+    })
+  }, [])
 
   if (isLoading) {
     return <View><Text>...</Text></View>
