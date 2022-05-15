@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect } from 'react'
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 
@@ -12,7 +12,7 @@ export default function EditListCategoriesScreen ({ navigation }) {
 
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
