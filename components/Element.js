@@ -7,7 +7,7 @@ import {Feather} from "@expo/vector-icons";
 export default function Element ({ element, onPress }) {
   function actionIcon() {
       if (element.action) {
-          return <Feather name="bookmark" style={styles.actionIcon} size={12}  />
+          return <Feather name="external-link" style={styles.actionIcon} size={12}  />
       }
   }
   return (
