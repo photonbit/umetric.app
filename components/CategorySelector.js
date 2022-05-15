@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 
 import Element from '../components/Element'
@@ -10,7 +10,7 @@ export default function CategorySelector ({ visible, setVisible, selected, setCa
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 
   if (isLoading) {
-    return <View><Text>...</Text></View>
+    return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
     return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>

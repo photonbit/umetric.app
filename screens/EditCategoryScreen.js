@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native'
 import i18n from 'i18n-js'
 
 import IconSelector from '../components/IconSelector'
@@ -45,7 +45,7 @@ export default function EditCategoryScreen ({ route }) {
    }, [isSuccess]);
 
   if (isLoading) {
-    return <View><Text>...</Text></View>
+    return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
     return <View><Text>i18n.t('somethingIsWrong'): {error.message}...</Text></View>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useQuery } from 'react-query'
-import { FlatList, Text, StyleSheet, View } from 'react-native'
+import {FlatList, Text, StyleSheet, View, ActivityIndicator} from 'react-native'
 import i18n from 'i18n-js'
 
 import * as RootNavigation from '../navigation/RootNavigation'
@@ -11,7 +11,7 @@ export default function ListCategoriesScreen () {
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 
   if (isLoading) {
-    return <View><Text>...</Text></View>
+    return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
     return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>

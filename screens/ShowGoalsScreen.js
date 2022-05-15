@@ -1,6 +1,6 @@
 import React, { useLayoutEffect } from 'react'
 import { useQuery } from 'react-query'
-import { FlatList, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import {FlatList, StyleSheet, TouchableOpacity, View, Text, ActivityIndicator} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 
@@ -26,7 +26,7 @@ export default function ShowGoalsScreen ({ navigation }) {
   )
 
   if (isLoading) {
-    return <View><Text>...</Text></View>
+    return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
     return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
