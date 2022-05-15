@@ -1,6 +1,7 @@
 import React from 'react'
 import { useQuery } from 'react-query'
 import { FlatList, Text, StyleSheet, View } from 'react-native'
+import i18n from 'i18n-js'
 
 import * as RootNavigation from '../navigation/RootNavigation'
 import { getCategories } from '../services/UmetricAPI'
@@ -13,7 +14,7 @@ export default function ListCategoriesScreen () {
     return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   const goToEvents = (item) => RootNavigation.navigate('ListEvents', { category_id: item.id })

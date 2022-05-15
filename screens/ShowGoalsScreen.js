@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from 'react'
 import { useQuery } from 'react-query'
 import { FlatList, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import i18n from 'i18n-js'
 
 import Goal from '../components/Goal'
 import * as RootNavigation from '../navigation/RootNavigation'
@@ -25,10 +26,10 @@ export default function ShowGoalsScreen ({ navigation }) {
   )
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   return (

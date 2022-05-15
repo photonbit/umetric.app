@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import i18n from 'i18n-js'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
@@ -44,10 +45,10 @@ export default function EditCategoryScreen ({ route }) {
    }, [isSuccess]);
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>i18n.t('somethingIsWrong'): {error.message}...</Text></View>
   }
 
   return (
@@ -59,9 +60,9 @@ export default function EditCategoryScreen ({ route }) {
             setIcon={setIcon}
         />
 
-        <Text style={styles.title}>Nombre</Text>
+        <Text style={styles.title}>{i18n.t('name')}</Text>
         <TextInput onChangeText={setName} defaultValue={data.name} style={styles.input} />
-        <Text style={styles.title}>Icono</Text>
+        <Text style={styles.title}>{i18n.t('icon')}</Text>
       <TouchableOpacity
           style={styles.icon}
           onPress={() => {
@@ -71,7 +72,7 @@ export default function EditCategoryScreen ({ route }) {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={saveCategory} underlayColor='#99d9f4'>
-              <Text style={styles.buttonText}>Guardar</Text>
+              <Text style={styles.buttonText}>{i18n.t('save')}</Text>
             </TouchableOpacity>
     </View>
   )

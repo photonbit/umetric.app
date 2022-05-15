@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer'
+import i18n from 'i18n-js'
 
 import { createStackNavigator } from '@react-navigation/stack'
 
@@ -49,13 +50,13 @@ export default function CompleteFlow () {
       return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />
-            <DrawerItem label="Logout" onPress={logout} />
+            <DrawerItem label={i18n.t('logout')} onPress={logout} />
         </DrawerContentScrollView>
       );
     }}>
-        <Drawer.Screen name="Input" component={BasicInputFlow} options={{ title: 'Registrar' }} />
-        <Drawer.Screen name="Edit" component={EditFlow} options={{ title: 'Editar' }} />
-        <Drawer.Screen name="Metas" component={GoalsFlow} options={{ title: 'Metas' }} />
+        <Drawer.Screen name="Input" component={BasicInputFlow} options={{ title: i18n.t('register') }} />
+        <Drawer.Screen name="Edit" component={EditFlow} options={{ title: i18n.t('edit') }} />
+        <Drawer.Screen name="Metas" component={GoalsFlow} options={{ title: i18n.t('goals') }} />
       </Drawer.Navigator>
         )}
     </NavigationContainer>

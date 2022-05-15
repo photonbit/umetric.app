@@ -1,5 +1,6 @@
 import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import i18n from 'i18n-js'
 
 import Icon from '../components/Icon'
 import {getIcons} from '../services/UmetricAPI'
@@ -9,10 +10,10 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
     const { data, error, isError, isLoading } = useQuery('icons', getIcons)
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   const renderItem = ({ item }) => {
@@ -36,7 +37,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>Elije el icono</Text>
+                <Text style={styles.modalText}>{i18n.t('chooseIcon')}</Text>
                 <FlatList
                     style={styles.flatlist}
                     data={data}
@@ -52,7 +53,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
                   onPress={() => {
                     setVisible(!visible)
                   }}>
-                  <Text style={styles.textStyle}>Me quedo con el que estaba</Text>
+                  <Text style={styles.textStyle}>{i18n.t('keepPrevious')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
