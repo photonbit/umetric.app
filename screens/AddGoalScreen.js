@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import i18n from 'i18n-js'
+
 
 import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import { Feather } from '@expo/vector-icons'
@@ -68,7 +70,7 @@ export default function AddGoalScreen () {
             selected={event.id}
             setEvent={setEvent}
            />
-          <Text style={styles.title}>Quieres dedicar</Text>
+          <Text style={styles.title}>{i18n.t('wantToDedicate')}</Text>
           <View style={styles.numberSelection}>
             <TouchableOpacity
                 onPress={ () => setNumber((Number(number) - 1).toString())}
@@ -93,7 +95,7 @@ export default function AddGoalScreen () {
               <SegmentedControl
                 style={styles.kindInput}
                 fontStyle={styles.kindInputText}
-                values={['veces', 'horas']}
+                values={[i18n.t('times'), i18n.t('hours')]}
                 selectedIndex={unit}
                 onChange={ (event) => {
                   setUnit(event.nativeEvent.selectedSegmentIndex)
@@ -101,13 +103,13 @@ export default function AddGoalScreen () {
               />
           </View>
            <View style={styles.categorySelection}>
-        <Text style={styles.title}>a la semana a:</Text>
+        <Text style={styles.title}>{i18n.t('perWeekTo')}:</Text>
                 <Element
                     element={event}
                     onPress={() => { setCategoryModalVisible(true) }} />
             </View>
             <TouchableOpacity style={styles.button} onPress={saveGoal} underlayColor='#99d9f4'>
-              <Text style={styles.buttonText}>Guardar</Text>
+              <Text style={styles.buttonText}>{i18n.t('save')}</Text>
             </TouchableOpacity>
         </View>
   )

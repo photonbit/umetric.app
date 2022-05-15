@@ -1,6 +1,7 @@
 import React, {useEffect, useLayoutEffect} from 'react'
 import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import i18n from 'i18n-js'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
@@ -37,24 +38,24 @@ export default function EditListEventsScreen ({ navigation, route }) {
   }, [isSuccess])
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   const onNamePress = (item) => Linking.openURL(item.action)
   const onEditPress = (item) => RootNavigation.navigate('EditEvent', { event_id: item.id, category_id: categoryId })
   const onDeletePress = (item) => Alert.alert(
-    'Borrar ' + item.name + '?',
-    'Que la vas a borrar',
+    i18n.t('delete') + ' ' + item.name + '?',
+    i18n.t('confirmDelete'),
     [
       {
-        text: 'Vale, no',
+        text: i18n.t('okNo'),
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: 'Sí', onPress: () => mutation.mutate(item.id) }
+      { text: i18n.t('yes'), onPress: () => mutation.mutate(item.id) }
     ],
     { cancelable: false }
   )

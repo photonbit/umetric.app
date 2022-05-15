@@ -1,5 +1,6 @@
 import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import i18n from 'i18n-js'
 
 import Element from '../components/Element'
 import {useQuery} from "react-query";
@@ -12,7 +13,7 @@ export default function EventSelector ({ visible, setVisible, categoryId, select
     return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   const renderItem = ({ item }) => {
@@ -36,7 +37,7 @@ export default function EventSelector ({ visible, setVisible, categoryId, select
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>Elije la actividad</Text>
+                <Text style={styles.modalText}>{i18n.t('chooseActivity')}</Text>
                 <FlatList
                     style={styles.flatlist}
                     data={data}
@@ -52,7 +53,7 @@ export default function EventSelector ({ visible, setVisible, categoryId, select
                   onPress={() => {
                     setVisible(!visible)
                   }}>
-                  <Text style={styles.textStyle}>Me quedo con la que estaba</Text>
+                  <Text style={styles.textStyle}>{i18n.t('keepPrevious')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

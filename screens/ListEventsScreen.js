@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { useMutation, useQuery } from 'react-query'
 import * as Linking from 'expo-linking'
+import i18n from 'i18n-js'
 
 import Element from '../components/Element'
 
@@ -42,10 +43,10 @@ export default function ListCategoriesScreen ({ route }) {
   }, [isSuccess])
 
   if (isLoading) {
-    return <View><Text>Loading...</Text></View>
+    return <View><Text>...</Text></View>
   }
   if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   return (

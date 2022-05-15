@@ -1,5 +1,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import i18n from 'i18n-js'
 
 import EditListCategoriesScreen from '../screens/EditListCategoriesScreen'
 import EditListEventsScreen from '../screens/EditListEventsScreen'
@@ -13,12 +14,12 @@ const EditStack = createStackNavigator()
 export function EditFlow () {
   return (
     <EditStack.Navigator>
-      <EditStack.Screen name="ListEditCategories" component={EditListCategoriesScreen} options={{ title: 'Editar Categorías' }}/>
-      <EditStack.Screen name="ListEditEvents" component={EditListEventsScreen} options={{ title: 'Editar Eventos' }} />
-      <EditStack.Screen name="EditCategory" component={EditCategoryScreen} options={{ title: 'Editar Categoría' }}/>
-      <EditStack.Screen name="EditEvent" component={EditEventScreen} options={{ title: 'Editar Evento' }} />
-      <EditStack.Screen name="AddCategory" component={AddCategoryScreen} options={{ title: 'Añadir Categoría' }} />
-      <EditStack.Screen name="AddEvent" component={AddEventScreen} options={{ title: 'Añadir Evento' }} />
+      <EditStack.Screen name="ListEditCategories" component={EditListCategoriesScreen} options={{ title: i18n.t('editCategories') }}/>
+      <EditStack.Screen name="ListEditEvents" component={EditListEventsScreen} options={{ title: i18n.t('editEvents') }} />
+      <EditStack.Screen name="EditCategory" component={EditCategoryScreen} options={{ title: i18n.t('editCategory') }}/>
+      <EditStack.Screen name="EditEvent" component={EditEventScreen} options={{ title: i18n.t('editEvent') }} />
+      <EditStack.Screen name="AddCategory" component={AddCategoryScreen} options={{ title: i18n.t('addCategory') }} />
+      <EditStack.Screen name="AddEvent" component={AddEventScreen} options={{ title: i18n.t('addEvent') }} />
     </EditStack.Navigator>
   )
 }
