@@ -6,16 +6,20 @@ import i18n from 'i18n-js'
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {deleteEvent, getEvents} from "../services/UmetricAPI";
+import {deleteEvent, getEvents, updateEvents} from "../services/UmetricAPI";
 import * as Linking from "expo-linking";
 
 export default function EditListEventsScreen ({ navigation, route }) {
   const categoryId = route.params.category_id
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
 
-  const mutation = useMutation(
+  const deleteMutation = useMutation(
     (eventId) => deleteEvent({ eventId }))
-  const { isSuccess } = mutation
+  const orderMutation = useMutation(
+      (events) => updateEvents({events})
+  )
+  const isDeleteSuccess = deleteMutation.isSuccess
+  const isOrderSuccess = orderMutation.isSuccess
   const queryClient = useQueryClient()
 
   useLayoutEffect(() => {
@@ -30,12 +34,12 @@ export default function EditListEventsScreen ({ navigation, route }) {
   }, [])
 
   useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('events').then(() =>
+    if (isDeleteSuccess || isOrderSuccess) {
+      queryClient.invalidateQueries('events', categoryId).then(() =>
         RootNavigation.navigate('ListEditEvents', { category_id: categoryId })
       )
     }
-  }, [isSuccess])
+  }, [isDeleteSuccess, isOrderSuccess])
 
   if (isLoading) {
     return <View><Text>...</Text></View>
@@ -55,24 +59,49 @@ export default function EditListEventsScreen ({ navigation, route }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: i18n.t('yes'), onPress: () => mutation.mutate(item.id) }
+      { text: i18n.t('yes'), onPress: () => deleteMutation.mutate(item.id) }
     ],
     { cancelable: false }
   )
+
+  const onUpPress = (item) => {
+    const index = data.findIndex(e => e.id === item.id)
+    if (index > 0) {
+      const oldPrev = data[index - 1]
+      const itemOrder = { "id": item.id, "order": oldPrev.order}
+      const oldPrevOrder = { "id": oldPrev.id, "order": item.order}
+
+      orderMutation.mutate([itemOrder, oldPrevOrder])
+    }
+  }
+
+  const onDownPress = (item) => {
+    const index = data.findIndex(e => e.id === item.id)
+    if (index < data.length - 1) {
+      const oldNext = data[index + 1]
+      const itemOrder = { "id": item.id, "order": oldNext.order}
+      const oldNextOrder = { "id": oldNext.id, "order": item.order}
+
+      orderMutation.mutate([itemOrder, oldNextOrder])
+    }
+  }
 
   const renderItem = ({ item }) => (
     <EditableElement
     element={item}
     onNamePress={() => onNamePress(item)}
     onEditPress={() => onEditPress(item)}
-    onDeletePress={() => onDeletePress(item)} />
+    onDeletePress={() => onDeletePress(item)}
+    onDownPress={() => onDownPress(item)}
+    onUpPress={() => onUpPress(item)}
+    />
   )
   return (
           <FlatList
       style={styles.flatlist}
-      data={data}
+      data={data.sort((a, b) => a.order - b.order)}
       renderItem={renderItem}
-      keyExtractor={item => "" + item.order}
+      keyExtractor={item => "" + item.id}
     />
   )
 }

@@ -60,11 +60,11 @@ export default function ListCategoriesScreen ({ navigation, route }) {
           <FlatList
           style={styles.flatlist}
           contentContainerStyle={{ alignItems: 'center' }}
-      data={data}
+      data={data.sort((a, b) => a.order - b.order)}
       renderItem={renderItem}
       horizontal={false}
         numColumns={2}
-      keyExtractor={item => item.order}
+      keyExtractor={item => item.id}
     />
   )
 }

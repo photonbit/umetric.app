@@ -70,6 +70,15 @@ export async function deleteCategory ({ categoryId }) {
   }
 }
 
+export async function updateCategories({categories}) {
+  try {
+    return await UmetricAPI.patch('/api/categories', {'categories': categories})
+  } catch (e) {
+    console.log('updateCategories(): ' + e.message)
+    return null
+  }
+}
+
 export async function getIcons () {
   try {
     const { data } = await UmetricAPI.get('/api/icons')
@@ -131,6 +140,15 @@ export async function deleteEvent ({ eventId }) {
     return await UmetricAPI.delete('/api/events/' + eventId)
   } catch (e) {
     console.log('deleteEvent(' + eventId + '): ' + e.message)
+    return null
+  }
+}
+
+export async function updateEvents({ events }) {
+  try {
+    return await UmetricAPI.patch('/api/events', {"events": events})
+  } catch (e) {
+    console.log('updateEvents(): ' + e.message)
     return null
   }
 }
