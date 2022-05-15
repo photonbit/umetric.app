@@ -18,13 +18,13 @@ export default function ListCategoriesScreen ({ navigation, route }) {
     icon: ''
   })
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
-  const mutation = useMutation((eventId) => logEvent({ eventId: event.id }))
+  const mutation = useMutation((eventId) => logEvent({ eventId: eventId, duration: null }))
   const { isSuccess } = mutation
   const queryClient = useQueryClient()
 
   const onPress = (item) => {
     setEvent(item)
-    mutation.mutate(event.id)
+    mutation.mutate(item.id)
   }
 
   const renderItem = ({ item }) => (
