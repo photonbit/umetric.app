@@ -1,6 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react'
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import { useMutation, useQuery } from 'react-query'
+import {FlatList, StyleSheet, Text, View} from 'react-native'
+import {useMutation, useQuery, useQueryClient} from 'react-query'
 import * as Linking from 'expo-linking'
 import i18n from 'i18n-js'
 
@@ -8,7 +8,6 @@ import Element from '../components/Element'
 
 import { getEvents, logEvent } from '../services/UmetricAPI'
 import * as RootNavigation from "../navigation/RootNavigation";
-import {Feather} from "@expo/vector-icons";
 
 export default function ListCategoriesScreen ({ navigation, route }) {
   const categoryId = route.params.category_id
@@ -21,6 +20,7 @@ export default function ListCategoriesScreen ({ navigation, route }) {
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
   const mutation = useMutation((eventId) => logEvent({ eventId: event.id }))
   const { isSuccess } = mutation
+  const queryClient = useQueryClient()
 
   const onPress = (item) => {
     setEvent(item)
@@ -35,11 +35,14 @@ export default function ListCategoriesScreen ({ navigation, route }) {
 
   useEffect(() => {
     if (isSuccess) {
-      if (event.action) {
-        Linking.openURL(event.action)
-      }
+      queryClient.invalidateQueries('commitments').then(() => {
+            if (event.action) {
+              Linking.openURL(event.action)
+            }
 
-      RootNavigation.navigate('ListCategories')
+            RootNavigation.navigate('ListCategories')
+          }
+      )
     }
   }, [isSuccess])
 
