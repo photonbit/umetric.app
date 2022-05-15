@@ -6,7 +6,7 @@ import i18n from 'i18n-js'
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
-import { deleteCategory, getCategories } from '../services/UmetricAPI'
+import {deleteCategory, getCategories, updateCategories} from '../services/UmetricAPI'
 
 export default function EditListCategoriesScreen ({ navigation }) {
 
@@ -18,9 +18,13 @@ export default function EditListCategoriesScreen ({ navigation }) {
     return <View><Text>Something is wrong: {error.message}...</Text></View>
   }
 
-  const mutation = useMutation(
+  const deleteMutation = useMutation(
     (categoryId) => deleteCategory({ categoryId }))
-  const { isSuccess } = mutation
+  const orderMutation = useMutation(
+      (categories) => updateCategories({categories})
+  )
+  const isDeleteSuccess = deleteMutation.isSuccess
+  const isOrderSuccess = orderMutation.isSuccess
   const queryClient = useQueryClient()
 
   const onNamePress = (item) => RootNavigation.navigate('ListEditEvents', { category_id: item.id })
@@ -39,6 +43,28 @@ export default function EditListCategoriesScreen ({ navigation }) {
     { cancelable: false }
   )
 
+  const onUpPress = (item) => {
+    const index = data.findIndex(e => e.id === item.id)
+    if (index > 0) {
+      const oldPrev = data[index - 1]
+      const itemOrder = { "id": item.id, "order": oldPrev.order}
+      const oldPrevOrder = { "id": oldPrev.id, "order": item.order}
+
+      orderMutation.mutate([itemOrder, oldPrevOrder])
+    }
+  }
+
+  const onDownPress = (item) => {
+    const index = data.findIndex(e => e.id === item.id)
+    if (index < data.length - 1) {
+      const oldNext = data[index + 1]
+      const itemOrder = { "id": item.id, "order": oldNext.order}
+      const oldNextOrder = { "id": oldNext.id, "order": item.order}
+
+      orderMutation.mutate([itemOrder, oldNextOrder])
+    }
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -50,26 +76,29 @@ export default function EditListCategoriesScreen ({ navigation }) {
   }, [])
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isDeleteSuccess || isOrderSuccess) {
       queryClient.invalidateQueries('categories').then(() =>
         RootNavigation.navigate('ListEditCategories')
       )
     }
-  }, [isSuccess])
+  }, [isDeleteSuccess, isOrderSuccess])
 
   const renderItem = ({ item }) => (
     <EditableElement
     element={item}
     onNamePress={() => onNamePress(item)}
     onEditPress={() => onEditPress(item)}
-    onDeletePress={() => onDeletePress(item)} />
+    onDeletePress={() => onDeletePress(item)}
+    onDownPress={() => onDownPress(item)}
+    onUpPress={() => onUpPress(item)}
+    />
   )
   return (
           <FlatList
       style={styles.flatlist}
-      data={data}
+      data={data.sort((a, b) => a.order - b.order)}
       renderItem={renderItem}
-      keyExtractor={item => ""+item.order}
+      keyExtractor={item => ""+item.id}
     />
   )
 }
