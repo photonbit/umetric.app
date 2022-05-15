@@ -91,7 +91,7 @@ export default function PomodoroScreen ({ route }) {
     if (state === 'square') {
       return (
                 <View>
-                    <Text style={styles.focusText}>{i18n.t('focusOn')}{event.name}</Text>
+                    <Text style={styles.focusText}>{i18n.t('focusOn')} {event.name}</Text>
                 </View>
       )
     }
