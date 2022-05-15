@@ -40,7 +40,7 @@ export default function EventSelector ({ visible, setVisible, categoryId, select
                 <Text style={styles.modalText}>{i18n.t('chooseActivity')}</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={data}
+                    data={data.sort((a, b) => a.order - b.order)}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={2}
