@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react'
-import {FlatList, StyleSheet, Text, View} from 'react-native'
+import {ActivityIndicator, FlatList, StyleSheet, Text, View} from 'react-native'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import * as Linking from 'expo-linking'
 import i18n from 'i18n-js'
@@ -53,7 +53,7 @@ export default function ListCategoriesScreen ({ navigation, route }) {
   }, [])
 
   if (isLoading) {
-    return <View><Text>...</Text></View>
+    return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
     return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
