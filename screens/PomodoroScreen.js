@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ProgressCircle } from 'react-native-svg-charts'
 import { Feather } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
+import i18n from 'i18n-js'
 
 import Icon from '../components/Icon'
 import { useMutation, useQueryClient } from 'react-query'
@@ -90,7 +91,7 @@ export default function PomodoroScreen ({ route }) {
     if (state === 'square') {
       return (
                 <View>
-                    <Text style={styles.focusText}>Céntrate en {event.name}</Text>
+                    <Text style={styles.focusText}>{i18n.t('focusOn')}{event.name}</Text>
                 </View>
       )
     }

@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import i18n from 'i18n-js'
 
 import { login } from '../services/UmetricAPI'
 import { Context } from '../filters/Store'
@@ -38,7 +39,7 @@ export default function LoginScreen () {
                 value={user}
                 onChangeText={setUser}
                 textContentType={'username'}
-                placeholder="Usuario..."
+                placeholder={i18n.t('username')}
                 placeholderTextColor="#003f5c" />
 
                 <TextInput
@@ -47,13 +48,13 @@ export default function LoginScreen () {
                 onChangeText={setPassword}
                 secureTextEntry={true}
                 textContentType={'password'}
-                placeholder="Contraseña..."
+                placeholder={i18n.t('password')}
                 placeholderTextColor="#003f5c" />
         </View>
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={doLogin}>
-                <Text style={styles.buttonText}>Acceder</Text>
+                <Text style={styles.buttonText}>{i18n.t('login')}</Text>
             </TouchableOpacity>
         </View>
     </View>

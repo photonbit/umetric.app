@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect } from 'react'
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import i18n from 'i18n-js'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
@@ -25,15 +26,15 @@ export default function EditListCategoriesScreen ({ navigation }) {
   const onNamePress = (item) => RootNavigation.navigate('ListEditEvents', { category_id: item.id })
   const onEditPress = (item) => RootNavigation.navigate('EditCategory', { category_id: item.id })
   const onDeletePress = (item) => Alert.alert(
-    'Borrar ' + item.name + '?',
-    'Que la vas a borrar',
+      i18n.t('delete') + ' ' + item.name + '?',
+      i18n.t('confirmDelete'),
     [
       {
-        text: 'Vale, no',
+        text: i18n.t('okNo'),
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: 'Sí', onPress: () => mutation.mutate(item.id) }
+      { text: i18n.t('yes'), onPress: () => mutation.mutate(item.id) }
     ],
     { cancelable: false }
   )

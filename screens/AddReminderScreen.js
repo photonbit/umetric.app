@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import i18n from 'i18n-js'
+
 
 import CheckBox from '@react-native-community/checkbox'
 import SegmentedControl from '@react-native-segmented-control/segmented-control'
