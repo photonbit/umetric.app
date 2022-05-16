@@ -35,8 +35,11 @@ const en = {
     edit: 'Edit',
     goals: 'Goals',
     logout: 'Logout',
+    noEvents: 'Swipe right to edit this category and add events',
+    noCategories: 'Swipe right to edit and add a category'
 
 }
+
 
 const es = {
     categories: 'Categorías',
@@ -75,8 +78,9 @@ const es = {
     edit: 'Editar',
     goals: 'Metas',
     logout: 'Cerrar sesión',
+    noEvents: 'Desliza a la derecha para editar esta categoría y añadir eventos',
+    noCategories: 'Desliza a la derecha para editar y añadir una categoría',
 }
-
 
 const pt = {
     categories: 'Categorias',
@@ -115,6 +119,8 @@ const pt = {
     edit: 'Editar',
     goals: 'Metas',
     logout: 'Sair',
+    noEvents: 'Deslize para a direita para editar esta categoria e adicionar eventos',
+    noCategories: 'Deslize para a direita para editar e adicionar uma categoria',
 }
 
 const jp = {
@@ -154,6 +160,8 @@ const jp = {
     edit: '編集',
     goals: '目標',
     logout: 'ログアウト',
+    noEvents: '右にスライドしてカテゴリーを編集してイベントを追加します',
+    noCategories: '右にスライドしてカテゴリーを編集してカテゴリーを追加します',
 }
 
 const zh = {
@@ -193,7 +201,10 @@ const zh = {
     edit: '编辑',
     goals: '目标',
     logout: '注销',
+    noEvents: '滑动右侧编辑类别并添加事件',
+    noCategories: '滑动右侧编辑并添加类别',
 }
+
 
 const ru = {
     categories: 'Категории',
@@ -232,6 +243,8 @@ const ru = {
     edit: 'Редактировать',
     goals: 'Цели',
     logout: 'Выйти',
+    noEvents: 'Прокрутите вправо, чтобы редактировать эту категорию и добавить события',
+    noCategories: 'Прокрутите вправо, чтобы редактировать и добавить категорию',
 }
 
 const ph = {
@@ -271,6 +284,8 @@ const ph = {
     edit: 'I-edit',
     goals: 'Mga Meta',
     logout: 'Mag-logout',
+    noEvents: 'I-swipe sa kanan upang i-edit ang kategorya at magdagdag ng mga event',
+    noCategories: 'I-swipe sa kanan upang i-edit at magdagdag ng kategorya',
 }
 
 const de = {
@@ -310,6 +325,8 @@ const de = {
     edit: 'Bearbeiten',
     goals: 'Ziele',
     logout: 'Ausloggen',
+    noEvents: 'Ziehen Sie nach rechts, um die Kategorie zu bearbeiten und Events hinzuzufügen',
+    noCategories: 'Ziehen Sie nach rechts, um zu bearbeiten und Kategorien hinzuzufügen',
 }
 
 export { en, es, pt, jp, zh, ru, ph, de}
