@@ -4,7 +4,7 @@ Entry level application for self behavioral analysis and modification.
 
 ## Lore
 
-You can read more about the stories behind this app here: https://dani.photonbit.es/category/umetric/
+You can read more about the stories behind this app here: https://dataslut.org
 
 
 ## Installation
