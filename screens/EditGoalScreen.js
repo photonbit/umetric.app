@@ -15,7 +15,7 @@ export default function EditGoalScreen ({ route }) {
   const goalId = route.params.goal_id
   const [modalVisible, setModalVisible] = useState(false)
   const [number, setNumber] = useState('')
-  const [unit, setUnit] = useState('')
+  const [unit, setUnit] = useState(0)
   const [event, setEvent] = useState({
     id: '',
     name: '',
@@ -26,7 +26,11 @@ export default function EditGoalScreen ({ route }) {
     ({ queryKey }) => {
       return getGoal({ queryKey }).then((goal) => {
         setNumber('' + goal.number)
-        setUnit(goal.unit)
+        if (parseInt(goal.unit) === 0) {
+          setUnit(0)
+        } else {
+          setUnit(1)
+        }
         setEvent(goal.event)
         return goal
       })
@@ -37,9 +41,15 @@ export default function EditGoalScreen ({ route }) {
   const queryClient = useQueryClient()
 
   const saveGoal = () => {
+    let kind;
+    if (unit === 0) {
+      kind = 'times'
+    } else {
+      kind = 'hours'
+    }
     mutation.mutate({
       number: number,
-      unit: unit,
+      kind: kind,
       event_id: event.id
     })
   }
