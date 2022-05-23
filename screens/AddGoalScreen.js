@@ -35,9 +35,15 @@ export default function AddGoalScreen () {
   const { isSuccess } = mutation
 
   const saveGoal = () => {
+    let kind;
+    if (unit === 0) {
+      kind = 'times'
+    } else {
+      kind = 'hours'
+    }
     mutation.mutate({
       number: number,
-      unit: unit,
+      kind: kind,
       event_id: event.id
     })
   }
