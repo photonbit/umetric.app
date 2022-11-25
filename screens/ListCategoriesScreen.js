@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useLayoutEffect} from 'react'
 import { useQuery } from 'react-query'
-import {FlatList, Text, StyleSheet, View, ActivityIndicator} from 'react-native'
+import {FlatList, Text, StyleSheet, View, ActivityIndicator, TouchableOpacity} from 'react-native'
 import i18n from 'i18n-js'
 
 import * as RootNavigation from '../navigation/RootNavigation'
@@ -8,8 +8,19 @@ import { getCategories } from '../services/UmetricAPI'
 import Element from '../components/Element'
 import {Feather} from "@expo/vector-icons";
 
-export default function ListCategoriesScreen () {
+export default function ListCategoriesScreen ({ navigation }) {
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
+
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+            <TouchableOpacity style={styles.actionIcon} onPress={() => RootNavigation.navigate('Metas', {screen: 'ShowGoals'})}>
+                <Feather name="bar-chart-2" size={25} color="black" />
+            </TouchableOpacity>
+      )
+    })
+  }, [])
 
   if (isLoading) {
     return <View><ActivityIndicator size="large" /></View>
@@ -65,5 +76,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000',
     marginTop: '5%',
+  },
+  actionIcon: {
+    padding: 5,
+    marginTop: 5,
+    marginRight: 10,
   }
 })
