@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ProgressCircle } from 'react-native-svg-charts'
 import { Feather } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
+import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
 import i18n from 'i18n-js'
 
 import Icon from '../components/Icon'
@@ -81,8 +82,10 @@ export default function PomodoroScreen ({ route }) {
   }
   const onPress = () => {
     if (state === 'play') {
+      activateKeepAwake()
       resetTimer('square')
     } else {
+      deactivateKeepAwake()
       resetTimer('play')
     }
   }
