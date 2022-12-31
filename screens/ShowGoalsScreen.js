@@ -35,6 +35,7 @@ export default function ShowGoalsScreen ({ navigation }) {
   return (
           <FlatList
           style={styles.flatlist}
+          persistentScrollbar={true}
           contentContainerStyle={{ alignItems: 'flex-end', justifyContent: 'space-between' }}
       data={data}
       renderItem={renderItem}
