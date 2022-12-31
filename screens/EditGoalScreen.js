@@ -99,6 +99,7 @@ export default function EditGoalScreen ({ route }) {
             <TextInput
                 onChangeText={setNumber}
                 defaultValue={data.number.toString()}
+                value={number}
                 style={styles.numberInput}
                 keyboardType="number-pad"
             />
