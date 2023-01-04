@@ -36,12 +36,12 @@
     "react-native-screens": "~3.18.0",
     "react-native-svg": "13.4.0",
     "react-native-svg-charts": "github:SabbeAndres/react-native-svg-charts",
-    "react-native-unimodules": "^0.14.10",
     "react-query": "^3.39.2",
-    "sentry-expo": "~6.0.0"
+    "sentry-expo": "~6.0.0",
+    "expo-dev-client": "~2.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.7",
+    "@babel/core": "^7.19.3",
     "eslint": "^8.31.0"
   },
   "private": true,
