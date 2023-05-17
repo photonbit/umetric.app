@@ -10,6 +10,7 @@ import LoginScreen from '../screens/LoginScreen'
 import { BasicInputFlow } from './InputFlow'
 import { EditFlow } from './EditFlow'
 import { GoalsFlow } from './GoalsFlow'
+import { QuestionnaireFlow } from "./QuestionnaireFlow"
 import { navigationRef } from './RootNavigation'
 
 import { Context } from '../filters/Store'
@@ -53,10 +54,11 @@ export default function CompleteFlow () {
             <DrawerItem label={i18n.t('logout')} onPress={logout} />
         </DrawerContentScrollView>
       );
-    }}>
+    }} screenOptions={{ headerShown: false }}>
         <Drawer.Screen name="Input" component={BasicInputFlow} options={{ title: i18n.t('register') }} />
         <Drawer.Screen name="Edit" component={EditFlow} options={{ title: i18n.t('edit') }} />
         <Drawer.Screen name="Metas" component={GoalsFlow} options={{ title: i18n.t('goals') }} />
+        <Drawer.Screen name="Cuestionarios" component={QuestionnaireFlow} options={{ title: i18n.t('questionnaires') }} />
       </Drawer.Navigator>
         )}
     </NavigationContainer>

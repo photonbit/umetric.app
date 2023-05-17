@@ -251,4 +251,61 @@ export async function getCommitments ({ queryKey }) {
   }
 }
 
+export class QuestionnaireService {
+  static async getQuestionnaires() {
+    try {
+      const response = await UmetricAPI.get('/questionnaires');
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
+  static async getQuestionnaire(questionnaireId) {
+    try {
+      const response = await UmetricAPI.get(`/questionnaires/${questionnaireId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
+  static async getQuestionnaireResponses() {
+    try {
+      const response = await UmetricAPI.get('/questionnaires/fillings');
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
+  static async startQuestionnaire(questionnaireId) {
+    try {
+      const response = await UmetricAPI.post('/questionnaires/fillings', { questionnaire_id: questionnaireId });
+      return response.data;
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+
+  static async submitResponse(questionnaireResponseId, questionId, value) {
+    try {
+      const {data} = await UmetricAPI.post(`/questionnaires/fillings/${questionnaireResponseId}/responses`, {
+        questionnaire_response_id: questionnaireResponseId,
+        question_id: questionId,
+        value: value,
+      });
+      return data
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+}
+
+
 export default UmetricAPI
