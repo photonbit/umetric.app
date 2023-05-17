@@ -36,8 +36,12 @@ const en = {
     goals: 'Goals',
     logout: 'Logout',
     noEvents: 'Swipe right to edit this category and add events',
-    noCategories: 'Swipe right to edit and add a category'
-
+    noCategories: 'Swipe right to edit and add a category',
+    events: 'Events',
+    questionnaires: 'Questionnaires',
+    questionnaire: 'Questionnary',
+    question: 'Question',
+    startQuestionnaire: 'Start Questionnaire'
 }
 
 
@@ -80,6 +84,11 @@ const es = {
     logout: 'Cerrar sesión',
     noEvents: 'Desliza a la derecha para editar esta categoría y añadir eventos',
     noCategories: 'Desliza a la derecha para editar y añadir una categoría',
+    events: 'Eventos',
+    questionnaires: 'Cuestionarios',
+    questionnaire: 'Cuestionario',
+    question: 'Pregunta',
+    startQuestionnaire: 'Comenzar cuestionario'
 }
 
 const pt = {
@@ -121,6 +130,11 @@ const pt = {
     logout: 'Sair',
     noEvents: 'Deslize para a direita para editar esta categoria e adicionar eventos',
     noCategories: 'Deslize para a direita para editar e adicionar uma categoria',
+    events: 'Eventos',
+    questionnaires: 'Questionários',
+    questionnaire: 'Questionário',
+    question: 'Pergunta',
+    startQuestionnaire: 'Começar questionário'
 }
 
 const jp = {
@@ -162,6 +176,11 @@ const jp = {
     logout: 'ログアウト',
     noEvents: '右にスライドしてカテゴリーを編集してイベントを追加します',
     noCategories: '右にスライドしてカテゴリーを編集してカテゴリーを追加します',
+    events: 'イベント',
+    questionnaires: 'アンケート',
+    questionnaire: 'アンケート',
+    question: '質問',
+    startQuestionnaire: 'アンケートを開始'
 }
 
 const zh = {
@@ -203,6 +222,11 @@ const zh = {
     logout: '注销',
     noEvents: '滑动右侧编辑类别并添加事件',
     noCategories: '滑动右侧编辑并添加类别',
+    events: '事件',
+    questionnaires: '调查问卷',
+    questionnaire: '调查问卷',
+    question: '题',
+    startQuestionnaire: '开始调查问卷'
 }
 
 
@@ -245,6 +269,11 @@ const ru = {
     logout: 'Выйти',
     noEvents: 'Прокрутите вправо, чтобы редактировать эту категорию и добавить события',
     noCategories: 'Прокрутите вправо, чтобы редактировать и добавить категорию',
+    events: 'События',
+    questionnaires: 'Опросники',
+    questionnaire: 'Опросник',
+    question: 'Вопрос',
+    startQuestionnaire: 'Начать опрос'
 }
 
 const ph = {
@@ -286,6 +315,11 @@ const ph = {
     logout: 'Mag-logout',
     noEvents: 'I-swipe sa kanan upang i-edit ang kategorya at magdagdag ng mga event',
     noCategories: 'I-swipe sa kanan upang i-edit at magdagdag ng kategorya',
+    events: 'Mga Event',
+    questionnaires: 'Mga Questionnaire',
+    questionnaire: 'Questionnaire',
+    question: 'Tanong',
+    startQuestionnaire: 'Simulan ang Questionnaire'
 }
 
 const de = {
@@ -327,6 +361,11 @@ const de = {
     logout: 'Ausloggen',
     noEvents: 'Ziehen Sie nach rechts, um die Kategorie zu bearbeiten und Events hinzuzufügen',
     noCategories: 'Ziehen Sie nach rechts, um zu bearbeiten und Kategorien hinzuzufügen',
+    events: 'Events',
+    questionnaires: 'Fragebögen',
+    questionnaire: 'Fragebogen',
+    question: 'Frage',
+    startQuestionnaire: 'Fragebogen starten'
 }
 
 export { en, es, pt, jp, zh, ru, ph, de}
