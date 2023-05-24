@@ -39,6 +39,7 @@
     "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-native-svg-charts": "github:SabbeAndres/react-native-svg-charts",
+    "react-native-toast-message": "^2.1.6",
     "react-query": "^3.39.2",
     "sentry-expo": "~6.1.0",
     "url-parse": "^1.5.10"
