@@ -9,7 +9,7 @@ import { useQuery, useQueryClient, useMutation } from 'react-query'
 import EventSelector from '../components/EventSelector'
 import Element from '../components/Element'
 import * as RootNavigation from '../navigation/RootNavigation'
-import { getGoal, editGoal } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 
 export default function EditGoalScreen ({ route }) {
   const goalId = route.params.goal_id
@@ -22,6 +22,7 @@ export default function EditGoalScreen ({ route }) {
     icon: ''
   })
 
+  const { getGoal, editGoal } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['goal', goalId],
     ({ queryKey }) => {
       return getGoal({ queryKey }).then((goal) => {

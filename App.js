@@ -15,6 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import 'react-native-gesture-handler'
 import React, { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { LogBox, Linking } from 'react-native'

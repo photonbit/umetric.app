@@ -4,9 +4,10 @@ import i18n from 'i18n-js'
 
 import Element from '../components/Element'
 import {useQuery} from "react-query";
-import {getEvents} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 
 export default function EventSelector ({ visible, setVisible, categoryId, selected, setEvent }) {
+  const { getEvents } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
 
   if (isLoading) {

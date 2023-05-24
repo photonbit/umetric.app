@@ -1,7 +1,7 @@
 // screens/QuestionScreen.js
 import React from 'react';
 import Question from '../components/Question';
-import { QuestionnaireService } from '../services/UmetricAPI';
+import UmetricAPI from '../services/UmetricAPI';
 
 export default function QuestionScreen({ navigation, route }) {
   const { questionnaire, questionIndex } = route.params;
@@ -9,9 +9,10 @@ export default function QuestionScreen({ navigation, route }) {
   const likertScales = questionnaire.likert_scales.filter((scale) =>
     question.likert_scale_ids.includes(scale.id)
   );
+  const { submitResponse } = UmetricAPI();
 
   const handleSubmit = async (questionId, responses) => {
-    await QuestionnaireService.submitResponse(questionnaire.id, questionId, responses);
+    await submitResponse(questionnaire.id, questionId, responses);
     if (questionIndex < questionnaire.questions.length - 1) {
       navigation.replace('Question', {
         questionnaire,

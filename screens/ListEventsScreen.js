@@ -6,7 +6,7 @@ import i18n from 'i18n-js'
 
 import Element from '../components/Element'
 
-import { getEvents, logEvent } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 import * as RootNavigation from "../navigation/RootNavigation";
 import {Feather} from "@expo/vector-icons";
 
@@ -18,6 +18,7 @@ export default function ListCategoriesScreen ({ navigation, route }) {
     name: '',
     icon: ''
   })
+  const { getEvents, logEvent } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
   const mutation = useMutation((eventId) => logEvent({ eventId: eventId, duration: null }))
   const { isSuccess } = mutation

@@ -1,11 +1,12 @@
 import React from 'react'
 import {SvgXml} from 'react-native-svg'
 
-import {getIcon} from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 import {useQuery} from "react-query";
 
 export default function Icon({icon}) {
     const emptySVG = '<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>'
+    const {getIcon} = UmetricAPI()
     const {data, isError, isLoading} = useQuery(['icon', icon], getIcon)
 
     if (isError || isLoading) {
