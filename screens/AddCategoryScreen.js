@@ -5,13 +5,14 @@ import i18n from 'i18n-js'
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
-import {addCategory} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 import {useMutation, useQueryClient} from "react-query";
 
 export default function AddCategoryScreen () {
   const [modalVisible, setModalVisible] = useState(false)
   const [icon, setIcon] = useState('build/img/mountain.svg')
   const [name, setName] = useState('')
+  const { addCategory } = UmetricAPI()
   const mutation = useMutation((newCategory) => addCategory(newCategory))
   const queryClient = useQueryClient()
   const { isSuccess } = mutation

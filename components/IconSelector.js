@@ -3,10 +3,11 @@ import {ActivityIndicator, FlatList, Modal, StyleSheet, Text, TouchableOpacity, 
 import i18n from 'i18n-js'
 
 import Icon from '../components/Icon'
-import {getIcons} from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 import {useQuery} from "react-query";
 
 export default function IconSelector ({ visible, setVisible, selected, setIcon }) {
+    const { getIcons } = UmetricAPI()
     const { data, error, isError, isLoading } = useQuery('icons', getIcons)
 
   if (isLoading) {

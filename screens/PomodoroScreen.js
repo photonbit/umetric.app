@@ -8,7 +8,7 @@ import i18n from 'i18n-js'
 
 import Icon from '../components/Icon'
 import { useMutation, useQueryClient } from 'react-query'
-import { logEvent } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 
 export default function PomodoroScreen ({ route }) {
   const [progress, setProgress] = useState(1.0)
@@ -30,6 +30,7 @@ export default function PomodoroScreen ({ route }) {
     await sound.playAsync()
   }
 
+  const { logEvent } = UmetricAPI()
   const mutation = useMutation((duration) => logEvent({ eventId: event.id, duration: duration }))
   const { isSuccess } = mutation
   const queryClient = useQueryClient()

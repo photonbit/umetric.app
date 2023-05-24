@@ -4,13 +4,14 @@ import i18n from 'i18n-js'
 import Toast from 'react-native-toast-message'
 
 
-import { login } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 import { Context } from '../filters/Store'
 
 export default function LoginScreen () {
   const [user, setUser] = useState('')
   const [password, setPassword] = useState('')
   const [, dispatch] = useContext(Context)
+  const { login } = UmetricAPI()
 
   function errorLogin (error) {
     dispatch({ type: 'SET_LOGIN', payload: false })

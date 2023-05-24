@@ -4,9 +4,10 @@ import i18n from 'i18n-js'
 
 import Element from '../components/Element'
 import {useQuery} from "react-query";
-import {getCategories} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 
 export default function CategorySelector ({ visible, setVisible, selected, setCategory }) {
+  const { getCategories } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 
   if (isLoading) {

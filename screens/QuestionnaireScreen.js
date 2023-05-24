@@ -3,15 +3,16 @@ import React from 'react';
 import {Button, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import i18n from 'i18n-js';
 
-import { QuestionnaireService } from '../services/UmetricAPI';
+import UmetricAPI from '../services/UmetricAPI';
 
 export default function QuestionnaireScreen({ navigation, route }) {
   const questionnaireId = route.params.questionnaire_id
   const [questionnaire, setQuestionnaire] = React.useState(null);
+  const { getQuestionnaire } = UmetricAPI()
 
   React.useEffect(() => {
     const fetchQuestionnaire = async () => {
-      const data = await QuestionnaireService.getQuestionnaire(questionnaireId);
+      const data = await getQuestionnaire(questionnaireId);
       setQuestionnaire(data);
     };
 

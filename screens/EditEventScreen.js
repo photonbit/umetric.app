@@ -6,11 +6,12 @@ import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {editEvent, getEvent} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 
 export default function EditEventScreen ({ route }) {
   const eventId = route.params.event_id
   const categoryId = route.params.category_id
+  const { getEvent, editEvent } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['event', eventId],
       ({queryKey}) => {
         return getEvent({queryKey}).then((ev)=> {

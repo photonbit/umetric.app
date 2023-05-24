@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler'
 import React, { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { LogBox, Linking } from 'react-native'
