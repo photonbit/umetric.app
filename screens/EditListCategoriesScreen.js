@@ -6,10 +6,11 @@ import i18n from 'i18n-js'
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
-import {deleteCategory, getCategories, updateCategories} from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 
 export default function EditListCategoriesScreen ({ navigation }) {
 
+  const { getCategories, deleteCategory, updateCategories } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
   if (isLoading) {
     return <View><ActivityIndicator size="large" /></View>

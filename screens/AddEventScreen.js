@@ -7,7 +7,7 @@ import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {useMutation, useQueryClient} from "react-query";
-import {addEvent} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 
 export default function AddEventScreen ({ route }) {
   const categoryId = route.params.category_id
@@ -15,6 +15,7 @@ export default function AddEventScreen ({ route }) {
   const [icon, setIcon] = useState('build/img/mountain.svg')
   const [name, setName] = useState('')
   const [action, setAction] = useState('')
+  const { addEvent } = UmetricAPI()
   const mutation = useMutation((newEvent) => addEvent({ categoryId, newEvent}))
   const queryClient = useQueryClient()
   const { isSuccess } = mutation

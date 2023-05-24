@@ -47,7 +47,7 @@ export default function CompleteFlow () {
         )
       : (
 
-      <Drawer.Navigator drawerContent={(props) => {
+      <Drawer.Navigator swipeEdgeWidth={300} drawerContent={(props) => {
       return (
         <DrawerContentScrollView {...props}>
             <DrawerItemList {...props} />

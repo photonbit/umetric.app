@@ -4,11 +4,12 @@ import {FlatList, Text, StyleSheet, View, ActivityIndicator, TouchableOpacity} f
 import i18n from 'i18n-js'
 
 import * as RootNavigation from '../navigation/RootNavigation'
-import { getCategories } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 import Element from '../components/Element'
 import {Feather} from "@expo/vector-icons";
 
 export default function ListCategoriesScreen ({ navigation }) {
+  const { getCategories } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 
 

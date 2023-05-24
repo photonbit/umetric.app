@@ -7,6 +7,10 @@ import { initialConfig } from '../config'
 
 const Store = ({ children }) => {
   const [state, dispatch] = useReducer(Reducer, initialConfig)
+  const logout = () => {
+    dispatch({ type: 'SET_LOGIN', payload: false })
+  }
+
   return (
         <Context.Provider value={[state, dispatch]}>
             {children}

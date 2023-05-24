@@ -43,6 +43,7 @@ const en = {
     question: 'Question',
     startQuestionnaire: 'Start Questionnaire',
     loginFailed: 'Login failed miserably',
+    authError: 'Authorization problem, try login again'
 }
 
 
@@ -91,6 +92,7 @@ const es = {
     question: 'Pregunta',
     startQuestionnaire: 'Comenzar cuestionario',
     loginFailed: 'El inicio de sesión falló miserablemente',
+    authError: 'Problema de autorización, intente iniciar sesión nuevamente'
 }
 
 const pt = {
@@ -138,6 +140,7 @@ const pt = {
     question: 'Pergunta',
     startQuestionnaire: 'Começar questionário',
     loginFailed: 'O login falhou miseravelmente',
+    authError: 'Problema de autorização, tente fazer login novamente'
 }
 
 const jp = {
@@ -185,6 +188,7 @@ const jp = {
     question: '質問',
     startQuestionnaire: 'アンケートを開始',
     loginFailed: 'ログインに失敗しました',
+    authError: '認証エラー、もう一度ログインしてください'
 }
 
 const zh = {
@@ -232,6 +236,7 @@ const zh = {
     question: '题',
     startQuestionnaire: '开始调查问卷',
     loginFailed: '登录失败',
+    authError: '授权问题，请重新登录'
 }
 
 
@@ -280,6 +285,7 @@ const ru = {
     question: 'Вопрос',
     startQuestionnaire: 'Начать опрос',
     loginFailed: 'Ошибка входа',
+    authError: 'Ошибка авторизации, пожалуйста, войдите снова'
 }
 
 const ph = {
@@ -327,6 +333,7 @@ const ph = {
     question: 'Tanong',
     startQuestionnaire: 'Simulan ang Questionnaire',
     loginFailed: 'Nabigo ang pag-login',
+    authError: 'May error sa awtorisasyon, mangyaring mag-login muli'
 }
 
 const de = {
@@ -374,6 +381,7 @@ const de = {
     question: 'Frage',
     startQuestionnaire: 'Fragebogen starten',
     loginFailed: 'Anmeldung fehlgeschlagen',
+    authError: 'Authentifizierungsfehler, bitte melden Sie sich erneut an'
 }
 
 export { en, es, pt, jp, zh, ru, ph, de}

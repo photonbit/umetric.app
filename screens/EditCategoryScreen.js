@@ -6,10 +6,11 @@ import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {editCategory, getCategory} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 
 export default function EditCategoryScreen ({ route }) {
   const categoryId = route.params.category_id
+  const { getCategory, editCategory } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['category', categoryId],
       ({queryKey}) => {
         return getCategory({queryKey}).then((cat)=> {

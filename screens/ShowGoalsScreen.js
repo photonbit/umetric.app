@@ -6,9 +6,10 @@ import i18n from 'i18n-js'
 
 import Goal from '../components/Goal'
 import * as RootNavigation from '../navigation/RootNavigation'
-import { getCommitments } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 
 export default function ShowGoalsScreen ({ navigation }) {
+  const { getCommitments } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery('commitments', getCommitments)
 
   useLayoutEffect(() => {

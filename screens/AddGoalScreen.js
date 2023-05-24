@@ -11,7 +11,7 @@ import CategorySelector from '../components/CategorySelector'
 import EventSelector from '../components/EventSelector'
 import Element from '../components/Element'
 import * as RootNavigation from '../navigation/RootNavigation'
-import { addGoal } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 
 export default function AddGoalScreen () {
 
@@ -29,7 +29,7 @@ export default function AddGoalScreen () {
     name: '',
     icon: ''
   })
-
+  const { addGoal } = UmetricAPI()
   const mutation = useMutation((newGoal) => addGoal({ newGoal }))
   const queryClient = useQueryClient()
   const { isSuccess } = mutation

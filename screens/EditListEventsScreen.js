@@ -6,11 +6,12 @@ import i18n from 'i18n-js'
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {deleteEvent, getEvents, updateEvents} from "../services/UmetricAPI";
+import UmetricAPI from "../services/UmetricAPI";
 import * as Linking from "expo-linking";
 
 export default function EditListEventsScreen ({ navigation, route }) {
   const categoryId = route.params.category_id
+  const { getEvents, deleteEvent, updateEvents } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
 
   const deleteMutation = useMutation(

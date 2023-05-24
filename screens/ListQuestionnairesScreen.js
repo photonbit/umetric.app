@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { QuestionnaireService } from '../services/UmetricAPI'
+import UmetricAPI from '../services/UmetricAPI'
 
 export default function ListQuestionnairesScreen({ navigation }) {
   const [questionnaires, setQuestionnaires] = useState([]);
+  const { getQuestionnaires } = UmetricAPI()
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await QuestionnaireService.getQuestionnaires();
+      const data = await getQuestionnaires();
       setQuestionnaires(data);
     };
 
