@@ -41,7 +41,8 @@ const en = {
     questionnaires: 'Questionnaires',
     questionnaire: 'Questionnary',
     question: 'Question',
-    startQuestionnaire: 'Start Questionnaire'
+    startQuestionnaire: 'Start Questionnaire',
+    loginFailed: 'Login failed miserably',
 }
 
 
@@ -88,7 +89,8 @@ const es = {
     questionnaires: 'Cuestionarios',
     questionnaire: 'Cuestionario',
     question: 'Pregunta',
-    startQuestionnaire: 'Comenzar cuestionario'
+    startQuestionnaire: 'Comenzar cuestionario',
+    loginFailed: 'El inicio de sesión falló miserablemente',
 }
 
 const pt = {
@@ -134,7 +136,8 @@ const pt = {
     questionnaires: 'Questionários',
     questionnaire: 'Questionário',
     question: 'Pergunta',
-    startQuestionnaire: 'Começar questionário'
+    startQuestionnaire: 'Começar questionário',
+    loginFailed: 'O login falhou miseravelmente',
 }
 
 const jp = {
@@ -180,7 +183,8 @@ const jp = {
     questionnaires: 'アンケート',
     questionnaire: 'アンケート',
     question: '質問',
-    startQuestionnaire: 'アンケートを開始'
+    startQuestionnaire: 'アンケートを開始',
+    loginFailed: 'ログインに失敗しました',
 }
 
 const zh = {
@@ -226,7 +230,8 @@ const zh = {
     questionnaires: '调查问卷',
     questionnaire: '调查问卷',
     question: '题',
-    startQuestionnaire: '开始调查问卷'
+    startQuestionnaire: '开始调查问卷',
+    loginFailed: '登录失败',
 }
 
 
@@ -273,7 +278,8 @@ const ru = {
     questionnaires: 'Опросники',
     questionnaire: 'Опросник',
     question: 'Вопрос',
-    startQuestionnaire: 'Начать опрос'
+    startQuestionnaire: 'Начать опрос',
+    loginFailed: 'Ошибка входа',
 }
 
 const ph = {
@@ -319,7 +325,8 @@ const ph = {
     questionnaires: 'Mga Questionnaire',
     questionnaire: 'Questionnaire',
     question: 'Tanong',
-    startQuestionnaire: 'Simulan ang Questionnaire'
+    startQuestionnaire: 'Simulan ang Questionnaire',
+    loginFailed: 'Nabigo ang pag-login',
 }
 
 const de = {
@@ -365,7 +372,8 @@ const de = {
     questionnaires: 'Fragebögen',
     questionnaire: 'Fragebogen',
     question: 'Frage',
-    startQuestionnaire: 'Fragebogen starten'
+    startQuestionnaire: 'Fragebogen starten',
+    loginFailed: 'Anmeldung fehlgeschlagen',
 }
 
 export { en, es, pt, jp, zh, ru, ph, de}
