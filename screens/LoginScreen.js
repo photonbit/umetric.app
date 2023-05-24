@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import i18n from 'i18n-js'
+import Toast from 'react-native-toast-message'
+
 
 import { login } from '../services/UmetricAPI'
 import { Context } from '../filters/Store'
@@ -10,9 +12,14 @@ export default function LoginScreen () {
   const [password, setPassword] = useState('')
   const [, dispatch] = useContext(Context)
 
-  function errorLogin (response) {
+  function errorLogin (error) {
     dispatch({ type: 'SET_LOGIN', payload: false })
-    console.error(response)
+    console.error(error)
+    Toast.show({
+      type: 'error',
+      text1: i18n.t('loginFailed'),
+      text2: error.message
+    })
   }
 
   function successLogin () {

@@ -1,0 +1,84 @@
+{
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "lint": "eslint App.js components/ navigation/ screens/",
+    "fixlint": "eslint --fix App.js components/ navigation/ screens/",
+    "test": "jest"
+  },
+  "jest": {
+    "setupFiles": [
+      "./tests/mock.js"
+    ],
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|@react-native-segmented-control|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ]
+  },
+  "detox": {
+    "test-runner": "jest"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
+    "@react-native-async-storage/async-storage": "~1.17.3",
+    "@react-native-community/checkbox": "^0.5.7",
+    "@react-native-community/masked-view": "0.1.10",
+    "@react-native-segmented-control/segmented-control": "2.4.0",
+    "@react-navigation/drawer": "^5.12.1",
+    "@react-navigation/native": "^5.9.0",
+    "@react-navigation/stack": "^5.13.0",
+    "@sentry/react-native": "^3.1.1",
+    "axios": "^0.21.4",
+    "expo": "^45.0.0",
+    "expo-application": "~4.1.0",
+    "expo-av": "~11.2.3",
+    "expo-constants": "~13.1.1",
+    "expo-device": "~4.2.0",
+    "expo-keep-awake": "~10.1.1",
+    "expo-linking": "~3.1.0",
+    "expo-localization": "~13.0.0",
+    "expo-splash-screen": "~0.15.1",
+    "expo-status-bar": "~1.3.0",
+    "expo-updates": "~0.13.4",
+    "i18n-js": "^3.9.2",
+    "prop-types": "^15.7.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-native": "0.68.2",
+    "react-native-gesture-handler": "~2.2.1",
+    "react-native-numeric-input": "^1.8.3",
+    "react-native-reanimated": "~2.8.0",
+    "react-native-safe-area-context": "4.2.4",
+    "react-native-safe-area-view": "^1.1.1",
+    "react-native-screens": "~3.11.1",
+    "react-native-svg": "12.3.0",
+    "react-native-svg-charts": "^5.4.0",
+    "react-native-unimodules": "~0.15.0",
+    "react-native-web": "0.17.7",
+    "react-query": "^3.24.4",
+    "react-test-renderer": "^16.13.1",
+    "sentry-expo": "^4.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "babel-jest": "~25.2.6",
+    "detox": "^18.8.0",
+    "detox-expo-helpers": "^0.6.0",
+    "eslint": "^7.22.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "expo-detox-hook": "^1.0.10",
+    "jest": "^26.6.3",
+    "jest-expo": "^45.0.0",
+    "react-test-renderer": "^16.13.1"
+  },
+  "private": true,
+  "name": "app",
+  "version": "1.0.0"
+}
