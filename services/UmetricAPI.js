@@ -26,6 +26,12 @@ const UmetricAPI = () => {
           text2: error.message
         })
         logout();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: i18n.t('somethingIsWrong'),
+          text2: error.message
+        })
       }
 
       return Promise.reject(error);
@@ -145,26 +151,29 @@ const UmetricAPI = () => {
           return data
         },
         getQuestionnaires: async () => {
-          const {data} = instance.get('/questionnaires')
+          const {data} = await instance.get('/questionnaires')
           return data
         },
         getQuestionnaire: async (questionnaireId) => {
-          const {data} = instance.get('/questionnaires/' + questionnaireId)
+          console.log(questionnaireId)
+          const {data} = await instance.get('/questionnaires/' + questionnaireId)
           return data
         },
         getQuestionnaireResponses: async () => {
-          const {data} = instance.get('/questionnaires/fillings')
+          const {data} = await instance.get('/questionnaires/fillings')
           return data
         },
         startQuestionnaire: async (questionnaireId) => {
+          console.log(questionnaireId)
           const {data} = await instance.post('/questionnaires/fillings', {questionnaire_id: questionnaireId})
           return data
         },
-        submitResponse: async (questionnaireResponseId, questionId, value) => {
+        submitResponse: async (questionnaireResponseId, questionId, likertScaleId, response) => {
           const {data} = await instance.post(`/questionnaires/fillings/${questionnaireResponseId}/responses`, {
-            questionnaire_response_id: questionnaireResponseId,
             question_id: questionId,
-            value: value,
+            questionnaire_response_id: questionnaireResponseId,
+            likert_scale_id: likertScaleId,
+            value: response
           });
           return data
         }

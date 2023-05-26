@@ -8,7 +8,7 @@ import UmetricAPI from '../services/UmetricAPI';
 export default function QuestionnaireScreen({ navigation, route }) {
   const questionnaireId = route.params.questionnaire_id
   const [questionnaire, setQuestionnaire] = React.useState(null);
-  const { getQuestionnaire } = UmetricAPI()
+  const { getQuestionnaire, startQuestionnaire } = UmetricAPI()
 
   React.useEffect(() => {
     const fetchQuestionnaire = async () => {
@@ -29,11 +29,16 @@ export default function QuestionnaireScreen({ navigation, route }) {
     return questions.slice(0, 3);
   }
 
-  const startQuestionnaire = () => {
-       navigation.navigate('Question', {
-            questionnaire,
-            questionIndex: 0,
-          })
+  const startQuestionnaireResponse = () => {
+      startQuestionnaire(questionnaireId).then(response => {
+        navigation.navigate('Question', {
+          questionnaire,
+          responseId: response.id,
+          questionIndex: 0,
+        })
+      }).catch(error => {
+        console.log(error)
+      })
   }
 
   return (
@@ -45,7 +50,7 @@ export default function QuestionnaireScreen({ navigation, route }) {
       {getRandomQuestions().map((question, index) => (
         <Text key={index} style={styles.sampleQuestion}>{`${index + 1}. ${question.text}`}</Text>
       ))}
-        <TouchableOpacity style={styles.button} onPress={startQuestionnaire} underlayColor='#99d9f4'>
+        <TouchableOpacity style={styles.button} onPress={startQuestionnaireResponse} underlayColor='#99d9f4'>
           <Text style={styles.buttonText}>{ i18n.t('startQuestionnaire') }</Text>
       </TouchableOpacity>
     </View>
