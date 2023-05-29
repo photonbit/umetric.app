@@ -54,6 +54,7 @@ const UmetricAPI = () => {
             })
 
             if (remember_cookie) {
+              axios.defaults.headers.common["cookie"] = remember_cookie
               await AsyncStorage.setItem('remember_cookie', remember_cookie)
             }
           }
