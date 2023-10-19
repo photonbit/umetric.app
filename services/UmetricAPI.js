@@ -130,7 +130,7 @@ const UmetricAPI = () => {
         },
         getGoal: async ({queryKey}) => {
           const goalId = queryKey[1]
-          const { data } = await instance.get('/api/goals/' + goal_id)
+          const { data } = await instance.get('/api/goals/' + goalId)
           return data
         },
         addGoal: async ({newGoal}) => {
@@ -156,7 +156,6 @@ const UmetricAPI = () => {
           return data
         },
         getQuestionnaire: async (questionnaireId) => {
-          console.log(questionnaireId)
           const {data} = await instance.get('/questionnaires/' + questionnaireId)
           return data
         },
@@ -165,7 +164,6 @@ const UmetricAPI = () => {
           return data
         },
         startQuestionnaire: async (questionnaireId) => {
-          console.log(questionnaireId)
           const {data} = await instance.post('/questionnaires/fillings', {questionnaire_id: questionnaireId})
           return data
         },
