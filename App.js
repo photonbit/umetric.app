@@ -24,12 +24,14 @@ import * as Localization from 'expo-localization'
 import i18n from 'i18n-js'
 import urlParse from 'url-parse'
 import Toast from 'react-native-toast-message'
-
+import { Logs } from 'expo'
 
 import CompleteFlow from './navigation/CompleteFlow'
 import * as RootNavigation from './navigation/RootNavigation'
 import Store from './filters/Store'
 import { en, es, pt, jp, zh, ru, ph, de } from './i18n/supportedLanguages'
+
+Logs.enableExpoCliLogging()
 
 Sentry.init({
   dsn: 'https://e7fa608dd74142ce8a1817f4ea79ad37@o556434.ingest.sentry.io/5691192',
