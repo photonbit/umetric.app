@@ -78,7 +78,7 @@ export default function EditGoalScreen ({ route }) {
     return <View><ActivityIndicator size="large" /></View>
   }
   if (isError) {
-    return <View><Text>i18n.t('somethingIsWrong'): {error.message}...</Text></View>
+    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
   }
 
   return (
