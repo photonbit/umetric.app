@@ -22,7 +22,7 @@ export default function EditGoalScreen ({ route }) {
     icon: ''
   })
 
-  const { getGoal, editGoal } = UmetricAPI()
+  const { getGoal, editGoal, getEvent } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['goal', goalId],
     ({ queryKey }) => {
       return getGoal({ queryKey }).then((goal) => {
@@ -32,8 +32,10 @@ export default function EditGoalScreen ({ route }) {
         } else {
           setUnit(1)
         }
-        setEvent(goal.event)
-        return goal
+        return getEvent({ queryKey: ['event', goal.event_id] }).then((event) => {
+          setEvent(event)
+          return goal
+        })
       })
     })
   const mutation = useMutation(
@@ -87,6 +89,7 @@ export default function EditGoalScreen ({ route }) {
             visible={modalVisible}
             setVisible={setModalVisible}
             selected={event.id}
+            categoryId={event.category_id}
             setEvent={setEvent}
            />
           <Text style={styles.title}>{i18n.t('wantToDedicate')}</Text>
