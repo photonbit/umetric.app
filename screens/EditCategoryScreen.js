@@ -20,7 +20,7 @@ export default function EditCategoryScreen ({ route }) {
       })
   })
   const mutation = useMutation(
-      (modifiedCategory) => editCategory({categoryId, modifiedCategory}))
+      (modifiedCategory) => editCategory(categoryId, modifiedCategory))
   const { isSuccess } = mutation
   const queryClient = useQueryClient()
 
