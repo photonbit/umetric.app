@@ -10,7 +10,7 @@ import {useMutation, useQueryClient} from "react-query";
 
 export default function AddCategoryScreen () {
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('build/img/mountain.svg')
+  const [icon, setIcon] = useState('build/img/apple.svg')
   const [name, setName] = useState('')
   const { addCategory } = UmetricAPI()
   const mutation = useMutation((newCategory) => addCategory(newCategory))
