@@ -12,7 +12,7 @@ import UmetricAPI from "../services/UmetricAPI";
 export default function AddEventScreen ({ route }) {
   const categoryId = route.params.category_id
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('build/img/mountain.svg')
+  const [icon, setIcon] = useState('build/img/apple.svg')
   const [name, setName] = useState('')
   const [action, setAction] = useState('')
   const { addEvent } = UmetricAPI()

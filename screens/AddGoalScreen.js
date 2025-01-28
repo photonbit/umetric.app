@@ -27,7 +27,7 @@ export default function AddGoalScreen () {
   const [event, setEvent] = useState({
     id: '',
     name: '',
-    icon: ''
+    icon: 'build/img/apple.svg'
   })
   const { addGoal } = UmetricAPI()
   const mutation = useMutation((newGoal) => addGoal({ newGoal }))
