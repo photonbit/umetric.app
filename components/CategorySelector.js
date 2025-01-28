@@ -7,6 +7,10 @@ import {useQuery} from "react-query";
 import UmetricAPI from "../services/UmetricAPI";
 
 export default function CategorySelector ({ visible, setVisible, selected, setCategory }) {
+  if (!visible) {
+    return <View></View>
+  }
+
   const { getCategories } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery('categories', getCategories)
 

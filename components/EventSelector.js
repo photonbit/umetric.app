@@ -7,6 +7,10 @@ import {useQuery} from "react-query";
 import UmetricAPI from "../services/UmetricAPI";
 
 export default function EventSelector ({ visible, setVisible, categoryId, selected, setEvent }) {
+  if (!visible) {
+    return <View></View>
+  }
+
   const { getEvents } = UmetricAPI()
   const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
 
