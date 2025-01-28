@@ -27,11 +27,13 @@ const UmetricAPI = () => {
         })
         logout();
       } else {
-        Toast.show({
-          type: 'error',
-          text1: i18n.t('somethingIsWrong'),
-          text2: error.message
-        })
+        if (status !== 404) {
+            Toast.show({
+                type: 'error',
+                text1: i18n.t('somethingIsWrong'),
+                text2: error.message
+            })
+        }
       }
 
       return Promise.reject(error);
@@ -61,13 +63,13 @@ const UmetricAPI = () => {
           return response
         },
         getCategories: async () => {
-          const { data } = await instance.get('/api/categories')
+          const { data } = await instance.get('/api/categories/')
           return data
         },
         addCategory: async (category) => {
             return await instance.post('/api/categories', category)
         },
-           editCategory: async (categoryId, modifiedCategory) => {
+        editCategory: async (categoryId, modifiedCategory) => {
             return await instance.put('/api/categories/' + categoryId, modifiedCategory)
         },
         deleteCategory: async (categoryId) => {
@@ -152,7 +154,7 @@ const UmetricAPI = () => {
           return data
         },
         getQuestionnaires: async () => {
-          const {data} = await instance.get('/questionnaires')
+          const {data} = await instance.get('/questionnaires/')
           return data
         },
         getQuestionnaire: async (questionnaireId) => {
@@ -160,11 +162,11 @@ const UmetricAPI = () => {
           return data
         },
         getQuestionnaireResponses: async () => {
-          const {data} = await instance.get('/questionnaires/fillings')
+          const {data} = await instance.get('/questionnaires/fillings/')
           return data
         },
         startQuestionnaire: async (questionnaireId) => {
-          const {data} = await instance.post('/questionnaires/fillings', {questionnaire_id: questionnaireId})
+          const {data} = await instance.post('/questionnaires/fillings/', {questionnaire_id: questionnaireId})
           return data
         },
         submitResponse: async (questionnaireResponseId, questionId, likertScaleId, response) => {
