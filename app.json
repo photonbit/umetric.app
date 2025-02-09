@@ -3,6 +3,9 @@
     "name": "umetric",
     "slug": "umetric",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
+    "jsEngine": "hermes",
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "umetric",
@@ -24,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/adaptive_icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "umetric.apk"
@@ -33,15 +36,34 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "sentry-expo"
+      "expo-localization",
+      [
+        "@morrowdigital/watermelondb-expo-plugin",
+        { "disableJsi": true }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "packagingOptions": {
+              "pickFirst": [
+                "**/libc++_shared.so"
+              ]
+            }
+          }
+        }
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": ["assets"]
+        }
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "ba8befe0-a5d2-40e8-a94b-35673832320c"
       }
-    },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
     }
   }
 }
