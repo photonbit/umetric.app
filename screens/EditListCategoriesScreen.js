@@ -20,9 +20,9 @@ export default function EditListCategoriesScreen ({ navigation }) {
   }
 
   const deleteMutation = useMutation(
-    (categoryId) => deleteCategory({ categoryId }))
+    (categoryId) => deleteCategory(categoryId))
   const orderMutation = useMutation(
-      (categories) => updateCategories({categories})
+      (categories) => updateCategories(categories)
   )
   const isDeleteSuccess = deleteMutation.isSuccess
   const isOrderSuccess = orderMutation.isSuccess
