@@ -1,17 +1,25 @@
 import React, {useLayoutEffect} from 'react'
-import { useQuery } from 'react-query'
+import { Q } from '@nozbe/watermelondb'
+import { useDatabase } from '@nozbe/watermelondb/hooks'
 import {FlatList, Text, StyleSheet, View, ActivityIndicator, TouchableOpacity} from 'react-native'
 import i18n from 'i18n-js'
 
 import * as RootNavigation from '../navigation/RootNavigation'
-import UmetricAPI from '../services/UmetricAPI'
 import Element from '../components/Element'
 import {Feather} from "@expo/vector-icons";
 
 export default function ListCategoriesScreen ({ navigation }) {
-  const { getCategories } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery('categories', getCategories)
+  const database = useDatabase()
+  const [categories, setCategories] = React.useState([])
 
+  React.useEffect(() => {
+    const collection = database.collections.get('categories')
+    const subscription = collection
+      .query(Q.sortBy('order', Q.asc))
+      .observe()
+      .subscribe(setCategories)
+    return () => subscription.unsubscribe()
+  }, [])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -23,14 +31,7 @@ export default function ListCategoriesScreen ({ navigation }) {
     })
   }, [])
 
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
-  }
-
-  if (data.length === 0) {
+  if (categories.length === 0) {
     return (
         <View style={styles.help}>
           <Feather name='arrow-right' size={60} style={styles.swipe}/>
@@ -51,7 +52,7 @@ export default function ListCategoriesScreen ({ navigation }) {
           <FlatList
           style={styles.flatlist}
           contentContainerStyle={{ alignItems: 'center' }}
-      data={data.sort((a, b) => a.order - b.order)}
+      data={categories}
       renderItem={renderItem}
       horizontal={false}
         numColumns={2}

@@ -16,7 +16,7 @@ export default function AddEventScreen ({ route }) {
   const [name, setName] = useState('')
   const [action, setAction] = useState('')
   const { addEvent } = UmetricAPI()
-  const mutation = useMutation((newEvent) => addEvent({ categoryId, newEvent}))
+  const mutation = useMutation((newEvent) => addEvent({categoryId, newEvent}))
   const queryClient = useQueryClient()
   const { isSuccess } = mutation
 

@@ -1,24 +1,38 @@
 import React from 'react'
 import {ActivityIndicator, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import i18n from 'i18n-js'
+import { Q } from '@nozbe/watermelondb'
+import { useDatabase } from '@nozbe/watermelondb/hooks'
 
 import Element from '../components/Element'
-import {useQuery} from "react-query";
-import UmetricAPI from "../services/UmetricAPI";
 
 export default function EventSelector ({ visible, setVisible, categoryId, selected, setEvent }) {
+  const database = useDatabase()
+  const [events, setEvents] = React.useState([])
+
+  React.useEffect(() => {
+    if (!visible) return
+    const collection = database.collections.get('events')
+    const subscription = collection
+      .query(
+        Q.where('category_id', categoryId),
+        Q.sortBy('order', Q.asc)
+      )
+      .observe()
+      .subscribe(setEvents)
+    return () => subscription.unsubscribe()
+  }, [visible, categoryId])
+
   if (!visible) {
     return <View></View>
   }
 
-  const { getEvents } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
-
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
+  if (!events.length) {
+    return (
+      <View>
+        <Text>{i18n.t('noEvents')}</Text>
+      </View>
+    )
   }
 
   const renderItem = ({ item }) => {
@@ -45,7 +59,7 @@ export default function EventSelector ({ visible, setVisible, categoryId, select
                 <Text style={styles.modalText}>{i18n.t('chooseActivity')}</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={data.sort((a, b) => a.order - b.order)}
+                    data={events}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={2}
