@@ -51,7 +51,7 @@
     "url-parse": "^1.5.10"
   },
   "devDependencies": {
-    "@babel/core": "7.26.8",
+    "@babel/core": "7.26.9",
     "eslint": "^9.0.0"
   },
   "private": true,
