@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
+// screens/ListQuestionnairesScreen.js
+import React from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import UmetricAPI from '../services/UmetricAPI'
 
-export default function ListQuestionnairesScreen({ navigation }) {
-  const [questionnaires, setQuestionnaires] = useState([]);
-  const { getQuestionnaires } = UmetricAPI()
+import { useNavigation } from '@react-navigation/native';
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getQuestionnaires();
-      setQuestionnaires(data);
-    };
-
-    fetchData();
-  }, []);
+const ListQuestionnairesScreen = ({ questionnaires }) => {
+  const navigation = useNavigation();
 
   const Item = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Questionnaire', { questionnaire_id: item.id })}>
@@ -30,11 +23,28 @@ export default function ListQuestionnairesScreen({ navigation }) {
         style={styles.flatlist}
         data={questionnaires}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={Item}
+        renderItem={({ item }) => <Item item={item} />}
       />
     </View>
   );
 };
+
+const enhance = withObservables([], ({ database }) => ({
+  questionnaires: database.collections.get('questionnaires')
+    .query()
+    .observeWithColumns([])
+    .pipe(
+      mergeMap(async (items) => {
+        const results = [];
+        for (const q of items) {
+          results.push({ id: q.id, ...(await q.getLocalizedInstance()) });
+        }
+        return results;
+      })
+    ),
+}));
+
+export default withDatabase(enhance(ListQuestionnairesScreen));
 
 const styles = StyleSheet.create({
   container: {

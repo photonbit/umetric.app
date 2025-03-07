@@ -1,68 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import {View, Text, TouchableOpacity, TextInput} from 'react-native'
 import i18n from 'i18n-js'
-
-
-import SegmentedControl from '@react-native-segmented-control/segmented-control'
-import { Feather } from '@expo/vector-icons'
-import { useQueryClient, useMutation } from 'react-query'
-
-import CategorySelector from '../components/CategorySelector'
-import EventSelector from '../components/EventSelector'
-import Element from '../components/Element'
+import { baseStyles, commonStyles } from '../styles/common'
 import * as RootNavigation from '../navigation/RootNavigation'
-import UmetricAPI from '../services/UmetricAPI'
+import CategorySelector from "../components/CategorySelector";
+import Element from "../components/Element";
+import EventSelector from "../components/EventSelector";
+import {Feather} from "@expo/vector-icons";
+import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { withDatabase } from '@nozbe/watermelondb/react'
 
-export default function AddGoalScreen () {
-
-  const [number, setNumber] = useState('1')
-  const [unit, setUnit] = useState(1)
+function AddGoalScreen({ database }) {
   const [categoryModalVisible, setCategoryModalVisible] = useState(false)
   const [eventModalVisible, setEventModalVisible] = useState(false)
-  const [category, setCategory] = useState({
-    id: '',
-    name: '',
-    icon: ''
-  })
-  const [event, setEvent] = useState({
-    id: '',
-    name: '',
-    icon: 'build/img/apple.svg'
-  })
-  const { addGoal } = UmetricAPI()
-  const mutation = useMutation((newGoal) => addGoal({ newGoal }))
-  const queryClient = useQueryClient()
-  const { isSuccess } = mutation
+  const [category, setCategory] = useState({ id: '', name: '', icon: 'Apple' })
+  const [event, setEvent] = useState({ id: '', name: '', icon: 'Apple' })
+  const [number, setNumber] = useState('1')
+  const [unit, setUnit] = useState(0)
 
-  const saveGoal = () => {
-    let kind;
-    if (unit === 0) {
-      kind = 'times'
-    } else {
-      kind = 'hours'
-    }
-    mutation.mutate({
-      number: number,
-      kind: kind,
-      event_id: event.id
-    })
-  }
-
-  const saveCategory = (category) => {
-    setCategory(category)
+  const saveCategory = (cat) => {
+    setCategory(cat)
+    setCategoryModalVisible(false)
     setEventModalVisible(true)
   }
 
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('commitments').then(() =>
-        RootNavigation.navigate('ShowGoals')
-      )
-    }
-  }, [isSuccess])
-
+const saveGoal = async () => {
+  await database.write(async () => {
+      const kind = unit === 0 ? 'times' : 'hours';
+      await database.get('goals').create((goal) => {
+          goal.number = Number(number);
+          goal.kind = kind;
+          goal.event_id = event.id;
+          goal.active = true;
+      })
+  });
+  RootNavigation.navigate('Metas', {screen: 'ShowGoals'});
+};
+  
   return (
-    <View style={styles.container}>
+    <View style={baseStyles.container}>
      <CategorySelector
             visible={categoryModalVisible}
             setVisible={setCategoryModalVisible}
@@ -76,31 +52,31 @@ export default function AddGoalScreen () {
             selected={event.id}
             setEvent={setEvent}
            />
-          <Text style={styles.title}>{i18n.t('wantToDedicate')}</Text>
-          <View style={styles.numberSelection}>
+          <Text style={baseStyles.title}>{i18n.t('wantToDedicate')}</Text>
+          <View style={commonStyles.numberSelection}>
             <TouchableOpacity
                 onPress={ () => setNumber((Number(number) - 1).toString())}
-                style={styles.numberButton}
+                style={commonStyles.numberButton}
             >
                 <Feather name="minus-circle" size={40} color="black" />
             </TouchableOpacity>
             <TextInput
                 onChangeText={setNumber}
                 defaultValue={number}
-                style={styles.numberInput}
+                style={commonStyles.numberInput}
                 keyboardType="number-pad"
             />
             <TouchableOpacity
                 onPress={ () => setNumber((Number(number) + 1).toString())}
-                style={styles.numberButton}
+                style={commonStyles.numberButton}
             >
                 <Feather name="plus-circle" size={40} color="black" />
             </TouchableOpacity>
           </View>
-          <View style={styles.kindSelection}>
+          <View style={commonStyles.kindSelection}>
               <SegmentedControl
-                style={styles.kindInput}
-                fontStyle={styles.kindInputText}
+                style={commonStyles.kindInput}
+                fontStyle={commonStyles.kindInputText}
                 values={[i18n.t('times'), i18n.t('hours')]}
                 selectedIndex={unit}
                 onChange={ (event) => {
@@ -108,101 +84,17 @@ export default function AddGoalScreen () {
                 }}
               />
           </View>
-           <View style={styles.categorySelection}>
-        <Text style={styles.title}>{i18n.t('perWeekTo')}:</Text>
+           <View style={commonStyles.categorySelection}>
+        <Text style={baseStyles.title}>{i18n.t('perWeekTo')}:</Text>
                 <Element
                     element={event}
                     onPress={() => { setCategoryModalVisible(true) }} />
             </View>
-            <TouchableOpacity style={styles.button} onPress={saveGoal} underlayColor='#99d9f4'>
-              <Text style={styles.buttonText}>{i18n.t('save')}</Text>
+            <TouchableOpacity style={baseStyles.button} onPress={saveGoal} underlayColor='#99d9f4'>
+              <Text style={baseStyles.buttonText}>{i18n.t('save')}</Text>
             </TouchableOpacity>
         </View>
   )
 }
 
-const styles = StyleSheet.create({
-  icon: {
-    height: 90,
-    width: 90,
-    padding: 10
-  },
-  container: {
-    flex: 1,
-    padding: 20
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center'
-  },
-  button: {
-    height: 36,
-    backgroundColor: '#48BBEC',
-    borderColor: '#48BBEC',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    marginTop: 25,
-    alignSelf: 'stretch',
-    justifyContent: 'center'
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15
-  },
-  input: {
-    fontSize: 18,
-    width: '100%',
-    borderColor: '#CCCCCC',
-    backgroundColor: '#FAFAFA',
-    color: '#111111',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginBottom: 10,
-    marginTop: 5
-  },
-  numberSelection: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 80
-  },
-  numberInput: {
-    fontSize: 20,
-    height: 50,
-    width: 50,
-    borderColor: '#CCCCCC',
-    backgroundColor: '#FAFAFA',
-    color: '#111111',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginBottom: 10,
-    marginTop: 5
-  },
-  numberButton: {
-    padding: 15
-  },
-  kindSelection: {
-    height: 70,
-    marginTop: 15
-  },
-  kindInput: {
-    height: 50
-  },
-  kindInputText: {
-    fontSize: 18
-  },
-  categorySelection: {
-    height: 180
-  }
-})
+export default withDatabase(AddGoalScreen)

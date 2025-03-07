@@ -1,16 +1,17 @@
-import React, { useLayoutEffect } from 'react'
-import { useQuery } from 'react-query'
-import {FlatList, StyleSheet, TouchableOpacity, View, Text, ActivityIndicator} from 'react-native'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+import { FlatList, StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import i18n from 'i18n-js'
+import { Q } from '@nozbe/watermelondb'
+import { baseStyles } from '../styles/common'
+import { getISOWeek } from "date-fns"
+import { withDatabase, withObservables } from "@nozbe/watermelondb/react";
 
 import Goal from '../components/Goal'
 import * as RootNavigation from '../navigation/RootNavigation'
-import UmetricAPI from '../services/UmetricAPI'
 
-export default function ShowGoalsScreen ({ navigation }) {
-  const { getCommitments } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery('commitments', getCommitments)
+
+function ShowGoalsScreen({ navigation, goals, eventLogs, database }) {
+  const [commitments, setCommitments] = useState([])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -20,31 +21,70 @@ export default function ShowGoalsScreen ({ navigation }) {
             </TouchableOpacity>
       )
     })
-  }, [])
+  }, [navigation])
+
+  useEffect(() => {
+    if (!goals) return;
+    const fetchData = async () => {
+      const computed = [];
+      for (const g of goals) {
+        try {
+          const e = await database.collections.get('events').find(g.event_id);
+          const goalLogs = eventLogs.filter(l => l.event_id === e.id);
+          let done = 0;
+          if (g.kind === 'times') {
+            done = goalLogs.length;
+          } else if (g.kind === 'hours') {
+            done = goalLogs.reduce((acc, l) => acc + (l.duration || 0), 0) / 3600;
+          }
+          computed.push({
+            goal_id: g.id,
+            committed: g.number,
+            kind: g.kind,
+            done,
+            event: { id: e.id, name: e.name, icon: e.icon }
+          });
+        } catch (error) {
+          console.log('Error fetching event for goal', error);
+        }
+      }
+      setCommitments(computed);
+    };
+    fetchData();
+  }, [goals, eventLogs, database]);
 
   const renderItem = ({ item }) => (
         <Goal goal={item} />
   )
 
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
-  }
-
   return (
-          <FlatList
-          style={styles.flatlist}
-          persistentScrollbar={true}
-          contentContainerStyle={{ alignItems: 'flex-end', justifyContent: 'space-between' }}
-      data={data}
-      renderItem={renderItem}
-      horizontal={true}
-      keyExtractor={item => item.goal_id}
-    />
+    <View style={baseStyles.container}>
+      <FlatList
+        style={styles.flatlist}
+        persistentScrollbar={true}
+        contentContainerStyle={{ alignItems: 'flex-end', justifyContent: 'space-between' }}
+        data={commitments}
+        renderItem={renderItem}
+        horizontal={true}
+      />
+    </View>
   )
 }
+
+const enhance = withObservables([], ({ database }) => ({
+  goals: database
+    .collections
+    .get('goals')
+    .query(Q.where('active', true))
+    .observe(),
+  eventLogs: database
+    .collections
+    .get('event_logs')
+    .query(Q.where('week', getISOWeek(new Date())))
+    .observe()
+}));
+
+export default withDatabase(enhance(ShowGoalsScreen))
 
 const styles = StyleSheet.create({
   flatlist: {

@@ -3,20 +3,20 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ProgressCircle } from 'react-native-svg-charts'
 import { Feather } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
-import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake'
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import i18n from 'i18n-js'
+import EventLog from '../model/EventLog'
+import { withDatabase } from '@nozbe/watermelondb/react'
 
 import Icon from '../components/Icon'
-import { useMutation, useQueryClient } from 'react-query'
-import UmetricAPI from '../services/UmetricAPI'
 
-export default function PomodoroScreen ({ route }) {
+function PomodoroScreen({ route, database }) {
   const [progress, setProgress] = useState(1.0)
   const [state, setState] = useState('play')
   const [progressTimer, setProgressTimer] = useState()
   const [sound, setSound] = useState()
 
-  const minutes = 25
+  const minutes = 1
   const seconds = minutes * 60
   const [timeLeft, setTimeLeft] = useState(seconds)
   const event = route.params.event
@@ -30,20 +30,9 @@ export default function PomodoroScreen ({ route }) {
     await sound.playAsync()
   }
 
-  const { logEvent } = UmetricAPI()
-  const mutation = useMutation((duration) => logEvent({ eventId: event.id, duration: duration }))
-  const { isSuccess } = mutation
-  const queryClient = useQueryClient()
-
   const sendDurationLog = (time) => {
-    mutation.mutate(time)
+    EventLog.logEvent(database, event.id, time)
   }
-
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('commitments')
-    }
-  }, [isSuccess])
 
   useEffect(() => {
     return sound
@@ -83,11 +72,13 @@ export default function PomodoroScreen ({ route }) {
   }
   const onPress = () => {
     if (state === 'play') {
-      activateKeepAwake()
-      resetTimer('square')
+      activateKeepAwakeAsync().then(() => {
+        resetTimer('square')
+      })
     } else {
-      deactivateKeepAwake()
-      resetTimer('play')
+      deactivateKeepAwake().then(() => {
+        resetTimer('play')
+      })
     }
   }
 
@@ -122,6 +113,8 @@ export default function PomodoroScreen ({ route }) {
     </View>
   )
 }
+
+export default withDatabase(PomodoroScreen);
 
 const styles = StyleSheet.create({
   container: {

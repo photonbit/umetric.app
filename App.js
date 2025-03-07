@@ -17,27 +17,51 @@
  */
 import 'react-native-gesture-handler'
 import React, { useEffect } from 'react'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import { LogBox, Linking } from 'react-native'
 import * as Localization from 'expo-localization'
 import i18n from 'i18n-js'
 import urlParse from 'url-parse'
 import Toast from 'react-native-toast-message'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
+
 
 import CompleteFlow from './navigation/CompleteFlow'
 import * as RootNavigation from './navigation/RootNavigation'
-import Store from './filters/Store'
 import { en, es, pt, jp, zh, ru, ph, de } from './i18n/supportedLanguages'
+
+import { Database } from '@nozbe/watermelondb'
+import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
+import { DatabaseProvider } from '@nozbe/watermelondb/DatabaseProvider'
+import { umetricSchema } from './model/schema'
+import Category from './model/Category'
+import Event from './model/Event'
+import EventLog from './model/EventLog'
+import Goal from './model/Goal'
+import LikertScale from './model/LikertScale'
+import Question from './model/Question'
+import QuestionLikert from './model/QuestionLikert'
+import Questionnaire from './model/Questionnaire'
+import Response from './model/Response'
+import User from './model/User'
+import {setGenerator} from "@nozbe/watermelondb/utils/common/randomId";
+
 
 i18n.fallbacks = true
 i18n.translations = { en, es, pt, jp, zh, ru, ph, de }
-i18n.locale = Localization.locale
+i18n.locale = Localization.getLocales()[0].languageCode
 
 LogBox.ignoreLogs(['Setting a timer'])
 
-const App = () => {
-  const queryClient = new QueryClient();
+setGenerator(() => uuidv4());
+const adapter = new SQLiteAdapter({ schema: umetricSchema })
+const database = new Database({
+  adapter,
+  modelClasses: [Category, Event, EventLog, Goal, LikertScale, Question, QuestionLikert, Questionnaire, Response, User],
+  actionsEnabled: true,
+})
 
+const App = () => {
   useEffect(() => {
     const handleUrl = async (url) => {
       const parsedUrl = urlParse(url, true)
@@ -59,17 +83,17 @@ const App = () => {
     });
 
     return () => {
-      Linking.removeEventListener('url')
+      if (Linking) {
+        Linking.removeEventListener('url')
+      }
     };
   }, []);
 
   return (
-      <QueryClientProvider client={queryClient}>
-        <Store>
-            <CompleteFlow/>
-            <Toast />
-        </Store>
-      </QueryClientProvider>
+      <DatabaseProvider database={database}>
+        <CompleteFlow/>
+        <Toast />
+      </DatabaseProvider>
   )
 }
 

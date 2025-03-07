@@ -1,28 +1,18 @@
 import React from 'react'
-import {ActivityIndicator, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {FlatList, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import i18n from 'i18n-js'
-
-import Icon from '../components/Icon'
-import UmetricAPI from '../services/UmetricAPI'
-import {useQuery} from "react-query";
+import Icon from './Icon'
+import icons from '../iconList'
+import { baseStyles } from '../styles/common'
 
 export default function IconSelector ({ visible, setVisible, selected, setIcon }) {
-    const { getIcons } = UmetricAPI()
-    const { data, error, isError, isLoading } = useQuery('icons', getIcons)
-
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
-  }
 
   const renderItem = ({ item }) => {
     const style = item === selected ? styles.selected : styles.icon
     return (
-    <TouchableOpacity onPress={() => { setIcon("build/img/"+item); setVisible(false) }} >
+    <TouchableOpacity onPress={() => { setIcon(item); setVisible(false) }} >
     <View style={style}>
-            <Icon icon={"build/img/"+item} />
+            <Icon icon={item} />
         </View>
     </TouchableOpacity>
     )
@@ -41,7 +31,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
                 <Text style={styles.modalText}>{i18n.t('chooseIcon')}</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={data}
+                    data={icons}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={3}
@@ -49,7 +39,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
                 />
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={baseStyles.button}
                   underlayColor='#99d9f4'
                   onPress={() => {
                     setVisible(!visible)
@@ -61,6 +51,7 @@ export default function IconSelector ({ visible, setVisible, selected, setIcon }
         </Modal>
   )
 }
+
 
 const styles = StyleSheet.create({
 
@@ -111,15 +102,5 @@ const styles = StyleSheet.create({
     height: 90,
     width: 90,
     padding: 10
-  },
-  button: {
-    height: 36,
-    backgroundColor: '#48BBEC',
-    borderColor: '#48BBEC',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    alignSelf: 'stretch',
-    justifyContent: 'center'
   }
 })

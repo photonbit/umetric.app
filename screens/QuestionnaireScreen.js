@@ -1,61 +1,65 @@
 // screens/QuestionnaireScreen.js
-import React from 'react';
-import {Button, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useMemo } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import i18n from 'i18n-js';
+import { withObservables } from '@nozbe/watermelondb/react';
+import { mergeMap } from 'rxjs/operators';
+import { withDatabase } from '@nozbe/watermelondb/react';
 
-import UmetricAPI from '../services/UmetricAPI';
-
-export default function QuestionnaireScreen({ navigation, route }) {
-  const questionnaireId = route.params.questionnaire_id
-  const [questionnaire, setQuestionnaire] = React.useState(null);
-  const { getQuestionnaire, startQuestionnaire } = UmetricAPI()
-
-  React.useEffect(() => {
-    const fetchQuestionnaire = async () => {
-      const data = await getQuestionnaire(questionnaireId);
-      setQuestionnaire(data);
-    };
-
-    fetchQuestionnaire();
-  }, []);
-
-  if (!questionnaire) {
-    return null;
-  }
-
+const QuestionnaireScreen = ({ navigation, questionnaireRaw, localizedQuestionnaire }) => {
   const getRandomQuestions = () => {
-    const questions = [...questionnaire.questions];
-    questions.sort(() => 0.5 - Math.random());
-    return questions.slice(0, 3);
-  }
+    const shuffledQuestions = [...questionnaireRaw.questions];
+    shuffledQuestions.sort(() => 0.5 - Math.random());
+    return shuffledQuestions.slice(0, 3);
+  };
+
+  const memoizedQuestions = useMemo(() => getRandomQuestions(), [questionnaireRaw.questions]);
 
   const startQuestionnaireResponse = () => {
-      startQuestionnaire(questionnaireId).then(response => {
-        navigation.navigate('Question', {
-          questionnaire,
-          responseId: response.id,
-          questionIndex: 0,
-        })
-      }).catch(error => {
-        console.log(error)
-      })
+    startQuestionnaire(questionnaireRaw.id).then(response => {
+      navigation.navigate('Question', {
+        questionnaire: questionnaireRaw,
+        responseId: response.id,
+        questionIndex: 0,
+      });
+    }).catch(error => {
+      console.log(error);
+    });
+  };
+
+  if (!localizedQuestionnaire) {
+    return null;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{questionnaire.name}</Text>
-      <Text style={styles.description}>{questionnaire.description}</Text>
-      <Text style={styles.instructions}>{questionnaire.instructions}</Text>
+      <Text style={styles.title}>{localizedQuestionnaire.name}</Text>
+      <Text style={styles.description}>{localizedQuestionnaire.description}</Text>
+      <Text style={styles.instructions}>{localizedQuestionnaire.instructions}</Text>
       <Text style={styles.sampleTitle}>Sample Questions:</Text>
-      {getRandomQuestions().map((question, index) => (
+      {memoizedQuestions.map((question, index) => (
         <Text key={index} style={styles.sampleQuestion}>{`${index + 1}. ${question.text}`}</Text>
       ))}
-        <TouchableOpacity style={styles.button} onPress={startQuestionnaireResponse} underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>{ i18n.t('startQuestionnaire') }</Text>
+      <TouchableOpacity style={styles.button} onPress={startQuestionnaireResponse} underlayColor='#99d9f4'>
+        <Text style={styles.buttonText}>{i18n.t('startQuestionnaire')}</Text>
       </TouchableOpacity>
     </View>
   );
-}
+};
+
+const enhance = withObservables(['route'], ({ route, database }) => {
+  const questionnaireId = route.params.questionnaire_id;
+  return {
+    questionnaireRaw: database.collections.get('questionnaires').findAndObserve(questionnaireId),
+    localizedQuestionnaire: database.collections.get('questionnaires')
+      .findAndObserve(questionnaireId)
+      .pipe(
+        mergeMap(async (q) => q ? q.getLocalizedInstance() : null)
+      ),
+  };
+});
+
+export default withDatabase(enhance(QuestionnaireScreen));
 
 const styles = StyleSheet.create({
   container: {

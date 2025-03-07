@@ -1,24 +1,19 @@
 import React from 'react'
-import { ActivityIndicator, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
+import { Q } from '@nozbe/watermelondb'
+import {withDatabase, withObservables} from '@nozbe/watermelondb/react'
 
 import Element from '../components/Element'
-import {useQuery} from "react-query";
-import UmetricAPI from "../services/UmetricAPI";
 
-export default function CategorySelector ({ visible, setVisible, selected, setCategory }) {
-  if (!visible) {
-    return <View></View>
-  }
+function CategorySelector ({ visible, setVisible, selected, setCategory, categories }) {
 
-  const { getCategories } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery('categories', getCategories)
-
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
+  if (!categories.length) {
+    return (
+      <View>
+        <Text>{i18n.t('noCategories')}</Text>
+      </View>
+    )
   }
 
   const renderItem = ({ item }) => {
@@ -45,7 +40,7 @@ export default function CategorySelector ({ visible, setVisible, selected, setCa
                 <Text style={styles.modalText}>{i18n.t('chooseCategory')}</Text>
                 <FlatList
                     style={styles.flatlist}
-                    data={data.sort((a, b) => a.order - b.order)}
+                    data={categories}
                     renderItem={renderItem}
                     horizontal={false}
                     numColumns={2}
@@ -65,6 +60,16 @@ export default function CategorySelector ({ visible, setVisible, selected, setCa
         </Modal>
   )
 }
+
+const enhance = withObservables([], ({ database }) => ({
+  categories: database
+      .collections
+      .get('categories')
+      .query(Q.where('active', true), Q.sortBy('order'))
+      .observeWithColumns(['name', 'icon', 'active', 'order'])
+}));
+
+export default withDatabase(enhance(CategorySelector));
 
 const styles = StyleSheet.create({
 
@@ -115,7 +120,4 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center'
   },
-  icon: {
-
-  }
 })

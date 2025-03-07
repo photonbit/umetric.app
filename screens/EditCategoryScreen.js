@@ -1,59 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import {ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
+
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
-import {useMutation, useQuery, useQueryClient} from "react-query";
-import UmetricAPI from "../services/UmetricAPI";
+import { baseStyles } from '../styles/common'
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 
-export default function EditCategoryScreen ({ route }) {
-  const categoryId = route.params.category_id
-  const { getCategory, editCategory } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery(['category', categoryId],
-      ({queryKey}) => {
-        return getCategory({queryKey}).then((cat)=> {
-        setName(cat.name)
-        setIcon(cat.icon)
-        return cat
-      })
-  })
-  const mutation = useMutation(
-      (modifiedCategory) => editCategory(categoryId, modifiedCategory))
-  const { isSuccess } = mutation
-  const queryClient = useQueryClient()
-
+function EditCategoryScreen ({ database, category }) {
+  const [icon, setIcon] = useState(category.icon)
+  const [name, setName] = useState(category.name)
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState("")
-  const [name, setName] = useState("")
 
-  const saveCategory = () => {
-    mutation.mutate({
-      name: name,
-      icon: icon
+  const saveCategory = async () => {
+    await database.write(async () => {
+      await category.update((record) => {
+        record.name = name
+        record.icon = icon
+      })
     })
-  }
-
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('category', categoryId).then(()=>
-          queryClient.invalidateQueries('categories').then(()=>
-        RootNavigation.navigate('ListEditCategories')
-      ))
-    }
-
-   }, [isSuccess]);
-
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
+    RootNavigation.navigate('ListEditCategories')
   }
 
   return (
-    <View style={styles.container}>
+    <View style={baseStyles.container}>
         <IconSelector
             visible={modalVisible}
             setVisible={setModalVisible}
@@ -62,7 +34,7 @@ export default function EditCategoryScreen ({ route }) {
         />
 
         <Text style={styles.title}>{i18n.t('name')}</Text>
-        <TextInput onChangeText={setName} defaultValue={data.name} style={styles.input} />
+        <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
         <Text style={styles.title}>{i18n.t('icon')}</Text>
       <TouchableOpacity
           style={styles.icon}
@@ -79,15 +51,20 @@ export default function EditCategoryScreen ({ route }) {
   )
 }
 
+const enhance = withObservables(['route'], ({ database, route }) => ({
+  category: database
+    .collections
+    .get('categories')
+    .findAndObserve(route.params.category_id)
+}))
+
+export default withDatabase(enhance(EditCategoryScreen))
+
 const styles = StyleSheet.create({
   icon: {
     height: 90,
     width: 90,
     padding: 10
-  },
-  container: {
-    justifyContent: 'center',
-    padding: 20
   },
   buttonText: {
     fontSize: 18,

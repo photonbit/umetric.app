@@ -1,27 +1,17 @@
-import React, {useEffect, useLayoutEffect} from 'react'
-import {ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import React, { useLayoutEffect } from 'react'
+import {Alert, FlatList, StyleSheet, TouchableOpacity} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
-import {useMutation, useQuery, useQueryClient} from "react-query";
-import UmetricAPI from "../services/UmetricAPI";
 import * as Linking from "expo-linking";
+import { Q } from '@nozbe/watermelondb'
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 
-export default function EditListEventsScreen ({ navigation, route }) {
+function EditListEventsScreen ({ navigation, route, events, database }) {
+
   const categoryId = route.params.category_id
-  const { getEvents, deleteEvent, updateEvents } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
-
-  const deleteMutation = useMutation(
-    (eventId) => deleteEvent({ eventId }))
-  const orderMutation = useMutation(
-      (events) => updateEvents({events})
-  )
-  const isDeleteSuccess = deleteMutation.isSuccess
-  const isOrderSuccess = orderMutation.isSuccess
-  const queryClient = useQueryClient()
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -34,23 +24,24 @@ export default function EditListEventsScreen ({ navigation, route }) {
     })
   }, [])
 
-  useEffect(() => {
-    if (isDeleteSuccess || isOrderSuccess) {
-      queryClient.invalidateQueries('events', categoryId).then(() =>
-        RootNavigation.navigate('ListEditEvents', { category_id: categoryId })
-      )
-    }
-  }, [isDeleteSuccess, isOrderSuccess])
-
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
+  const deleteEvent = async (eventId) => {
+    await database.write(async () => {
+      const ev = await database.get('events').find(eventId)
+      await ev.markAsDeleted()
+    })
   }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
+
+  const updateEventsOrder = async (updatedEvents) => {
+    await database.write(async () => {
+      for (const e of updatedEvents) {
+        const ev = await database.get('events').find(e.id)
+        await ev.update((item) => { item.order = e.order })
+      }
+    })
   }
 
   const onNamePress = (item) => Linking.openURL(item.action)
-  const onEditPress = (item) => RootNavigation.navigate('EditEvent', { event_id: item.id, category_id: categoryId })
+  const onEditPress = (item) => RootNavigation.navigate('EditEvent', { event_id: item.id })
   const onDeletePress = (item) => Alert.alert(
     i18n.t('delete') + ' ' + item.name + '?',
     i18n.t('confirmDelete'),
@@ -60,30 +51,24 @@ export default function EditListEventsScreen ({ navigation, route }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: i18n.t('yes'), onPress: () => deleteMutation.mutate(item.id) }
+      { text: i18n.t('yes'), onPress: () => deleteEvent(item.id) }
     ],
     { cancelable: false }
   )
 
   const onUpPress = (item) => {
-    const index = data.findIndex(e => e.id === item.id)
+    const index = events.findIndex(e => e.id === item.id)
     if (index > 0) {
-      const oldPrev = data[index - 1]
-      const itemOrder = { "id": item.id, "order": oldPrev.order}
-      const oldPrevOrder = { "id": oldPrev.id, "order": item.order}
-
-      orderMutation.mutate([itemOrder, oldPrevOrder])
+      const oldPrev = events[index - 1]
+      updateEventsOrder([{ id: item.id, order: oldPrev.order }, { id: oldPrev.id, order: item.order }])
     }
   }
 
   const onDownPress = (item) => {
-    const index = data.findIndex(e => e.id === item.id)
-    if (index < data.length - 1) {
-      const oldNext = data[index + 1]
-      const itemOrder = { "id": item.id, "order": oldNext.order}
-      const oldNextOrder = { "id": oldNext.id, "order": item.order}
-
-      orderMutation.mutate([itemOrder, oldNextOrder])
+    const index = events.findIndex(e => e.id === item.id)
+    if (index < events.length - 1) {
+      const oldNext = events[index + 1]
+      updateEventsOrder([{ id: item.id, order: oldNext.order }, { id: oldNext.id, order: item.order }])
     }
   }
 
@@ -100,12 +85,25 @@ export default function EditListEventsScreen ({ navigation, route }) {
   return (
           <FlatList
       style={styles.flatlist}
-      data={data.sort((a, b) => a.order - b.order)}
+      data={events}
       renderItem={renderItem}
       keyExtractor={item => "" + item.id}
     />
   )
 }
+
+const enhance = withObservables(['route'], ({ database, route }) => ({
+  events: database
+      .collections
+      .get('events')
+      .query(
+          Q.where('category_id', route.params.category_id),
+          Q.sortBy('order')
+      )
+      .observeWithColumns(['name', 'icon', 'active', 'order'])
+}))
+
+export default withDatabase(enhance(EditListEventsScreen))
 
 const styles = StyleSheet.create({
   flatlist: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import Icon from '../components/Icon'
@@ -48,10 +48,10 @@ export default function Goal ({ goal }) {
       return (
                 <View>
                     <TouchableOpacity onPress={goToPomodoro} style={styles.icon}>
-                        <Icon icon="build/img/focused.svg" />
+                        <Icon icon="Circle" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={gotoEdit} style={styles.icon}>
-                        <Icon icon="build/img/pencil.svg" />
+                        <Icon icon="Pencil" />
                     </TouchableOpacity>
                 </View>
       )

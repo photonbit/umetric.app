@@ -1,22 +1,59 @@
-import React from 'react'
-import {SvgXml} from 'react-native-svg'
+import React, { useState, useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
 
-import UmetricAPI from '../services/UmetricAPI'
-import {useQuery} from "react-query";
+const iconCache = {};
 
-export default function Icon({icon}) {
-    const emptySVG = '<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>'
-    const {getIcon} = UmetricAPI()
-    const {data, isError, isLoading} = useQuery(['icon', icon], getIcon)
+export default function Icon({ icon }) {
+  const [loadedIcon, setLoadedIcon] = useState(iconCache[icon] || null);
+  const [loading, setLoading] = useState(!iconCache[icon]);
 
-    if (isError || isLoading) {
-        return (
-            <SvgXml xml={emptySVG} width="100%" height="100%"/>
-        );
+  useEffect(() => {
+    if (iconCache[icon]) {
+      setLoadedIcon(iconCache[icon]);
+      setLoading(false);
+      return;
     }
 
+    let isMounted = true;
 
+    async function loadIcon() {
+      try {
+        const module = await import('@hugeicons/core-free-icons');
+        const IconComponent = module[`${icon}Icon`];
+
+        if (IconComponent) {
+          iconCache[icon] = IconComponent;
+
+          if (isMounted) {
+            setLoadedIcon(IconComponent);
+            setLoading(false);
+          }
+        }
+      } catch (error) {
+        console.error(`Error loading icon: ${icon}`, error);
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadIcon();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [icon]);
+
+  if (loading) {
     return (
-        <SvgXml xml={data} width="100%" height="100%"/>
-    )
+      <View>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (!loadedIcon) {
+    return <View><ActivityIndicator size="large" /></View>;
+  }
+
+  return <HugeiconsIcon icon={loadedIcon} size="100%" />;
 }

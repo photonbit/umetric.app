@@ -1,32 +1,23 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react'
-import {ActivityIndicator, FlatList, StyleSheet, Text, View} from 'react-native'
-import {useMutation, useQuery, useQueryClient} from 'react-query'
+import React, {useLayoutEffect} from 'react'
+import {FlatList, StyleSheet, Text, View} from 'react-native'
 import * as Linking from 'expo-linking'
 import i18n from 'i18n-js'
+import { Q } from '@nozbe/watermelondb'
 
 import Element from '../components/Element'
-
-import UmetricAPI from '../services/UmetricAPI'
 import * as RootNavigation from "../navigation/RootNavigation";
 import {Feather} from "@expo/vector-icons";
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
+import EventLog from '../model/EventLog'
 
-export default function ListCategoriesScreen ({ navigation, route }) {
-  const categoryId = route.params.category_id
-  const [event, setEvent] = useState({
-    id: '',
-    action: '',
-    name: '',
-    icon: ''
-  })
-  const { getEvents, logEvent } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery(['events', categoryId], getEvents)
-  const mutation = useMutation((eventId) => logEvent({ eventId: eventId, duration: null }))
-  const { isSuccess } = mutation
-  const queryClient = useQueryClient()
+function ListEventsScreen ({ navigation, route, events, database }) {
 
-  const onPress = (item) => {
-    setEvent(item)
-    mutation.mutate(item.id)
+  const onPress = async (item) => {
+    EventLog.logEvent(database, item.id)
+    if (item.action) {
+      Linking.openURL(item.action)
+    }
+    RootNavigation.navigate('ListCategories')
   }
 
   const renderItem = ({ item }) => (
@@ -35,33 +26,13 @@ export default function ListCategoriesScreen ({ navigation, route }) {
     onPress={() => onPress(item)} />
   )
 
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('commitments').then(() => {
-            if (event.action) {
-              Linking.openURL(event.action)
-            }
-
-            RootNavigation.navigate('ListCategories')
-          }
-      )
-    }
-  }, [isSuccess])
-
   useLayoutEffect(() => {
     navigation.setOptions({
       title: route.params.category_name
     })
-  }, [])
+  }, [navigation, route.params.category_name])
 
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
-  }
-
-  if (data.length === 0) {
+  if (!events.length) {
     return (
         <View style={styles.help}>
           <Feather name='arrow-right' size={60} style={styles.swipe}/>
@@ -74,7 +45,7 @@ export default function ListCategoriesScreen ({ navigation, route }) {
           <FlatList
           style={styles.flatlist}
           contentContainerStyle={{ alignItems: 'center' }}
-      data={data.sort((a, b) => a.order - b.order)}
+      data={events}
       renderItem={renderItem}
       horizontal={false}
         numColumns={2}
@@ -82,6 +53,20 @@ export default function ListCategoriesScreen ({ navigation, route }) {
     />
   )
 }
+
+const enhance = withObservables(['route'], ({ database, route }) => ({
+  events: database
+      .collections
+      .get('events')
+      .query(
+          Q.where('category_id', route.params.category_id),
+          Q.where('active', true),
+          Q.sortBy('order')
+      )
+      .observeWithColumns(['name', 'icon', 'active', 'order'])
+}))
+
+export default withDatabase(enhance(ListEventsScreen))
 
 const styles = StyleSheet.create({
   flatlist: {

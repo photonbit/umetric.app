@@ -1,15 +1,17 @@
 // screens/QuestionScreen.js
 import React from 'react';
+import { Text, View } from 'react-native';
+import { withObservables, withDatabase } from '@nozbe/watermelondb/react';
+import { mergeMap } from 'rxjs/operators';
+import { useDatabase } from '@nozbe/watermelondb/hooks';
 import Question from '../components/Question';
-import UmetricAPI from '../services/UmetricAPI';
+import { Q } from '@nozbe/watermelondb'
 
-export default function QuestionScreen({ navigation, route }) {
+function QuestionScreen({ navigation, route, questionRaw, localizedQuestion }) {
   const { questionnaire, responseId, questionIndex } = route.params;
-  const question = questionnaire.questions[questionIndex];
   const likertScales = questionnaire.likert_scales.filter((scale) =>
-    question.likert_scale_ids.includes(scale.id)
+    localizedQuestion?.likert_scale_ids?.includes(scale.id)
   );
-  const { submitResponse } = UmetricAPI();
 
   const handleSubmit = async (questionId, responses) => {
     for (const key of Object.keys(responses)) {
@@ -26,11 +28,27 @@ export default function QuestionScreen({ navigation, route }) {
     }
   };
 
+  if (!localizedQuestion) return <View><Text>No question found</Text></View>;
   return (
-    <Question
-      question={question}
-      likertScales={likertScales}
-      onSubmit={handleSubmit}
-    />
+    <View>
+      <Text>{localizedQuestion.text}</Text>
+      <Question
+        question={localizedQuestion}
+        likertScales={likertScales}
+        onSubmit={handleSubmit}
+      />
+    </View>
   );
 }
+
+const enhance = withObservables(['route'], ({ route, database }) => {
+  const questionId = route?.params?.question_id || '';
+  return {
+    questionRaw: database.collections.get('questions').findAndObserve(questionId),
+    localizedQuestion: database.collections.get('questions').findAndObserve(questionId).pipe(
+      mergeMap(async (q) => (q ? q.getLocalizedInstance() : null))
+    ),
+  };
+});
+
+export default withDatabase(enhance(QuestionScreen));
