@@ -1,23 +1,25 @@
 // screens/QuestionnaireScreen.js
-import React from 'react';
-import {Button, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import i18n from 'i18n-js';
+import { useDatabase } from '@nozbe/watermelondb/hooks';
+import { Q } from '@nozbe/watermelondb';
 
-import UmetricAPI from '../services/UmetricAPI';
-
-export default function QuestionnaireScreen({ navigation, route }) {
-  const questionnaireId = route.params.questionnaire_id
+export default function QuestionnaireScreen({ navigation, route, questionnaires }) {
+  const database = useDatabase();
+  const [questions, setQuestions] = useState([]);
+  const questionnaireId = route?.params?.questionnaire_id || '';
   const [questionnaire, setQuestionnaire] = React.useState(null);
-  const { getQuestionnaire, startQuestionnaire } = UmetricAPI()
 
-  React.useEffect(() => {
-    const fetchQuestionnaire = async () => {
-      const data = await getQuestionnaire(questionnaireId);
-      setQuestionnaire(data);
-    };
-
-    fetchQuestionnaire();
-  }, []);
+  useEffect(() => {
+    if (!questionnaireId) return;
+    const collection = database.collections.get('questions');
+    const subscription = collection
+      .query(Q.where('questionnaire_id', questionnaireId))
+      .observe()
+      .subscribe(setQuestions);
+    return () => subscription.unsubscribe();
+  }, [questionnaireId]);
 
   if (!questionnaire) {
     return null;

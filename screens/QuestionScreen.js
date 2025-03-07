@@ -1,15 +1,27 @@
 // screens/QuestionScreen.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Text, View } from 'react-native';
+import { useDatabase } from '@nozbe/watermelondb/hooks';
 import Question from '../components/Question';
-import UmetricAPI from '../services/UmetricAPI';
+import { Q } from '@nozbe/watermelondb'
 
-export default function QuestionScreen({ navigation, route }) {
+function QuestionScreen({ navigation, route, questions }) {
+  const database = useDatabase();
+  const [question, setQuestion] = useState(null);
+  const questionId = route?.params?.question_id || '';
   const { questionnaire, responseId, questionIndex } = route.params;
-  const question = questionnaire.questions[questionIndex];
   const likertScales = questionnaire.likert_scales.filter((scale) =>
     question.likert_scale_ids.includes(scale.id)
   );
-  const { submitResponse } = UmetricAPI();
+
+  useEffect(() => {
+    if (!questionId) return;
+    const collection = database.collections.get('questions');
+    const subscription = collection.find(questionId)
+      .then(setQuestion)
+      .catch(() => {});
+    return () => { subscription && subscription.unsubscribe?.() };
+  }, [questionId]);
 
   const handleSubmit = async (questionId, responses) => {
     for (const key of Object.keys(responses)) {
@@ -26,11 +38,17 @@ export default function QuestionScreen({ navigation, route }) {
     }
   };
 
+  if (!question) return <View><Text>No question found</Text></View>;
   return (
-    <Question
-      question={question}
-      likertScales={likertScales}
-      onSubmit={handleSubmit}
-    />
+    <View>
+      <Text>{question.text}</Text>
+      <Question
+        question={question}
+        likertScales={likertScales}
+        onSubmit={handleSubmit}
+      />
+    </View>
   );
 }
+
+export default QuestionScreen;

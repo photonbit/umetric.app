@@ -1,39 +1,45 @@
-import React, {useEffect, useState} from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
+import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
-import UmetricAPI from "../services/UmetricAPI";
-import {useMutation, useQueryClient} from "react-query";
+import { useDatabase } from '@nozbe/watermelondb/hooks'
+import { baseStyles, commonStyles } from '../styles/common'
+import {Q} from "@nozbe/watermelondb";
 
-export default function AddCategoryScreen () {
+function AddCategoryScreen({ }) {
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('build/img/apple.svg')
+  const [icon, setIcon] = useState('Apple')
   const [name, setName] = useState('')
-  const { addCategory } = UmetricAPI()
-  const mutation = useMutation((newCategory) => addCategory(newCategory))
-  const queryClient = useQueryClient()
-  const { isSuccess } = mutation
+  const database = useDatabase()
 
-  const saveCategory = () => {
-    mutation.mutate({
-      name: name,
-      icon: icon
+  const saveCategory = async () => {
+    await database.write(async () => {
+      const maxOrderCategory = await database
+        .collections
+        .get('categories')
+        .query(
+          Q.sortBy('order', 'desc'),
+          Q.take(1)
+        )
+        .fetch()
+
+      const newOrder = maxOrderCategory.length > 0 ? maxOrderCategory[0].order + 1 : 1
+
+      await database.get('categories').create((category) => {
+        category.name = name
+        category.icon = icon
+        category.active = true
+        category.order = newOrder
+      })
     })
+    RootNavigation.navigate('ListEditCategories')
   }
 
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('categories').then(()=>
-        RootNavigation.navigate('ListEditCategories')
-      )
-    }
-   }, [isSuccess]);
-
   return (
-    <View style={styles.container}>
+    <View style={baseStyles.container}>
         <IconSelector
             visible={modalVisible}
             setVisible={setModalVisible}
@@ -41,67 +47,20 @@ export default function AddCategoryScreen () {
             setIcon={setIcon}
         />
 
-        <Text style={styles.title}>{i18n.t('name')}</Text>
-        <TextInput onChangeText={setName} value={name} style={styles.input} />
-        <Text style={styles.title}>{i18n.t('icon')}</Text>
+        <Text style={baseStyles.title}>{i18n.t('name')}</Text>
+        <TextInput onChangeText={setName} value={name} style={baseStyles.input} />
+        <Text style={baseStyles.title}>{i18n.t('icon')}</Text>
       <TouchableOpacity
-          style={styles.icon}
-          onPress={() => {
-            setModalVisible(true)
-          }} >
+          style={{ ...commonStyles.icon }}
+          onPress={() => { setModalVisible(true) }} >
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={saveCategory} underlayColor='#99d9f4' disabled={name.length===0}>
-              <Text style={styles.buttonText}>{i18n.t('save')}</Text>
+      <TouchableOpacity style={baseStyles.button} onPress={saveCategory} underlayColor='#99d9f4' disabled={name.length===0}>
+              <Text style={baseStyles.buttonText}>{i18n.t('save')}</Text>
             </TouchableOpacity>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  icon: {
-    height: 90,
-    width: 90,
-    padding: 10
-  },
-  container: {
-    justifyContent: 'center',
-    padding: 20
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center'
-  },
-  button: {
-    height: 36,
-    backgroundColor: '#48BBEC',
-    borderColor: '#48BBEC',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    marginTop: 10,
-    alignSelf: 'stretch',
-    justifyContent: 'center'
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  input: {
-    fontSize: 18,
-    width: '100%',
-    borderColor: '#CCCCCC',
-    backgroundColor: '#FAFAFA',
-    color: '#111111',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginBottom: 10,
-    marginTop: 5
-  }
-})
+export default AddCategoryScreen;

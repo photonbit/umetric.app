@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import UmetricAPI from '../services/UmetricAPI'
+import { useDatabase } from '@nozbe/watermelondb/hooks'
+import { Q } from '@nozbe/watermelondb'
 
-export default function ListQuestionnairesScreen({ navigation }) {
-  const [questionnaires, setQuestionnaires] = useState([]);
-  const { getQuestionnaires } = UmetricAPI()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getQuestionnaires();
-      setQuestionnaires(data);
-    };
-
-    fetchData();
-  }, []);
+function ListQuestionnairesScreen({ questionnaires }) {
+  const database = useDatabase()
 
   const Item = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Questionnaire', { questionnaire_id: item.id })}>
@@ -35,6 +26,8 @@ export default function ListQuestionnairesScreen({ navigation }) {
     </View>
   );
 };
+
+export default ListQuestionnairesScreen;
 
 const styles = StyleSheet.create({
   container: {

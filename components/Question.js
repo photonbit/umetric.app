@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Text, View, Button, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import i18n from "i18n-js";
 

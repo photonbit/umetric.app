@@ -1,63 +1,35 @@
-import React, {useEffect, useState} from 'react'
-import {ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import React, {useState} from 'react'
+import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
-import {useMutation, useQuery, useQueryClient} from "react-query";
-import UmetricAPI from "../services/UmetricAPI";
+import { useDatabase } from '@nozbe/watermelondb/hooks'
+import { baseStyles } from '../styles/common'
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 
-export default function EditEventScreen ({ route }) {
-  const eventId = route.params.event_id
-  const categoryId = route.params.category_id
-  const { getEvent, editEvent } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery(['event', eventId],
-      ({queryKey}) => {
-        return getEvent({queryKey}).then((ev)=> {
-        setName(ev.name)
-        setIcon(ev.icon)
-        setAction(ev.action)
-        return ev
-      })
-  })
-  const mutation = useMutation(
-      (modifiedEvent) => editEvent({eventId, modifiedEvent}))
-  const { isSuccess } = mutation
-  const queryClient = useQueryClient()
-
+function EditEventScreen({ event }) {
+  const database = useDatabase()
+  const [icon, setIcon] = useState(event.icon)
+  const [name, setName] = useState(event.name)
+  const [action, setAction] = useState(event.action)
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState("")
-  const [name, setName] = useState("")
-  const [action, setAction] = useState("")
 
-  const saveEvent = () => {
-    mutation.mutate({
-      name: name,
-      icon: icon,
-      action: action
+  const saveEvent = async () => {
+
+    await database.write(async () => {
+      await event.update((record) => {
+        record.name = name
+        record.icon = icon
+        record.action = action
+      })
     })
-  }
-
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('event', eventId).then(()=>
-          queryClient.invalidateQueries('events').then(()=>
-        RootNavigation.navigate('ListEditEvents', { category_id: categoryId })
-      ))
-    }
-
-   }, [isSuccess]);
-
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>{i18n.t('somethingIsWrong')}: {error.message}...</Text></View>
+    RootNavigation.navigate('ListEditEvents', { category_id: event.category_id })
   }
 
   return (
-    <View style={styles.container}>
+    <View style={baseStyles.container}>
         <IconSelector
             visible={modalVisible}
             setVisible={setModalVisible}
@@ -66,7 +38,7 @@ export default function EditEventScreen ({ route }) {
         />
 
         <Text style={styles.title}>{i18n.t('name')}</Text>
-        <TextInput onChangeText={setName} defaultValue={data.name} style={styles.input} />
+        <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
         <Text style={styles.title}>{i18n.t('actionOptional')}</Text>
         <TextInput onChangeText={setAction} defaultValue={action} style={styles.input} />
         <Text style={styles.title}>{i18n.t('icon')}</Text>
@@ -85,15 +57,20 @@ export default function EditEventScreen ({ route }) {
   )
 }
 
-const styles = StyleSheet.create({
+const enhance = withObservables(['route'], ({ database, route }) => ({
+  event: database
+    .collections
+    .get('events')
+    .findAndObserve(route.params.event_id)
+}))
+
+export default withDatabase(enhance(EditEventScreen));
+
+const styles = {
   icon: {
     height: 90,
     width: 90,
     padding: 10
-  },
-  container: {
-    justifyContent: 'center',
-    padding: 20
   },
   buttonText: {
     fontSize: 18,
@@ -130,4 +107,4 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 5
   }
-})
+}

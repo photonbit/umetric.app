@@ -1,32 +1,32 @@
-import React, { useEffect, useLayoutEffect } from 'react'
-import {ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import React, { useLayoutEffect } from 'react'
+import { Alert, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 
 import EditableElement from '../components/EditableElement'
 import * as RootNavigation from '../navigation/RootNavigation'
-import { useQuery, useQueryClient, useMutation } from 'react-query'
-import UmetricAPI from '../services/UmetricAPI'
+import { Q } from '@nozbe/watermelondb'
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 
-export default function EditListCategoriesScreen ({ navigation }) {
+function EditListCategoriesScreen ({ navigation, categories, database }) {
 
-  const { getCategories, deleteCategory, updateCategories } = UmetricAPI()
-  const { data, error, isError, isLoading } = useQuery('categories', getCategories)
-  if (isLoading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
-  if (isError) {
-    return <View><Text>Something is wrong: {error.message}...</Text></View>
+  const deleteCategory = async (categoryId) => {
+    await database.write(async () => {
+      const category = await database.get('categories').find(categoryId)
+      await category.markAsDeleted()
+    })
   }
 
-  const deleteMutation = useMutation(
-    (categoryId) => deleteCategory(categoryId))
-  const orderMutation = useMutation(
-      (categories) => updateCategories(categories)
-  )
-  const isDeleteSuccess = deleteMutation.isSuccess
-  const isOrderSuccess = orderMutation.isSuccess
-  const queryClient = useQueryClient()
+  const updateCategoryOrder = async (updatedCategories) => {
+    await database.write(async () => {
+      for (const cat of updatedCategories) {
+        const category = await database.get('categories').find(cat.id)
+        await category.update((c) => {
+          c.order = cat.order
+        })
+      }
+    })
+  }
 
   const onNamePress = (item) => RootNavigation.navigate('ListEditEvents', { category_id: item.id })
   const onEditPress = (item) => RootNavigation.navigate('EditCategory', { category_id: item.id })
@@ -39,30 +39,30 @@ export default function EditListCategoriesScreen ({ navigation }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
       },
-      { text: i18n.t('yes'), onPress: () => mutation.mutate(item.id) }
+      { text: i18n.t('yes'), onPress: () => deleteCategory(item.id) }
     ],
     { cancelable: false }
   )
 
   const onUpPress = (item) => {
-    const index = data.findIndex(e => e.id === item.id)
+    const index = categories.findIndex(e => e.id === item.id)
     if (index > 0) {
-      const oldPrev = data[index - 1]
+      const oldPrev = categories[index - 1]
       const itemOrder = { "id": item.id, "order": oldPrev.order}
       const oldPrevOrder = { "id": oldPrev.id, "order": item.order}
 
-      orderMutation.mutate([itemOrder, oldPrevOrder])
+      updateCategoryOrder([itemOrder, oldPrevOrder])
     }
   }
 
   const onDownPress = (item) => {
-    const index = data.findIndex(e => e.id === item.id)
-    if (index < data.length - 1) {
-      const oldNext = data[index + 1]
+    const index = categories.findIndex(e => e.id === item.id)
+    if (index < categories.length - 1) {
+      const oldNext = categories[index + 1]
       const itemOrder = { "id": item.id, "order": oldNext.order}
       const oldNextOrder = { "id": oldNext.id, "order": item.order}
 
-      orderMutation.mutate([itemOrder, oldNextOrder])
+      updateCategoryOrder([itemOrder, oldNextOrder])
     }
   }
 
@@ -75,14 +75,6 @@ export default function EditListCategoriesScreen ({ navigation }) {
       )
     })
   }, [])
-
-  useEffect(() => {
-    if (isDeleteSuccess || isOrderSuccess) {
-      queryClient.invalidateQueries('categories').then(() =>
-        RootNavigation.navigate('ListEditCategories')
-      )
-    }
-  }, [isDeleteSuccess, isOrderSuccess])
 
   const renderItem = ({ item }) => (
     <EditableElement
@@ -97,7 +89,7 @@ export default function EditListCategoriesScreen ({ navigation }) {
   return (
           <FlatList
       style={styles.flatlist}
-      data={data.sort((a, b) => a.order - b.order)}
+      data={categories}
       renderItem={renderItem}
       keyExtractor={item => ""+item.id}
     />
@@ -105,6 +97,16 @@ export default function EditListCategoriesScreen ({ navigation }) {
 }
 
 EditListCategoriesScreen.displayName = 'EditListCategoriesScreen'
+
+const enhance = withObservables([], ({ database }) => ({
+  categories: database
+      .collections
+      .get('categories')
+      .query(Q.sortBy('order'))
+      .observeWithColumns(['name', 'icon', 'active', 'order'])
+}))
+
+export default withDatabase(enhance(EditListCategoriesScreen))
 
 const styles = StyleSheet.create({
   flatlist: {
