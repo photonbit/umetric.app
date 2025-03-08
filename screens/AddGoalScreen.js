@@ -24,22 +24,17 @@ function AddGoalScreen({ database }) {
     setEventModalVisible(true)
   }
 
-const saveGoal = () => {
-  const kind = unit === 0 ? 'times' : 'hours';
-  console.log("Saving goal", number, kind, event.id);
-  database.write(async () => {
-    try {
-      const newGoal = await database.collections.get('goals').create((g) => {
-        g.number = Number(number);
-        g.kind = kind;
-        g.event_id = event.id;
-        g.active = true;
-      });
-      RootNavigation.navigate('Metas', { screen: 'ShowGoals' });
-    } catch (error) {
-      console.error('Failed to save goal:', error);
-    }
+const saveGoal = async () => {
+  await database.write(async () => {
+      const kind = unit === 0 ? 'times' : 'hours';
+      await database.get('goals').create((goal) => {
+          goal.number = Number(number);
+          goal.kind = kind;
+          goal.event_id = event.id;
+          goal.active = true;
+      })
   });
+  RootNavigation.navigate('Metas', {screen: 'ShowGoals'});
 };
   
   return (

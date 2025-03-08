@@ -8,6 +8,7 @@ export default class Goal extends Model {
   @field('number') number;
   @field('kind') kind;
   @field('active') active;
+  @field('event_id') event_id;
 
   @relation('events', 'event_id') event;
   @relation('users', 'user_id') user;

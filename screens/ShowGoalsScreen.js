@@ -75,7 +75,7 @@ const enhance = withObservables([], ({ database }) => ({
   goals: database
     .collections
     .get('goals')
-    .query()
+    .query(Q.where('active', true))
     .observe(),
   eventLogs: database
     .collections
