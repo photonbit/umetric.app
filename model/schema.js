@@ -46,7 +46,7 @@ export const umetricSchema = appSchema({
         { name: 'duration', type: 'number', isOptional: true },
         { name: 'week', type: 'number', isOptional: false },
         { name: 'event_id', type: 'string', isOptional: false, isIndexed: true },
-        { name: 'user_id', type: 'string', isOptional: false, isIndexed: true },
+        { name: 'user_id', type: 'string', isOptional: true, isIndexed: true },
       ],
     }),
     tableSchema({
@@ -56,7 +56,7 @@ export const umetricSchema = appSchema({
         { name: 'kind', type: 'string', isOptional: false, isIndexed: true },
         { name: 'active', type: 'boolean', isOptional: false },
         { name: 'event_id', type: 'string', isOptional: false, isIndexed: true },
-        { name: 'user_id', type: 'string', isOptional: false, isIndexed: true },
+        { name: 'user_id', type: 'string', isOptional: true, isIndexed: true },
       ],
     }),
     tableSchema({

@@ -5,17 +5,18 @@ import { Feather } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import i18n from 'i18n-js'
-import { Q } from '@nozbe/watermelondb'
+import EventLog from '../model/EventLog'
+import { withDatabase } from '@nozbe/watermelondb/react'
 
 import Icon from '../components/Icon'
 
-function PomodoroScreen({ route, eventsLogs }) {
+function PomodoroScreen({ route, database }) {
   const [progress, setProgress] = useState(1.0)
   const [state, setState] = useState('play')
   const [progressTimer, setProgressTimer] = useState()
   const [sound, setSound] = useState()
 
-  const minutes = 25
+  const minutes = 1
   const seconds = minutes * 60
   const [timeLeft, setTimeLeft] = useState(seconds)
   const event = route.params.event
@@ -29,18 +30,9 @@ function PomodoroScreen({ route, eventsLogs }) {
     await sound.playAsync()
   }
 
-  const mutation = useMutation((duration) => logEvent({ eventId: event.id, duration: duration }))
-  const { isSuccess } = mutation
-
   const sendDurationLog = (time) => {
-    mutation.mutate(time)
+    EventLog.logEvent(database, event.id, time)
   }
-
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries('commitments')
-    }
-  }, [isSuccess])
 
   useEffect(() => {
     return sound
@@ -122,7 +114,7 @@ function PomodoroScreen({ route, eventsLogs }) {
   )
 }
 
-export default PomodoroScreen;
+export default withDatabase(PomodoroScreen);
 
 const styles = StyleSheet.create({
   container: {

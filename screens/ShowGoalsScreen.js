@@ -1,26 +1,17 @@
-import React, { useLayoutEffect, useEffect, useState } from 'react'
-import { FlatList, StyleSheet, TouchableOpacity, View, Text, ActivityIndicator } from 'react-native'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+import { FlatList, StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import i18n from 'i18n-js'
-import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { Q } from '@nozbe/watermelondb'
 import { baseStyles } from '../styles/common'
+import { getISOWeek } from "date-fns"
+import { withDatabase, withObservables } from "@nozbe/watermelondb/react";
 
 import Goal from '../components/Goal'
 import * as RootNavigation from '../navigation/RootNavigation'
 
-function getCurrentWeek() {
-  const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 1)
-  const dayOffset = ((start.getDay() + 6) % 7)
-  const diff = now - start + dayOffset * 86400000
-  return Math.ceil(diff / (7 * 86400000))
-}
 
-function ShowGoalsScreen({ navigation, goals }) {
-  const database = useDatabase()
+function ShowGoalsScreen({ navigation, goals, eventLogs, database }) {
   const [commitments, setCommitments] = useState([])
-  const [loading, setLoading] = useState(true)
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,36 +21,41 @@ function ShowGoalsScreen({ navigation, goals }) {
             </TouchableOpacity>
       )
     })
-  }, [])
+  }, [navigation])
 
   useEffect(() => {
-    const fetchCommitments = async () => {
-      const currentWeek = getCurrentWeek()
-      const goalsCollection = database.get('goals')
-      const logsCollection = database.get('logs')
-
-      const goals = await goalsCollection.query().fetch()
-      const logs = await logsCollection.query(Q.where('week', currentWeek)).fetch()
-
-      const commitments = goals.map(goal => {
-        const done = logs.filter(log => log.goal_id === goal.id).length
-        return { ...goal, done }
-      })
-
-      setCommitments(commitments)
-      setLoading(false)
-    }
-
-    fetchCommitments()
-  }, [database])
+    if (!goals) return;
+    const fetchData = async () => {
+      const computed = [];
+      for (const g of goals) {
+        try {
+          const e = await database.collections.get('events').find(g.event_id);
+          const goalLogs = eventLogs.filter(l => l.event_id === e.id);
+          let done = 0;
+          if (g.kind === 'times') {
+            done = goalLogs.length;
+          } else if (g.kind === 'hours') {
+            done = goalLogs.reduce((acc, l) => acc + (l.duration || 0), 0) / 3600;
+          }
+          computed.push({
+            goal_id: g.id,
+            committed: g.number,
+            kind: g.kind,
+            done,
+            event: { id: e.id, name: e.name, icon: e.icon }
+          });
+        } catch (error) {
+          console.log('Error fetching event for goal', error);
+        }
+      }
+      setCommitments(computed);
+    };
+    fetchData();
+  }, [goals, eventLogs, database]);
 
   const renderItem = ({ item }) => (
         <Goal goal={item} />
   )
-
-  if (loading) {
-    return <View><ActivityIndicator size="large" /></View>
-  }
 
   return (
     <View style={baseStyles.container}>
@@ -70,13 +66,25 @@ function ShowGoalsScreen({ navigation, goals }) {
         data={commitments}
         renderItem={renderItem}
         horizontal={true}
-        keyExtractor={item => item.id}
       />
     </View>
   )
 }
 
-export default ShowGoalsScreen;
+const enhance = withObservables([], ({ database }) => ({
+  goals: database
+    .collections
+    .get('goals')
+    .query()
+    .observe(),
+  eventLogs: database
+    .collections
+    .get('event_logs')
+    .query(Q.where('week', getISOWeek(new Date())))
+    .observe()
+}));
+
+export default withDatabase(enhance(ShowGoalsScreen))
 
 const styles = StyleSheet.create({
   flatlist: {

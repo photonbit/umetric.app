@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+// screens/ListQuestionnairesScreen.js
+import React from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { useDatabase } from '@nozbe/watermelondb/hooks'
-import { Q } from '@nozbe/watermelondb'
 
-function ListQuestionnairesScreen({ questionnaires }) {
-  const database = useDatabase()
+import { useNavigation } from '@react-navigation/native';
+import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
+
+const ListQuestionnairesScreen = ({ questionnaires }) => {
+  const navigation = useNavigation();
 
   const Item = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Questionnaire', { questionnaire_id: item.id })}>
@@ -21,13 +23,17 @@ function ListQuestionnairesScreen({ questionnaires }) {
         style={styles.flatlist}
         data={questionnaires}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={Item}
+        renderItem={({ item }) => <Item item={item} />}
       />
     </View>
   );
 };
 
-export default ListQuestionnairesScreen;
+const enhance = withObservables([], ({ database }) => ({
+  questionnaires: database.collections.get('questionnaires').query().observe(),
+}));
+
+export default withDatabase(enhance(ListQuestionnairesScreen));
 
 const styles = StyleSheet.create({
   container: {

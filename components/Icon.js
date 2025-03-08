@@ -10,7 +10,6 @@ export default function Icon({ icon }) {
 
   useEffect(() => {
     if (iconCache[icon]) {
-      // If the icon is already cached, use it immediately
       setLoadedIcon(iconCache[icon]);
       setLoading(false);
       return;

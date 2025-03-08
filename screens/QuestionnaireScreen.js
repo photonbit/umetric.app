@@ -1,46 +1,32 @@
 // screens/QuestionnaireScreen.js
-import React, { useEffect, useState } from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useMemo } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import i18n from 'i18n-js';
-import { useDatabase } from '@nozbe/watermelondb/hooks';
-import { Q } from '@nozbe/watermelondb';
+import { withObservables } from '@nozbe/watermelondb/react';
 
-export default function QuestionnaireScreen({ navigation, route, questionnaires }) {
-  const database = useDatabase();
-  const [questions, setQuestions] = useState([]);
-  const questionnaireId = route?.params?.questionnaire_id || '';
-  const [questionnaire, setQuestionnaire] = React.useState(null);
+const QuestionnaireScreen = ({ navigation, questionnaire }) => {
+  const getRandomQuestions = () => {
+    const shuffledQuestions = [...questionnaire.questions];
+    shuffledQuestions.sort(() => 0.5 - Math.random());
+    return shuffledQuestions.slice(0, 3);
+  };
 
-  useEffect(() => {
-    if (!questionnaireId) return;
-    const collection = database.collections.get('questions');
-    const subscription = collection
-      .query(Q.where('questionnaire_id', questionnaireId))
-      .observe()
-      .subscribe(setQuestions);
-    return () => subscription.unsubscribe();
-  }, [questionnaireId]);
+  const memoizedQuestions = useMemo(() => getRandomQuestions(), [questionnaire.questions]);
+
+  const startQuestionnaireResponse = () => {
+    startQuestionnaire(questionnaire.id).then(response => {
+      navigation.navigate('Question', {
+        questionnaire,
+        responseId: response.id,
+        questionIndex: 0,
+      });
+    }).catch(error => {
+      console.log(error);
+    });
+  };
 
   if (!questionnaire) {
     return null;
-  }
-
-  const getRandomQuestions = () => {
-    const questions = [...questionnaire.questions];
-    questions.sort(() => 0.5 - Math.random());
-    return questions.slice(0, 3);
-  }
-
-  const startQuestionnaireResponse = () => {
-      startQuestionnaire(questionnaireId).then(response => {
-        navigation.navigate('Question', {
-          questionnaire,
-          responseId: response.id,
-          questionIndex: 0,
-        })
-      }).catch(error => {
-        console.log(error)
-      })
   }
 
   return (
@@ -49,15 +35,24 @@ export default function QuestionnaireScreen({ navigation, route, questionnaires 
       <Text style={styles.description}>{questionnaire.description}</Text>
       <Text style={styles.instructions}>{questionnaire.instructions}</Text>
       <Text style={styles.sampleTitle}>Sample Questions:</Text>
-      {getRandomQuestions().map((question, index) => (
+      {memoizedQuestions.map((question, index) => (
         <Text key={index} style={styles.sampleQuestion}>{`${index + 1}. ${question.text}`}</Text>
       ))}
-        <TouchableOpacity style={styles.button} onPress={startQuestionnaireResponse} underlayColor='#99d9f4'>
-          <Text style={styles.buttonText}>{ i18n.t('startQuestionnaire') }</Text>
+      <TouchableOpacity style={styles.button} onPress={startQuestionnaireResponse} underlayColor='#99d9f4'>
+        <Text style={styles.buttonText}>{i18n.t('startQuestionnaire')}</Text>
       </TouchableOpacity>
     </View>
   );
-}
+};
+
+const enhance = withObservables(['route'], ({ route, database }) => {
+  const questionnaireId = route.params.questionnaire_id;
+  return {
+    questionnaire: database.collections.get('questionnaires').findAndObserve(questionnaireId),
+  };
+});
+
+export default enhance(QuestionnaireScreen);
 
 const styles = StyleSheet.create({
   container: {

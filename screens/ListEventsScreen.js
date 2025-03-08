@@ -8,19 +8,16 @@ import Element from '../components/Element'
 import * as RootNavigation from "../navigation/RootNavigation";
 import {Feather} from "@expo/vector-icons";
 import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
+import EventLog from '../model/EventLog'
 
 function ListEventsScreen ({ navigation, route, events, database }) {
 
   const onPress = async (item) => {
-      database.write(async () => {
-        await database.collections.get('event_logs').create((eventLog) => {
-          eventLog.event_id = item.id
-        })
-      })
-      if (item.action) {
-        Linking.openURL(item.action)
-      }
-      RootNavigation.navigate('ListCategories')
+    EventLog.logEvent(database, item.id)
+    if (item.action) {
+      Linking.openURL(item.action)
+    }
+    RootNavigation.navigate('ListCategories')
   }
 
   const renderItem = ({ item }) => (

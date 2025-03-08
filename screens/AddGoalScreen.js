@@ -1,14 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {View, Text, TouchableOpacity, TextInput} from 'react-native'
 import i18n from 'i18n-js'
 import { baseStyles, commonStyles } from '../styles/common'
 import * as RootNavigation from '../navigation/RootNavigation'
 import CategorySelector from "../components/CategorySelector";
+import Element from "../components/Element";
 import EventSelector from "../components/EventSelector";
 import {Feather} from "@expo/vector-icons";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { withDatabase } from '@nozbe/watermelondb/react'
 
-function AddGoalScreen({ events }) {
+function AddGoalScreen({ database }) {
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false)
+  const [eventModalVisible, setEventModalVisible] = useState(false)
+  const [category, setCategory] = useState({ id: '', name: '', icon: 'Apple' })
+  const [event, setEvent] = useState({ id: '', name: '', icon: 'Apple' })
+  const [number, setNumber] = useState('1')
+  const [unit, setUnit] = useState(0)
+
+  const saveCategory = (cat) => {
+    setCategory(cat)
+    setCategoryModalVisible(false)
+    setEventModalVisible(true)
+  }
+
+const saveGoal = () => {
+  const kind = unit === 0 ? 'times' : 'hours';
+  console.log("Saving goal", number, kind, event.id);
+  database.write(async () => {
+    try {
+      const newGoal = await database.collections.get('goals').create((g) => {
+        g.number = Number(number);
+        g.kind = kind;
+        g.event_id = event.id;
+        g.active = true;
+      });
+      RootNavigation.navigate('Metas', { screen: 'ShowGoals' });
+    } catch (error) {
+      console.error('Failed to save goal:', error);
+    }
+  });
+};
+  
   return (
     <View style={baseStyles.container}>
      <CategorySelector
@@ -69,4 +102,4 @@ function AddGoalScreen({ events }) {
   )
 }
 
-export default AddGoalScreen
+export default withDatabase(AddGoalScreen)

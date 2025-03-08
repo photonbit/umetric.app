@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 import { Feather } from '@expo/vector-icons'
@@ -8,43 +8,31 @@ import Element from '../components/Element'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { baseStyles, commonStyles } from '../styles/common'
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
-function EditGoalScreen({ goal }) {
-  const goalId = route.params.goal_id
+function EditGoalScreen({ goal, database }) {
   const [modalVisible, setModalVisible] = useState(false)
-  const [number, setNumber] = useState('')
-  const [unit, setUnit] = useState(0)
-  const [event, setEvent] = useState({
-    id: '',
-    name: '',
-    icon: ''
-  })
+  const [number, setNumber] = useState(goal.number?.toString() || '')
+  const [unit, setUnit] = useState(goal.kind === 'hours' ? 1 : 0)
+  const [event, setEvent] = useState(null)
 
-  // Placeholder for loading goal data
   useEffect(() => {
-    // Replace with Watermelon queries or other data fetching logic
-    setNumber('5')
-    setUnit(0)
-    setEvent({
-      id: '1',
-      name: 'Sample Event',
-      icon: 'icon-name'
-    })
-  }, [])
+    (async () => {
+      const e = await goal.event.fetch()
+      setEvent(e)
+    })()
+  }, [goal])
 
   const saveGoal = () => {
-    let kind;
-    if (unit === 0) {
-      kind = 'times'
-    } else {
-      kind = 'hours'
-    }
-    // Placeholder for saving goal data
-    console.log({
-      number: number,
-      kind: kind,
-      event_id: event.id
+    const kind = unit === 1 ? 'hours' : 'times'
+    database.write(async () => {
+      await goal.update((g) => {
+        g.number = Number(number)
+        g.kind = kind
+        g.event_id = event.id
+      })
     })
+    RootNavigation.goBack()
   }
 
   const plusOne = () => {
@@ -57,18 +45,13 @@ function EditGoalScreen({ goal }) {
     setNumber(newNumber)
   }
 
-  useEffect(() => {
-    // Placeholder for success handling
-    console.log('Goal saved successfully')
-  }, [])
-
   return (
     <View style={baseStyles.container}>
       <EventSelector
         visible={modalVisible}
         setVisible={setModalVisible}
-        selected={event.id}
-        categoryId={event.category_id}
+        selected={event?.id}
+        categoryId={event?.category_id}
         setEvent={setEvent}
       />
       <Text style={baseStyles.header}>{i18n.t('wantToDedicate')}</Text>
@@ -93,7 +76,7 @@ function EditGoalScreen({ goal }) {
           <Feather name="plus-circle" size={40} color="black" />
         </TouchableOpacity>
       </View>
-      <View style={styles.kindSelection}>
+      <View style={commonStyles.kindSelection}>
         <SegmentedControl
           style={commonStyles.kindInput}
           fontStyle={commonStyles.kindInputText}
@@ -110,11 +93,14 @@ function EditGoalScreen({ goal }) {
           element={event}
           onPress={() => { setModalVisible(true) }} />
       </View>
-      <TouchableOpacity style={styles.button} onPress={saveGoal} underlayColor='#99d9f4'>
+      <TouchableOpacity style={baseStyles.button} onPress={saveGoal} underlayColor='#99d9f4'>
         <Text style={baseStyles.text}>{i18n.t('save')}</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
-export default EditGoalScreen;
+const enhance = withObservables(['route'], ({ database, route }) => ({
+  goal: database.collections.get('goals').findAndObserve(route.params.goal_id)
+}))
+export default withDatabase(enhance(EditGoalScreen))

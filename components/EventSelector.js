@@ -3,12 +3,11 @@ import {FlatList, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-n
 import i18n from 'i18n-js'
 import { Q } from '@nozbe/watermelondb'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
-import { withObservables } from '@nozbe/watermelondb/react'
+import {withDatabase, withObservables} from '@nozbe/watermelondb/react'
 
 import Element from '../components/Element'
 
-function EventSelector ({ visible, setVisible, categoryId, selected, setEvent, events }) {
-  const database = useDatabase()
+function EventSelector ({ visible, setVisible, selected, setEvent, events }) {
 
   if (!visible) {
     return <View></View>
@@ -68,12 +67,18 @@ function EventSelector ({ visible, setVisible, categoryId, selected, setEvent, e
 }
 
 const enhance = withObservables(['categoryId'], ({ database, categoryId }) => ({
-  events: database.collections
-    .get('events')
-    .query(Q.where('category_id', categoryId), Q.sortBy('order', Q.asc))
-}));
+  events: database
+      .collections
+      .get('events')
+      .query(
+          Q.where('category_id', categoryId),
+          Q.where('active', true),
+          Q.sortBy('order')
+      )
+      .observeWithColumns(['name', 'icon', 'active', 'order'])
+}))
 
-export default enhance(EventSelector);
+export default withDatabase(enhance(EventSelector));
 
 const styles = StyleSheet.create({
 

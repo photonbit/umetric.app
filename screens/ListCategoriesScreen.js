@@ -10,8 +10,6 @@ import {Feather} from "@expo/vector-icons"
 import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 
 function ListCategoriesScreen ({ navigation, categories }) {
-  const database = useDatabase()
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (

@@ -2,13 +2,11 @@ import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 import { Q } from '@nozbe/watermelondb'
-import { useDatabase } from '@nozbe/watermelondb/hooks'
-import { withObservables } from '@nozbe/watermelondb/react'
+import {withDatabase, withObservables} from '@nozbe/watermelondb/react'
 
 import Element from '../components/Element'
 
 function CategorySelector ({ visible, setVisible, selected, setCategory, categories }) {
-  const database = useDatabase()
 
   if (!categories.length) {
     return (
@@ -64,10 +62,14 @@ function CategorySelector ({ visible, setVisible, selected, setCategory, categor
 }
 
 const enhance = withObservables([], ({ database }) => ({
-  categories: database.collections.get('categories').query(Q.sortBy('order', Q.asc))
+  categories: database
+      .collections
+      .get('categories')
+      .query(Q.where('active', true), Q.sortBy('order'))
+      .observeWithColumns(['name', 'icon', 'active', 'order'])
 }));
 
-export default enhance(CategorySelector);
+export default withDatabase(enhance(CategorySelector));
 
 const styles = StyleSheet.create({
 
