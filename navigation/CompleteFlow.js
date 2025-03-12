@@ -1,6 +1,10 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer'
 import i18n from 'i18n-js'
 
 import { BasicInputFlow } from './InputFlow'
@@ -11,20 +15,28 @@ import { navigationRef } from './RootNavigation'
 
 const Drawer = createDrawerNavigator()
 
-export default function CompleteFlow () {
+export default function CompleteFlow() {
   return (
     <NavigationContainer ref={navigationRef}>
-      <Drawer.Navigator swipeEdgeWidth={300} drawerContent={(props) => {
-      return (
-        <DrawerContentScrollView {...props}>
-            <DrawerItemList {...props} />
-        </DrawerContentScrollView>
-      );
-    }} screenOptions={{ headerShown: false }}>
-        <Drawer.Screen name="Input" component={BasicInputFlow} options={{ title: i18n.t('register') }} />
+      <Drawer.Navigator
+        swipeEdgeWidth={300}
+        drawerContent={(props) => {
+          return (
+            <DrawerContentScrollView {...props}>
+              <DrawerItemList {...props} />
+            </DrawerContentScrollView>
+          )
+        }}
+        screenOptions={{ headerShown: false }}
+      >
+        <Drawer.Screen
+          name="Input"
+          component={BasicInputFlow}
+          options={{ title: i18n.t('register') }}
+        />
         <Drawer.Screen name="Edit" component={EditFlow} options={{ title: i18n.t('edit') }} />
         <Drawer.Screen name="Metas" component={GoalsFlow} options={{ title: i18n.t('goals') }} />
-        { /* Disable QuestionnaireFlow for the first version
+        {/* Disable QuestionnaireFlow for the first version
         <Drawer.Screen name="Cuestionarios" component={QuestionnaireFlow} options={{ title: i18n.t('questionnaires') }} />
         */}
       </Drawer.Navigator>

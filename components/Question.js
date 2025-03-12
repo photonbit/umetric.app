@@ -1,28 +1,25 @@
-import React, { useState } from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import i18n from "i18n-js";
+import React, { useState } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
+import SegmentedControl from '@react-native-segmented-control/segmented-control'
+import i18n from 'i18n-js'
 
 const QuestionComponent = ({ question, likertScales, onSubmit }) => {
   const [selectedValues, setSelectedValues] = useState(
-    likertScales.reduce((acc, curr) => ({ ...acc, [curr.id]: null }), {})
-  );
+    likertScales.reduce((acc, curr) => ({ ...acc, [curr.id]: null }), {}),
+  )
 
   const handleChange = (scaleId, value) => {
-    setSelectedValues({ ...selectedValues, [scaleId]: value + 1 });
-  };
+    setSelectedValues({ ...selectedValues, [scaleId]: value + 1 })
+  }
 
   const handleSubmit = () => {
-    const adjustedValues = Object.entries(selectedValues).reduce(
-      (acc, [scaleId, value]) => {
-        const scale = likertScales.find((s) => s.id === parseInt(scaleId));
-        const adjustedValue = value * scale.slope + scale.intercept;
-        return { ...acc, [scaleId]: adjustedValue };
-      },
-      {}
-    );
-    onSubmit(question.id, adjustedValues);
-  };
+    const adjustedValues = Object.entries(selectedValues).reduce((acc, [scaleId, value]) => {
+      const scale = likertScales.find((s) => s.id === parseInt(scaleId))
+      const adjustedValue = value * scale.slope + scale.intercept
+      return { ...acc, [scaleId]: adjustedValue }
+    }, {})
+    onSubmit(question.id, adjustedValues)
+  }
 
   return (
     <View style={styles.container}>
@@ -35,30 +32,30 @@ const QuestionComponent = ({ question, likertScales, onSubmit }) => {
             <Text style={styles.middleLabel}>{scale.middle_choice_label}</Text>
             <Text style={styles.upperLabel}>{scale.upper_choice_label}</Text>
           </View>
-          <SegmentedControl style={styles.scaleChooser}
+          <SegmentedControl
+            style={styles.scaleChooser}
             values={[...Array(scale.choices).keys()].map((_, index) => `${index + 1}`)}
             selectedIndex={selectedValues[scale.id] - 1}
             onChange={(event) => handleChange(scale.id, event.nativeEvent.selectedSegmentIndex)}
           />
         </View>
       ))}
-      <TouchableOpacity style={styles.button} onPress={handleSubmit} underlayColor='#99d9f4'>
-              <Text style={styles.buttonText}>{i18n.t('save')}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit} underlayColor="#99d9f4">
+        <Text style={styles.buttonText}>{i18n.t('save')}</Text>
       </TouchableOpacity>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    padding: 20
+    padding: 20,
   },
   question: {
     fontSize: 24,
     fontWeight: 'bold',
     paddingVertical: 20,
-
   },
   description: {
     fontSize: 16,
@@ -95,13 +92,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 40,
     alignSelf: 'stretch',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   buttonText: {
     fontSize: 18,
     color: 'white',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
-});
+})
 
-export default QuestionComponent;
+export default QuestionComponent

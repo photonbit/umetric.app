@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native'
 
 export const baseStyles = StyleSheet.create({
   container: {
@@ -34,7 +34,7 @@ export const baseStyles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
-});
+})
 
 export const utilityStyles = {
   shadow: {
@@ -48,19 +48,19 @@ export const utilityStyles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
-};
+}
 
 export const commonStyles = {
   icon: {
     height: 90,
     width: 90,
-    padding: 10
+    padding: 10,
   },
-    numberSelection: {
+  numberSelection: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 80
+    height: 80,
   },
   numberInput: {
     fontSize: 20,
@@ -76,23 +76,22 @@ export const commonStyles = {
     paddingTop: 5,
     paddingBottom: 5,
     marginBottom: 10,
-    marginTop: 5
+    marginTop: 5,
   },
   numberButton: {
-    padding: 15
+    padding: 15,
   },
   kindSelection: {
     height: 70,
-    marginTop: 15
+    marginTop: 15,
   },
   kindInput: {
-    height: 50
+    height: 50,
   },
   kindInputText: {
-    fontSize: 18
+    fontSize: 18,
   },
   categorySelection: {
-    height: 180
-  }
-
-};
+    height: 180,
+  },
+}

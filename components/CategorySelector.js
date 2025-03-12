@@ -2,12 +2,11 @@ import React from 'react'
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 import { Q } from '@nozbe/watermelondb'
-import {withDatabase, withObservables} from '@nozbe/watermelondb/react'
+import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
 import Element from '../components/Element'
 
-function CategorySelector ({ visible, setVisible, selected, setCategory, categories }) {
-
+function CategorySelector({ visible, setVisible, selected, setCategory, categories }) {
   if (!categories.length) {
     return (
       <View>
@@ -19,65 +18,69 @@ function CategorySelector ({ visible, setVisible, selected, setCategory, categor
   const renderItem = ({ item }) => {
     const style = item.id === selected ? styles.selected : styles.icon
     return (
-            <View style={style}>
-                <Element
-                element={item}
-                onPress={() => { setCategory(item); setVisible(false) }} />
-            </View>
+      <View style={style}>
+        <Element
+          element={item}
+          onPress={() => {
+            setCategory(item)
+            setVisible(false)
+          }}
+        />
+      </View>
     )
   }
 
   return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={visible}
-            onRequestClose={() => {
-              setVisible(!visible)
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>{i18n.t('chooseCategory')}</Text>
-                <FlatList
-                    style={styles.flatlist}
-                    data={categories}
-                    renderItem={renderItem}
-                    horizontal={false}
-                    numColumns={2}
-                    keyExtractor={item => item.id}
-                />
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => {
+        setVisible(!visible)
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>{i18n.t('chooseCategory')}</Text>
+          <FlatList
+            style={styles.flatlist}
+            data={categories}
+            renderItem={renderItem}
+            horizontal={false}
+            numColumns={2}
+            keyExtractor={(item) => item.id}
+          />
 
-                <TouchableOpacity
-                  style={styles.button}
-                  underlayColor='#99d9f4'
-                  onPress={() => {
-                    setVisible(!visible)
-                  }}>
-                  <Text style={styles.textStyle}>{i18n.t('keepPrevious')}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-        </Modal>
+          <TouchableOpacity
+            style={styles.button}
+            underlayColor="#99d9f4"
+            onPress={() => {
+              setVisible(!visible)
+            }}
+          >
+            <Text style={styles.textStyle}>{i18n.t('keepPrevious')}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
   )
 }
 
 const enhance = withObservables([], ({ database }) => ({
-  categories: database
-      .collections
-      .get('categories')
-      .query(Q.where('active', true), Q.sortBy('order'))
-      .observeWithColumns(['name', 'icon', 'active', 'order'])
-}));
+  categories: database.collections
+    .get('categories')
+    .query(Q.where('active', true), Q.sortBy('order'))
+    .observeWithColumns(['name', 'icon', 'active', 'order']),
+}))
 
-export default withDatabase(enhance(CategorySelector));
+export default withDatabase(enhance(CategorySelector))
 
 const styles = StyleSheet.create({
-
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     marginTop: 20,
@@ -90,25 +93,25 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5
+    elevation: 5,
   },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   modalText: {
     marginBottom: 5,
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   flatlist: {
-    flex: 1
+    flex: 1,
   },
   button: {
     height: 36,
@@ -118,6 +121,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 10,
     alignSelf: 'stretch',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 })

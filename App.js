@@ -25,7 +25,6 @@ import Toast from 'react-native-toast-message'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
 
-
 import CompleteFlow from './navigation/CompleteFlow'
 import * as RootNavigation from './navigation/RootNavigation'
 import { en, es, pt, jp, zh, ru, ph, de } from './i18n/supportedLanguages'
@@ -44,8 +43,7 @@ import QuestionLikert from './model/QuestionLikert'
 import Questionnaire from './model/Questionnaire'
 import Response from './model/Response'
 import User from './model/User'
-import {setGenerator} from "@nozbe/watermelondb/utils/common/randomId";
-
+import { setGenerator } from '@nozbe/watermelondb/utils/common/randomId'
 
 i18n.fallbacks = true
 i18n.translations = { en, es, pt, jp, zh, ru, ph, de }
@@ -53,11 +51,22 @@ i18n.locale = Localization.getLocales()[0].languageCode
 
 LogBox.ignoreLogs(['Setting a timer'])
 
-setGenerator(() => uuidv4());
+setGenerator(() => uuidv4())
 const adapter = new SQLiteAdapter({ schema: umetricSchema })
 const database = new Database({
   adapter,
-  modelClasses: [Category, Event, EventLog, Goal, LikertScale, Question, QuestionLikert, Questionnaire, Response, User],
+  modelClasses: [
+    Category,
+    Event,
+    EventLog,
+    Goal,
+    LikertScale,
+    Question,
+    QuestionLikert,
+    Questionnaire,
+    Response,
+    User,
+  ],
   actionsEnabled: true,
 })
 
@@ -70,31 +79,31 @@ const App = () => {
         const category_id = parseInt(parts[1])
         RootNavigation.navigate('ListEvents', { category_id: category_id })
       }
-    };
+    }
 
     Linking.addEventListener('url', ({ url }) => {
       handleUrl(url)
-    });
+    })
 
     Linking.getInitialURL().then((url) => {
       if (url) {
         handleUrl(url)
       }
-    });
+    })
 
     return () => {
       if (Linking) {
         Linking.removeEventListener('url')
       }
-    };
-  }, []);
+    }
+  }, [])
 
   return (
-      <DatabaseProvider database={database}>
-        <CompleteFlow/>
-        <Toast />
-      </DatabaseProvider>
+    <DatabaseProvider database={database}>
+      <CompleteFlow />
+      <Toast />
+    </DatabaseProvider>
   )
 }
 
-export default App;
+export default App

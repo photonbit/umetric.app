@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 
@@ -7,9 +7,9 @@ import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { baseStyles } from '../styles/common'
-import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
+import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
-function EditEventScreen({ event }) {
+function EditEventScreen({ event, category }) {
   const database = useDatabase()
   const [icon, setIcon] = useState(event.icon)
   const [name, setName] = useState(event.name)
@@ -17,7 +17,6 @@ function EditEventScreen({ event }) {
   const [modalVisible, setModalVisible] = useState(false)
 
   const saveEvent = async () => {
-
     await database.write(async () => {
       await event.update((record) => {
         record.name = name
@@ -30,52 +29,50 @@ function EditEventScreen({ event }) {
 
   return (
     <View style={baseStyles.container}>
-        <IconSelector
-            visible={modalVisible}
-            setVisible={setModalVisible}
-            selected={icon}
-            setIcon={setIcon}
-        />
+      <IconSelector
+        visible={modalVisible}
+        setVisible={setModalVisible}
+        selected={icon}
+        setIcon={setIcon}
+      />
 
-        <Text style={styles.title}>{i18n.t('name')}</Text>
-        <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
-        <Text style={styles.title}>{i18n.t('actionOptional')}</Text>
-        <TextInput onChangeText={setAction} defaultValue={action} style={styles.input} />
-        <Text style={styles.title}>{i18n.t('icon')}</Text>
+      <Text style={styles.title}>{i18n.t('name')}</Text>
+      <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
+      <Text style={styles.title}>{i18n.t('actionOptional')}</Text>
+      <TextInput onChangeText={setAction} defaultValue={action} style={styles.input} />
+      <Text style={styles.title}>{i18n.t('icon')}</Text>
       <TouchableOpacity
-          style={styles.icon}
-          onPress={() => {
-            setModalVisible(true)
-          }} >
+        style={styles.icon}
+        onPress={() => {
+          setModalVisible(true)
+        }}
+      >
         <Icon icon={icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={saveEvent} underlayColor='#99d9f4'>
-              <Text style={styles.buttonText}>{i18n.t('save')}</Text>
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={saveEvent} underlayColor="#99d9f4">
+        <Text style={styles.buttonText}>{i18n.t('save')}</Text>
+      </TouchableOpacity>
     </View>
   )
 }
 
 const enhance = withObservables(['route'], ({ database, route }) => ({
-  event: database
-    .collections
-    .get('events')
-    .findAndObserve(route.params.event_id)
+  event: database.collections.get('events').findAndObserve(route.params.event_id),
 }))
 
-export default withDatabase(enhance(EditEventScreen));
+export default withDatabase(enhance(EditEventScreen))
 
 const styles = {
   icon: {
     height: 90,
     width: 90,
-    padding: 10
+    padding: 10,
   },
   buttonText: {
     fontSize: 18,
     color: 'white',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   button: {
     height: 36,
@@ -86,11 +83,11 @@ const styles = {
     marginBottom: 10,
     marginTop: 10,
     alignSelf: 'stretch',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   input: {
     fontSize: 18,
@@ -105,6 +102,6 @@ const styles = {
     paddingTop: 5,
     paddingBottom: 5,
     marginBottom: 10,
-    marginTop: 5
-  }
+    marginTop: 5,
+  },
 }

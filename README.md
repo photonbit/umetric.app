@@ -6,7 +6,6 @@ Entry level application for self behavioral analysis and modification.
 
 You can read more about the stories behind this app here: https://dani.photonbit.es/category/umetric/
 
-
 ## Installation
 
 ```bash
@@ -19,7 +18,7 @@ npm install
 expo start
 ```
 
-This is written with Expo, so you can take a walk through https://docs.expo.io/workflow/expo-cli/ 
+This is written with Expo, so you can take a walk through https://docs.expo.io/workflow/expo-cli/
 
 ## Contributing
 

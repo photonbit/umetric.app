@@ -18,9 +18,7 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/ba8befe0-a5d2-40e8-a94b-35673832320c"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "umetric.apk"
@@ -37,18 +35,13 @@
     },
     "plugins": [
       "expo-localization",
-      [
-        "@morrowdigital/watermelondb-expo-plugin",
-        { "disableJsi": true }
-      ],
+      ["@morrowdigital/watermelondb-expo-plugin", { "disableJsi": true }],
       [
         "expo-build-properties",
         {
           "android": {
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }

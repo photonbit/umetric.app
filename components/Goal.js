@@ -1,22 +1,22 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 
-export default function Goal ({ goal }) {
+export default function Goal({ goal }) {
   const [action, setAction] = useState(false)
 
   const DoneSquare = (key) => {
-    return (<View style={styles.done} key={key} />)
+    return <View style={styles.done} key={key} />
   }
 
   const NotDoneSquare = (key) => {
-    return (<View style={styles.notDone} key={key}/>)
+    return <View style={styles.notDone} key={key} />
   }
 
   const OverdoneSquare = (key) => {
-    return (<View style={styles.overDone} key={key}/>)
+    return <View style={styles.overDone} key={key} />
   }
 
   const drawGoal = () => {
@@ -46,31 +46,29 @@ export default function Goal ({ goal }) {
 
     if (action) {
       return (
-                <View>
-                    <TouchableOpacity onPress={goToPomodoro} style={styles.icon}>
-                        <Icon icon="Circle" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={gotoEdit} style={styles.icon}>
-                        <Icon icon="Pencil" />
-                    </TouchableOpacity>
-                </View>
+        <View>
+          <TouchableOpacity onPress={goToPomodoro} style={styles.icon}>
+            <Icon icon="Circle" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={gotoEdit} style={styles.icon}>
+            <Icon icon="Pencil" />
+          </TouchableOpacity>
+        </View>
       )
     } else {
       return (
-                <TouchableOpacity style={styles.icon} onPress={ () => setAction(!action)} >
-                    <Icon icon={goal.event.icon} />
-                </TouchableOpacity>
+        <TouchableOpacity style={styles.icon} onPress={() => setAction(!action)}>
+          <Icon icon={goal.event.icon} />
+        </TouchableOpacity>
       )
     }
   }
 
   return (
-      <View style={styles.container}>
-          <TouchableOpacity onPress={ () => setAction(!action)} >
-              {drawGoal()}
-          </TouchableOpacity>
-          {drawFooter()}
-      </View>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setAction(!action)}>{drawGoal()}</TouchableOpacity>
+      {drawFooter()}
+    </View>
   )
 }
 
@@ -79,14 +77,14 @@ const styles = StyleSheet.create({
     width: 50,
     margin: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   done: {
     backgroundColor: '#48BBEC',
     width: 40,
     height: 40,
     padding: 1,
-    margin: 5
+    margin: 5,
   },
   notDone: {
     borderColor: '#48BBEC',
@@ -94,19 +92,19 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     padding: 1,
-    margin: 5
+    margin: 5,
   },
   overDone: {
     backgroundColor: '#2093C4',
     width: 40,
     height: 40,
     padding: 1,
-    margin: 5
+    margin: 5,
   },
   icon: {
     width: 50,
     height: 50,
     margin: 5,
-    padding: 1
-  }
+    padding: 1,
+  },
 })

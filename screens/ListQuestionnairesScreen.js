@@ -1,21 +1,24 @@
 // screens/ListQuestionnairesScreen.js
-import React from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import React from 'react'
+import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native'
 
-import { useNavigation } from '@react-navigation/native';
-import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
+import { useNavigation } from '@react-navigation/native'
+import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
 const ListQuestionnairesScreen = ({ questionnaires }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
   const Item = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Questionnaire', { questionnaire_id: item.id })}>
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() => navigation.navigate('Questionnaire', { questionnaire_id: item.id })}
+    >
       <Text style={styles.title}>{item.name}</Text>
       <Text style={styles.shortName}>{item.short_name}</Text>
       <Text style={styles.description}>{item.description}</Text>
       <Text style={styles.source}>Source: {item.source}</Text>
     </TouchableOpacity>
-  );
+  )
 
   return (
     <View style={styles.container}>
@@ -26,25 +29,26 @@ const ListQuestionnairesScreen = ({ questionnaires }) => {
         renderItem={({ item }) => <Item item={item} />}
       />
     </View>
-  );
-};
+  )
+}
 
 const enhance = withObservables([], ({ database }) => ({
-  questionnaires: database.collections.get('questionnaires')
+  questionnaires: database.collections
+    .get('questionnaires')
     .query()
     .observeWithColumns([])
     .pipe(
       mergeMap(async (items) => {
-        const results = [];
+        const results = []
         for (const q of items) {
-          results.push({ id: q.id, ...(await q.getLocalizedInstance()) });
+          results.push({ id: q.id, ...(await q.getLocalizedInstance()) })
         }
-        return results;
-      })
+        return results
+      }),
     ),
-}));
+}))
 
-export default withDatabase(enhance(ListQuestionnairesScreen));
+export default withDatabase(enhance(ListQuestionnairesScreen))
 
 const styles = StyleSheet.create({
   container: {
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   title: {
     fontSize: 20,
@@ -74,4 +78,4 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     fontSize: 12,
   },
-});
+})

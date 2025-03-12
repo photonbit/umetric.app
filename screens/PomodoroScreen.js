@@ -21,10 +21,8 @@ function PomodoroScreen({ route, database }) {
   const [timeLeft, setTimeLeft] = useState(seconds)
   const event = route.params.event
 
-  async function playSound () {
-    const { sound } = await Audio.Sound.createAsync(
-      require('../assets/ring.wav')
-    )
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(require('../assets/ring.wav'))
     setSound(sound)
 
     await sound.playAsync()
@@ -50,12 +48,16 @@ function PomodoroScreen({ route, database }) {
       resetTimer('play')
       playSound()
     } else {
-      setProgressTimer(setTimeout(() => {
-        setTimeLeft(timeLeft - 1)
-      }, 1000))
+      setProgressTimer(
+        setTimeout(() => {
+          setTimeLeft(timeLeft - 1)
+        }, 1000),
+      )
     }
 
-    return () => { clearTimeout(progressTimer) }
+    return () => {
+      clearTimeout(progressTimer)
+    }
   }, [timeLeft, state])
 
   const resetTimer = (newState) => {
@@ -85,63 +87,66 @@ function PomodoroScreen({ route, database }) {
   const focusMessage = () => {
     if (state === 'square') {
       return (
-                <View>
-                    <Text style={styles.focusText}>{i18n.t('focusOn')} {event.name}</Text>
-                </View>
+        <View>
+          <Text style={styles.focusText}>
+            {i18n.t('focusOn')} {event.name}
+          </Text>
+        </View>
       )
     }
   }
 
   return (
-    <View style={styles.container} >
-        <View style={styles.progressArea}>
-          <ProgressCircle
-              style={styles.progress}
-              progress={progress}
-              progressColor={'rgb(134, 65, 244)'}
-              strokeWidth={10} />
-          <View style={styles.progressIcon}>
-              <Icon style={styles.icon} icon={event.icon} />
-          </View>
+    <View style={styles.container}>
+      <View style={styles.progressArea}>
+        <ProgressCircle
+          style={styles.progress}
+          progress={progress}
+          progressColor={'rgb(134, 65, 244)'}
+          strokeWidth={10}
+        />
+        <View style={styles.progressIcon}>
+          <Icon style={styles.icon} icon={event.icon} />
+        </View>
       </View>
       <View style={styles.playArea}>
-          <TouchableOpacity onPress={onPress} >
-              <Feather name={state} size={64} color="black" />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={onPress}>
+          <Feather name={state} size={64} color="black" />
+        </TouchableOpacity>
       </View>
       {focusMessage()}
     </View>
   )
 }
 
-export default withDatabase(PomodoroScreen);
+export default withDatabase(PomodoroScreen)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   progress: {
     height: 280,
-    width: '90%'
+    width: '90%',
   },
   progressArea: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '60%'
+    height: '60%',
   },
   progressIcon: {
     width: 200,
     height: 200,
-    position: 'absolute'
+    position: 'absolute',
   },
   focusText: {
     marginTop: 50,
     fontSize: 24,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   playArea: {
-    marginTop: 30
-  }
+    marginTop: 30,
+  },
 })

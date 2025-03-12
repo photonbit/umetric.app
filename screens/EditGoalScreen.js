@@ -7,7 +7,7 @@ import EventSelector from '../components/EventSelector'
 import Element from '../components/Element'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { baseStyles, commonStyles } from '../styles/common'
-import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
 function EditGoalScreen({ goal, database }) {
@@ -17,7 +17,7 @@ function EditGoalScreen({ goal, database }) {
   const [event, setEvent] = useState(null)
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const e = await goal.event.fetch()
       setEvent(e)
     })()
@@ -56,10 +56,7 @@ function EditGoalScreen({ goal, database }) {
       />
       <Text style={baseStyles.header}>{i18n.t('wantToDedicate')}</Text>
       <View style={commonStyles.numberSelection}>
-        <TouchableOpacity
-          onPress={plusOne}
-          style={commonStyles.numberButton}
-        >
+        <TouchableOpacity onPress={plusOne} style={commonStyles.numberButton}>
           <Feather name="minus-circle" size={40} color="black" />
         </TouchableOpacity>
         <TextInput
@@ -69,10 +66,7 @@ function EditGoalScreen({ goal, database }) {
           style={commonStyles.numberInput}
           keyboardType="number-pad"
         />
-        <TouchableOpacity
-          onPress={minusOne}
-          style={commonStyles.numberButton}
-        >
+        <TouchableOpacity onPress={minusOne} style={commonStyles.numberButton}>
           <Feather name="plus-circle" size={40} color="black" />
         </TouchableOpacity>
       </View>
@@ -91,9 +85,12 @@ function EditGoalScreen({ goal, database }) {
         <Text style={baseStyles.header}>{i18n.t('perWeekTo')}:</Text>
         <Element
           element={event}
-          onPress={() => { setModalVisible(true) }} />
+          onPress={() => {
+            setModalVisible(true)
+          }}
+        />
       </View>
-      <TouchableOpacity style={baseStyles.button} onPress={saveGoal} underlayColor='#99d9f4'>
+      <TouchableOpacity style={baseStyles.button} onPress={saveGoal} underlayColor="#99d9f4">
         <Text style={baseStyles.text}>{i18n.t('save')}</Text>
       </TouchableOpacity>
     </View>
@@ -101,6 +98,6 @@ function EditGoalScreen({ goal, database }) {
 }
 
 const enhance = withObservables(['route'], ({ database, route }) => ({
-  goal: database.collections.get('goals').findAndObserve(route.params.goal_id)
+  goal: database.collections.get('goals').findAndObserve(route.params.goal_id),
 }))
 export default withDatabase(enhance(EditGoalScreen))
