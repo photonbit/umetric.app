@@ -9,7 +9,7 @@ import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { baseStyles } from '../styles/common'
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
-function EditEventScreen({ event, category }) {
+function EditEventScreen({ event }) {
   const database = useDatabase()
   const [icon, setIcon] = useState(event.icon)
   const [name, setName] = useState(event.name)

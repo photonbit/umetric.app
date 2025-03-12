@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { FlatList, StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native'
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Q } from '@nozbe/watermelondb'
 import { baseStyles } from '../styles/common'
@@ -72,7 +72,7 @@ function ShowGoalsScreen({ navigation, goals, eventLogs, database }) {
 }
 
 const enhance = withObservables([], ({ database }) => ({
-  goals: database.collections.get('goals').query(Q.where('active', true)).observe(),
+  goals: database.collections.get('goals').query(Q.where('active', true)).observeWithColumns(['number', 'kind', 'event_id']),
   eventLogs: database.collections
     .get('event_logs')
     .query(Q.where('week', getISOWeek(new Date())))

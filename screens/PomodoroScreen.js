@@ -16,7 +16,7 @@ function PomodoroScreen({ route, database }) {
   const [progressTimer, setProgressTimer] = useState()
   const [sound, setSound] = useState()
 
-  const minutes = 1
+  const minutes = 25
   const seconds = minutes * 60
   const [timeLeft, setTimeLeft] = useState(seconds)
   const event = route.params.event

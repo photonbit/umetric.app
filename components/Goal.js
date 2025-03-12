@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
 import Icon from '../components/Icon'
@@ -42,7 +42,7 @@ export default function Goal({ goal }) {
 
   const drawFooter = () => {
     const goToPomodoro = () => RootNavigation.navigate('Pomodoro', { event: goal.event })
-    const gotoEdit = () => RootNavigation.navigate('EditGoal', { goal_id: goal.goal_id })
+    const gotoEdit = () => RootNavigation.navigate('EditGoal', { goal_id: goal.goal_id, event_id: goal.event.id })
 
     if (action) {
       return (
