@@ -1,32 +1,48 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import i18n from 'i18n-js'
 import { Q } from '@nozbe/watermelondb'
-import { baseStyles } from '../styles/common'
 import { getISOWeek } from 'date-fns'
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
 import Goal from '../components/Goal'
 import * as RootNavigation from '../navigation/RootNavigation'
 
-function ShowGoalsScreen({ navigation, goals, eventLogs, database }) {
+function ShowGoalsScreen({ navigation, goals, eventsCount, eventLogs, database }) {
   const [commitments, setCommitments] = useState([])
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          style={styles.actionIcon}
-          onPress={() => RootNavigation.navigate('AddGoal')}
-        >
-          <Feather name="plus" size={30} color="black" />
-        </TouchableOpacity>
-      ),
-    })
-  }, [navigation])
+    if (eventsCount > 0) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+            style={styles.actionIcon}
+            onPress={() => RootNavigation.navigate('AddGoal')}
+          >
+            <Feather name="plus" size={30} color="black" />
+          </TouchableOpacity>
+        ),
+    })}
+  }, [navigation, eventsCount])
+
+  if (!eventsCount) {
+    return (
+      <View style={styles.help}>
+        <Feather name="arrow-right" size={60} style={styles.swipe} />
+        <Text style={styles.helpText}>{i18n.t('noEventsAtAll')}</Text>
+      </View>
+    )
+  } else if (!goals.length) {
+    return (
+      <View style={styles.help}>
+        <Feather name="arrow-up" size={60} style={styles.addTop} />
+        <Text style={styles.helpText}>{i18n.t('noGoals')}</Text>
+      </View>
+    )
+  }
 
   useEffect(() => {
-    if (!goals) return
     const fetchData = async () => {
       const computed = []
       for (const g of goals) {
@@ -58,7 +74,7 @@ function ShowGoalsScreen({ navigation, goals, eventLogs, database }) {
   const renderItem = ({ item }) => <Goal goal={item} />
 
   return (
-    <View style={baseStyles.container}>
+    <View style={styles.container}>
       <FlatList
         style={styles.flatlist}
         persistentScrollbar={true}
@@ -73,6 +89,7 @@ function ShowGoalsScreen({ navigation, goals, eventLogs, database }) {
 
 const enhance = withObservables([], ({ database }) => ({
   goals: database.collections.get('goals').query(Q.where('active', true)).observeWithColumns(['number', 'kind', 'event_id']),
+  eventsCount: database.collections.get('events').query().observeCount(),
   eventLogs: database.collections
     .get('event_logs')
     .query(Q.where('week', getISOWeek(new Date())))
@@ -91,5 +108,23 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 5,
     marginRight: 10,
+  },
+  help: {
+    flex: 1,
+  },
+  swipe: {
+    marginTop: '20%',
+    paddingLeft: 15,
+  },
+  addTop: {
+    marginTop: 20,
+    padding: 15,
+    alignSelf: 'flex-end',
+  },
+  helpText: {
+    padding: 20,
+    fontSize: 20,
+    color: '#000',
+    marginTop: '5%',
   },
 })

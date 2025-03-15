@@ -19,7 +19,6 @@ export default function CompleteFlow() {
   return (
     <NavigationContainer ref={navigationRef}>
       <Drawer.Navigator
-        swipeEdgeWidth={300}
         drawerContent={(props) => {
           return (
             <DrawerContentScrollView {...props}>
@@ -27,7 +26,10 @@ export default function CompleteFlow() {
             </DrawerContentScrollView>
           )
         }}
-        screenOptions={{ headerShown: false }}
+        screenOptions={{
+            headerShown: false,
+            swipeEdgeWidth: 300,
+        }}
       >
         <Drawer.Screen
           name="Input"

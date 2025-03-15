@@ -9,11 +9,17 @@ import EditEventScreen from '../screens/EditEventScreen'
 import AddCategoryScreen from '../screens/AddCategoryScreen'
 import AddEventScreen from '../screens/AddEventScreen'
 
+import { Header } from './Header'
+
 const EditStack = createStackNavigator()
 
 export function EditFlow() {
   return (
-    <EditStack.Navigator>
+    <EditStack.Navigator
+      screenOptions={{
+        header: (props) => <Header {...props} />,
+      }}
+    >
       <EditStack.Screen
         name="ListEditCategories"
         component={EditListCategoriesScreen}

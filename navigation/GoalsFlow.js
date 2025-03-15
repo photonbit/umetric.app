@@ -6,12 +6,17 @@ import ShowGoalsScreen from '../screens/ShowGoalsScreen'
 import PomodoroScreen from '../screens/PomodoroScreen'
 import AddGoalScreen from '../screens/AddGoalScreen'
 import EditGoalScreen from '../screens/EditGoalScreen'
+import {Header} from "./Header";
 
 const GoalsStack = createStackNavigator()
 
 export function GoalsFlow() {
   return (
-    <GoalsStack.Navigator>
+    <GoalsStack.Navigator
+        screenOptions={{
+        header: (props) => <Header {...props} />,
+      }}
+    >
       <GoalsStack.Screen
         name="ShowGoals"
         component={ShowGoalsScreen}

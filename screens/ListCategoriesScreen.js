@@ -1,6 +1,5 @@
 import React, { useLayoutEffect } from 'react'
 import { Q } from '@nozbe/watermelondb'
-import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { FlatList, Text, StyleSheet, View, TouchableOpacity } from 'react-native'
 import i18n from 'i18n-js'
 

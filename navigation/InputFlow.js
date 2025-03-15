@@ -4,12 +4,17 @@ import i18n from 'i18n-js'
 
 import ListCategoriesScreen from '../screens/ListCategoriesScreen'
 import ListEventsScreen from '../screens/ListEventsScreen'
+import {Header} from "./Header";
 
 const BasicInputStack = createStackNavigator()
 
 export function BasicInputFlow() {
   return (
-    <BasicInputStack.Navigator>
+    <BasicInputStack.Navigator
+        screenOptions={{
+        header: (props) => <Header {...props} />,
+      }}
+    >
       <BasicInputStack.Screen
         name="ListCategories"
         component={ListCategoriesScreen}

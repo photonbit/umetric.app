@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react'
-import { Alert, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import {Alert, FlatList, StyleSheet, TouchableOpacity, View, Text} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import i18n from 'i18n-js'
 
@@ -82,6 +82,15 @@ function EditListEventsScreen({ navigation, route, events, database }) {
     }
   }
 
+  if (events.length === 0) {
+    return (
+      <View style={styles.help}>
+        <Feather name="arrow-up" size={60} style={styles.addTop} />
+        <Text style={styles.helpText}>{i18n.t('noEditEvents')}</Text>
+      </View>
+    )
+  }
+
   const renderItem = ({ item }) => (
     <EditableElement
       element={item}
@@ -119,5 +128,19 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 5,
     marginRight: 10,
+  },
+  help: {
+    flex: 1,
+  },
+  helpText: {
+    padding: 20,
+    fontSize: 20,
+    color: '#000',
+    marginTop: '5%',
+  },
+  addTop: {
+    marginTop: 20,
+    padding: 15,
+    alignSelf: 'flex-end',
   },
 })

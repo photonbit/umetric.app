@@ -3,7 +3,6 @@ import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react
 import i18n from 'i18n-js'
 import Icon from './Icon'
 import icons from '../iconList'
-import { baseStyles } from '../styles/common'
 
 export default function IconSelector({ visible, setVisible, selected, setIcon }) {
   const renderItem = ({ item }) => {
@@ -44,7 +43,7 @@ export default function IconSelector({ visible, setVisible, selected, setIcon })
           />
 
           <TouchableOpacity
-            style={baseStyles.button}
+            style={styles.button}
             underlayColor="#99d9f4"
             onPress={() => {
               setVisible(!visible)
@@ -59,11 +58,12 @@ export default function IconSelector({ visible, setVisible, selected, setIcon })
 }
 
 const styles = StyleSheet.create({
+
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 22
   },
   modalView: {
     margin: 20,
@@ -74,37 +74,47 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 5
   },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   modalText: {
     marginBottom: 5,
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   flatlist: {
     flex: 1,
-    marginBottom: 10,
+    marginBottom: 10
   },
   icon: {
     height: 90,
     width: 90,
-    padding: 10,
+    padding: 10
   },
   selected: {
     borderRadius: 25,
     backgroundColor: '#99d9f4',
     height: 90,
     width: 90,
-    padding: 10,
+    padding: 10
   },
+  button: {
+    height: 36,
+    backgroundColor: '#48BBEC',
+    borderColor: '#48BBEC',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 10,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  }
 })

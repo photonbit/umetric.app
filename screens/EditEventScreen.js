@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
 
 import IconSelector from '../components/IconSelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
-import { baseStyles } from '../styles/common'
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 
 function EditEventScreen({ event }) {
@@ -28,7 +27,7 @@ function EditEventScreen({ event }) {
   }
 
   return (
-    <View style={baseStyles.container}>
+    <View style={styles.container}>
       <IconSelector
         visible={modalVisible}
         setVisible={setModalVisible}
@@ -63,16 +62,20 @@ const enhance = withObservables(['route'], ({ database, route }) => ({
 
 export default withDatabase(enhance(EditEventScreen))
 
-const styles = {
+const styles = StyleSheet.create({
   icon: {
     height: 90,
     width: 90,
-    padding: 10,
+    padding: 10
+  },
+  container: {
+    justifyContent: 'center',
+    padding: 20
   },
   buttonText: {
     fontSize: 18,
     color: 'white',
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   button: {
     height: 36,
@@ -83,11 +86,11 @@ const styles = {
     marginBottom: 10,
     marginTop: 10,
     alignSelf: 'stretch',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   input: {
     fontSize: 18,
@@ -102,6 +105,7 @@ const styles = {
     paddingTop: 5,
     paddingBottom: 5,
     marginBottom: 10,
-    marginTop: 5,
-  },
-}
+    marginTop: 5
+  }
+})
+

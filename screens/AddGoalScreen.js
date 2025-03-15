@@ -184,5 +184,5 @@ const styles = StyleSheet.create({
   },
   categorySelection: {
     height: 180
-  },
+  }
 })

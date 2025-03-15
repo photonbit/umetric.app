@@ -5,12 +5,17 @@ import i18n from 'i18n-js'
 import QuestionScreen from '../screens/QuestionScreen'
 import QuestionnaireScreen from '../screens/QuestionnaireScreen'
 import ListQuestionnairesScreen from '../screens/ListQuestionnairesScreen'
+import {Header} from "./Header";
 
 const QuestionnaireStack = createStackNavigator()
 
 export function QuestionnaireFlow() {
   return (
-    <QuestionnaireStack.Navigator>
+    <QuestionnaireStack.Navigator
+        screenOptions={{
+        header: (props) => <Header {...props} />,
+      }}
+    >
       <QuestionnaireStack.Screen
         name="ListQuestionnaires"
         component={ListQuestionnairesScreen}

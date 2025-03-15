@@ -2,7 +2,6 @@ import React from 'react'
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
-import { baseStyles } from '../styles/common'
 
 import Icon from './Icon'
 
@@ -32,7 +31,7 @@ export default function EditableElement({
         <Icon icon={element.icon} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.title} onPress={onNamePress}>
-        <Text numberOfLines={2} style={[baseStyles.text, styles.text]}>
+        <Text numberOfLines={2} style={[styles.text, styles.text]}>
           {text}
         </Text>
       </TouchableOpacity>
@@ -69,14 +68,14 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: 'white',
+    borderBottomColor: 'white'
   },
   icon: {
     height: 40,
-    width: 40,
+    width: 40
   },
   actionIcon: {
-    padding: 5,
+    padding: 5
   },
   order: {
     flex: 1,
@@ -98,6 +97,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: 'bold',
-    overflow: 'hidden',
-  },
+    overflow: 'hidden'
+  }
+
 })

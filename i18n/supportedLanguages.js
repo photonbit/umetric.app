@@ -44,6 +44,10 @@ const en = {
   startQuestionnaire: 'Start Questionnaire',
   loginFailed: 'Login failed miserably',
   authError: 'Authorization problem, try login again',
+  noGoals: 'Add weekly goals and track them on this screen',
+  noEventsAtAll: 'You need to have at least one event to add a goal',
+  noEditCategories: 'Add categories to organize events',
+  noEditEvents: 'Add events in this category and optionally associate an action to them. The action can be any URL that your phone can open',
 }
 
 const es = {
@@ -85,6 +89,7 @@ const es = {
   logout: 'Cerrar sesión',
   noEvents: 'Desliza a la derecha para editar esta categoría y añadir eventos',
   noCategories: 'Desliza a la derecha para editar y añadir una categoría',
+  noGoals: 'Añade metas semanales y sigue el progreso en esta pantalla',
   events: 'Eventos',
   questionnaires: 'Cuestionarios',
   questionnaire: 'Cuestionario',
@@ -92,6 +97,9 @@ const es = {
   startQuestionnaire: 'Comenzar cuestionario',
   loginFailed: 'El inicio de sesión falló miserablemente',
   authError: 'Problema de autorización, intente iniciar sesión nuevamente',
+  noEventsAtAll: 'Necesitas tener al menos un evento para añadir una meta',
+  noEditCategories: 'Añade categorias para organizar eventos',
+  noEditEvents: 'Añade eventos en esta categoría y opcionalmente asocia una acción a ellos. La acción puede ser cualquier URL que tu teléfono pueda abrir',
 }
 
 const pt = {
@@ -111,7 +119,7 @@ const pt = {
   perWeekTo: 'por semana para',
   wantToDedicate: 'Quer dedicar',
   delete: 'Deletar',
-  confirmDelete: 'Tem certeza que quer deletar isso?',
+  confirmDelete: 'Tem certeza que quer apagar isso?',
   okNo: 'Ok, não',
   yes: 'Sim',
   username: 'Nome de usuário',
@@ -140,6 +148,10 @@ const pt = {
   startQuestionnaire: 'Começar questionário',
   loginFailed: 'O login falhou miseravelmente',
   authError: 'Problema de autorização, tente fazer login novamente',
+  noGoals: 'Adicione metas semanais e acompanhe o progresso nesta tela',
+  noEventsAtAll: 'Precisa ter pelo menos um evento para adicionar uma meta',
+  noEditCategories: 'Adicione categorias para organizar eventos',
+    noEditEvents: 'Adicione eventos nesta categoria e, opcionalmente, associe uma ação a eles. A ação pode ser qualquer URL que seu telefone possa abrir',
 }
 
 const jp = {
@@ -188,6 +200,10 @@ const jp = {
   startQuestionnaire: 'アンケートを開始',
   loginFailed: 'ログインに失敗しました',
   authError: '認証エラー、もう一度ログインしてください',
+  noGoals: '週間のゴールを追加して、この画面で進捗を追跡してください',
+  noEventsAtAll: '目標を追加するには、少なくとも1つのイベントが必要です',
+  noEditCategories: 'イベントを整理するためにカテゴリを追加します',
+    noEditEvents: 'このカテゴリにイベントを追加し、必要に応じてアクションを関連付けます。アクションは、電話が開くことができるURLである必要があります',
 }
 
 const zh = {
@@ -236,6 +252,10 @@ const zh = {
   startQuestionnaire: '开始调查问卷',
   loginFailed: '登录失败',
   authError: '授权问题，请重新登录',
+  noGoals: '添加每周目标并在本屏幕上跟踪',
+  noEventsAtAll: '您需要至少一个事件才能添加目标',
+  noEditCategories: '添加类别以组织事件',
+  noEditEvents: '在此类别中添加事件，必要时将其与操作关联。操作可以是您的电话可以打开的任何URL',
 }
 
 const ru = {
@@ -284,6 +304,10 @@ const ru = {
   startQuestionnaire: 'Начать опрос',
   loginFailed: 'Ошибка входа',
   authError: 'Ошибка авторизации, пожалуйста, войдите снова',
+  noGoals: 'Добавьте еженедельные цели и отслеживайте их на этом экране',
+  noEventsAtAll: 'Вам нужно иметь хотя бы одно событие, чтобы добавить цель',
+  noEditCategories: 'Добавьте категории для организации событий',
+    noEditEvents: 'Добавьте события в эту категорию и при необходимости свяжите их с действием. Действие может быть любым URL, который ваш телефон может открыть',
 }
 
 const ph = {
@@ -332,6 +356,10 @@ const ph = {
   startQuestionnaire: 'Simulan ang Questionnaire',
   loginFailed: 'Nabigo ang pag-login',
   authError: 'May error sa awtorisasyon, mangyaring mag-login muli',
+  noGoals: 'Magdagdag ng lingguhang mga layunin at subaybayan ang mga ito sa screen na ito',
+  noEventsAtAll: 'Kailangan mong magkaroon ng hindi bababa sa isang event upang magdagdag ng layunin',
+  noEditCategories: 'Magdagdag ng mga kategorya upang organisahin ang mga event',
+    noEditEvents: 'Magdagdag ng mga event sa kategoryang ito at kung kinakailangan ay i-associate ang mga ito sa isang aksyon. Ang aksyon ay maaaring anumang URL na maaaring buksan ng iyong telepono',
 }
 
 const de = {
@@ -380,6 +408,10 @@ const de = {
   startQuestionnaire: 'Fragebogen starten',
   loginFailed: 'Anmeldung fehlgeschlagen',
   authError: 'Authentifizierungsfehler, bitte melden Sie sich erneut an',
+  noGoals: 'Fügen Sie wöchentliche Ziele hinzu und verfolgen Sie diese auf diesem Bildschirm',
+  noEventsAtAll: 'Sie müssen mindestens ein Event haben, um ein Ziel hinzuzufügen',
+  noEditCategories: 'Fügen Sie Kategorien hinzu, um Events zu organisieren',
+  noEditEvents: 'Fügen Sie Events in dieser Kategorie hinzu und verknüpfen Sie sie optional mit einer Aktion. Die Aktion kann eine beliebige URL sein, die Ihr Telefon öffnen kann',
 }
 
 export { en, es, pt, jp, zh, ru, ph, de }
