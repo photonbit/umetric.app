@@ -11,7 +11,7 @@ import {withDatabase, withObservables} from "@nozbe/watermelondb/react";
 function AddEventScreen({ route, database, category }) {
   const categoryId = route.params.category_id
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('Apple')
+  const [icon, setIcon] = useState('Tap01')
   const [name, setName] = useState('')
   const [action, setAction] = useState('')
 

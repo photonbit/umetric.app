@@ -10,7 +10,7 @@ import { Q } from '@nozbe/watermelondb'
 
 function AddCategoryScreen({}) {
   const [modalVisible, setModalVisible] = useState(false)
-  const [icon, setIcon] = useState('Apple')
+  const [icon, setIcon] = useState('Tap01')
   const [name, setName] = useState('')
   const database = useDatabase()
 

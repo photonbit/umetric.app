@@ -12,8 +12,8 @@ import { withDatabase } from '@nozbe/watermelondb/react'
 function AddGoalScreen({ database }) {
   const [categoryModalVisible, setCategoryModalVisible] = useState(false)
   const [eventModalVisible, setEventModalVisible] = useState(false)
-  const [category, setCategory] = useState({ id: '', name: '', icon: 'Apple' })
-  const [event, setEvent] = useState({ id: '', name: '', icon: 'Apple' })
+  const [category, setCategory] = useState({ id: '', name: '', icon: 'Tap01' })
+  const [event, setEvent] = useState({ id: '', name: '', icon: 'Tap01' })
   const [number, setNumber] = useState('1')
   const [unit, setUnit] = useState(0)
 
