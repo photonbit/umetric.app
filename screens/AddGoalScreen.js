@@ -36,6 +36,17 @@ function AddGoalScreen({ database }) {
     RootNavigation.navigate('Metas', { screen: 'ShowGoals' })
   }
 
+  const plusOne = () => {
+    const newNumber = (Number(number) + 1).toString()
+    setNumber(newNumber)
+  }
+
+  const minusOne = () => {
+    const newNumber = (Number(number) - 1)
+    if (newNumber > 0)
+      setNumber(newNumber.toString())
+  }
+
   return (
     <View style={styles.container}>
       <CategorySelector
@@ -54,7 +65,7 @@ function AddGoalScreen({ database }) {
       <Text style={styles.title}>{i18n.t('wantToDedicate')}</Text>
       <View style={styles.numberSelection}>
         <TouchableOpacity
-          onPress={() => setNumber((Number(number) - 1).toString())}
+          onPress={minusOne}
           style={styles.numberButton}
         >
           <Feather name="minus-circle" size={40} color="black" />
@@ -66,7 +77,7 @@ function AddGoalScreen({ database }) {
           keyboardType="number-pad"
         />
         <TouchableOpacity
-          onPress={() => setNumber((Number(number) + 1).toString())}
+          onPress={plusOne}
           style={styles.numberButton}
         >
           <Feather name="plus-circle" size={40} color="black" />

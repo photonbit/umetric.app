@@ -24,23 +24,7 @@ function ShowGoalsScreen({ navigation, goals, eventsCount, eventLogs, database }
           </TouchableOpacity>
         ),
     })}
-  }, [navigation, eventsCount])
-
-  if (!eventsCount) {
-    return (
-      <View style={styles.help}>
-        <Feather name="arrow-right" size={60} style={styles.swipe} />
-        <Text style={styles.helpText}>{i18n.t('noEventsAtAll')}</Text>
-      </View>
-    )
-  } else if (!goals.length) {
-    return (
-      <View style={styles.help}>
-        <Feather name="arrow-up" size={60} style={styles.addTop} />
-        <Text style={styles.helpText}>{i18n.t('noGoals')}</Text>
-      </View>
-    )
-  }
+  }, [navigation, eventsCount, goals])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,20 +55,34 @@ function ShowGoalsScreen({ navigation, goals, eventsCount, eventLogs, database }
     fetchData()
   }, [goals, eventLogs, database])
 
-  const renderItem = ({ item }) => <Goal goal={item} />
+  if (!eventsCount) {
+    return (
+      <View style={styles.help}>
+        <Feather name="arrow-right" size={60} style={styles.swipe} />
+        <Text style={styles.helpText}>{i18n.t('noEventsAtAll')}</Text>
+      </View>
+    )
+  } else if (!goals.length) {
+    return (
+      <View style={styles.help}>
+        <Feather name="arrow-up" size={60} style={styles.addTop} />
+        <Text style={styles.helpText}>{i18n.t('noGoals')}</Text>
+      </View>
+    )
+  } else {
+    const renderItem = ({item}) => <Goal goal={item}/>
 
-  return (
-    <View style={styles.container}>
-      <FlatList
-        style={styles.flatlist}
-        persistentScrollbar={true}
-        contentContainerStyle={{ alignItems: 'flex-end', justifyContent: 'space-between' }}
-        data={commitments}
-        renderItem={renderItem}
-        horizontal={true}
-      />
-    </View>
-  )
+    return (
+          <FlatList
+              style={styles.flatlist}
+              persistentScrollbar={true}
+              contentContainerStyle={{alignItems: 'flex-end', justifyContent: 'space-between'}}
+              data={commitments}
+              renderItem={renderItem}
+              horizontal={true}
+          />
+    )
+  }
 }
 
 const enhance = withObservables([], ({ database }) => ({

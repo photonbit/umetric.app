@@ -17,24 +17,30 @@ function EditGoalScreen({ goal, goalEvent, database }) {
 
   const saveGoal = () => {
     const kind = unit === 1 ? 'hours' : 'times'
+    const amount = Number(number)
     database.write(async () => {
-      await goal.update((g) => {
-        g.number = Number(number)
-        g.kind = kind
-        g.event.set(event)
-      })
+      if (amount === 0) {
+        await goal.markAsDeleted()
+      } else {
+        await goal.update((g) => {
+          g.number = amount
+          g.kind = kind
+          g.event.set(event)
+        })
+      }
     })
     RootNavigation.navigate('Metas', { screen: 'ShowGoals' })
   }
 
   const plusOne = () => {
-    const newNumber = (Number(number) - 1).toString()
+    const newNumber = (Number(number) + 1).toString()
     setNumber(newNumber)
   }
 
   const minusOne = () => {
-    const newNumber = (Number(number) + 1).toString()
-    setNumber(newNumber)
+    const newNumber = (Number(number) - 1)
+    if (newNumber >= 0)
+      setNumber(newNumber.toString())
   }
 
   return (
@@ -48,7 +54,7 @@ function EditGoalScreen({ goal, goalEvent, database }) {
       />
       <Text style={styles.header}>{i18n.t('wantToDedicate')}</Text>
       <View style={styles.numberSelection}>
-        <TouchableOpacity onPress={plusOne} style={styles.numberButton}>
+        <TouchableOpacity onPress={minusOne} style={styles.numberButton}>
           <Feather name="minus-circle" size={40} color="black" />
         </TouchableOpacity>
         <TextInput
@@ -58,7 +64,7 @@ function EditGoalScreen({ goal, goalEvent, database }) {
           style={styles.numberInput}
           keyboardType="number-pad"
         />
-        <TouchableOpacity onPress={minusOne} style={styles.numberButton}>
+        <TouchableOpacity onPress={plusOne} style={styles.numberButton}>
           <Feather name="plus-circle" size={40} color="black" />
         </TouchableOpacity>
       </View>
@@ -83,7 +89,7 @@ function EditGoalScreen({ goal, goalEvent, database }) {
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={saveGoal} underlayColor="#99d9f4">
-        <Text style={styles.text}>{i18n.t('save')}</Text>
+        <Text style={styles.buttonText}>{i18n.t('save')}</Text>
       </TouchableOpacity>
     </View>
   )
