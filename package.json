@@ -43,7 +43,7 @@
     "react-native-reanimated": "~3.17.0",
     "react-native-safe-area-context": "5.3.0",
     "react-native-screens": "~4.16.0",
-    "react-native-svg": "15.11.2",
+    "react-native-svg": "15.13.0",
     "react-native-svg-charts": "photonbit/react-native-svg-charts",
     "react-native-toast-message": "^2.1.6",
     "react-native-web": "~0.19.13",
