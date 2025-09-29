@@ -12,7 +12,7 @@
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "@expo/fingerprint": "^0.15.0",
     "@expo/metro-runtime": "~6.1.0",
-    "@expo/vector-icons": "^14.0.2",
+    "@expo/vector-icons": "^15.0.0",
     "@morrowdigital/watermelondb-expo-plugin": "ChronSyn/watermelondb-expo-plugin#feat/expo-sdk52-support",
     "@nozbe/watermelondb": "0.28.0",
     "@react-native-async-storage/async-storage": "2.1.2",
