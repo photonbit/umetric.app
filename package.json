@@ -53,7 +53,7 @@
     "react-native-svg-charts": "photonbit/react-native-svg-charts",
     "react-native-toast-message": "^2.1.6",
     "react-native-web": "~0.19.13",
-    "react-query": "^3.39.3",
+    "@tanstack/react-query": "^4.0.5",
     "url-parse": "^1.5.10",
     "uuid": "^11.0.5"
   },
