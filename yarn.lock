@@ -2256,10 +2256,10 @@
   resolved "https://registry.yarnpkg.com/@nozbe/sqlite/-/sqlite-3.46.0.tgz#aeda9df305e2f49ef951409e44544c19a5a3e32d"
   integrity sha512-ntt8eNp5hh+axX9+kFb5uwyVE0edyfhiYYr+zHDzzFleGC7Qm+a2wHDWDtmRr5nSfbgomhY1uh30kpsHEIR3Mw==
 
-"@nozbe/watermelondb@0.28.0-1":
-  version "0.28.0-1"
-  resolved "https://registry.yarnpkg.com/@nozbe/watermelondb/-/watermelondb-0.28.0-1.tgz#af18c5f2a7a15acd3119eab98aed03fc244e71c7"
-  integrity sha512-iFVRmHLVKnILbeLI6cr9PF+nFX8WRmjpLWjHnZVl3bxMlhJQ9NQIan1/Mjts7S44Nyc1YIZpHdEU8sLU+5GIyA==
+"@nozbe/watermelondb@0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@nozbe/watermelondb/-/watermelondb-0.28.0.tgz#6130ac9017f9019966f892919ada79234c306c70"
+  integrity sha512-40ttcqPOLCTGnbfCQAXSEo8J4KlH/QQhwTfTb9E21CyX/driMEZueiJSI2rSkHICZrI2vnu52aRubNbI3UAzQQ==
   dependencies:
     "@babel/runtime" "7.26.0"
     "@nozbe/simdjson" "3.9.4"
