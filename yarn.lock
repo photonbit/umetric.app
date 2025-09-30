@@ -1861,14 +1861,14 @@
   integrity sha512-xhFWUBoHJFF77cJO1D6REjdgJEMRf2Y2Z+eKEPav8evGKcLSnj1ud5pLXQSbGuxF3VSvT1rWhMfVpXEKJLTL+A==
 
 "@hugeicons/core-free-icons@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@hugeicons/core-free-icons/-/core-free-icons-1.0.10.tgz#4aee0ca5b6de32260ad7604f38132f2839f486c8"
-  integrity sha512-XMjwTffefQGJ0B3gjnS9IV2UqM5qYT4WUJjD+cD7x6TfwE8rSAb+foGNbcyCjpXKVOnuyaJa+y4ukrPyNY/DBw==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hugeicons/core-free-icons/-/core-free-icons-1.1.0.tgz#e7db36c60628336c20c19075056d6b559eb411d6"
+  integrity sha512-xLLQcIiLKvazXjjhnO2qZ/piOo9yxAFQ5A67XP+HNpvFrO5hVEGv1qebHSHPK1tbSST9dZF3fhH4AfdyumqJsg==
 
 "@hugeicons/react-native@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@hugeicons/react-native/-/react-native-1.0.3.tgz#92a19a9f11c26bbc4e95e2586df71a99c4930214"
-  integrity sha512-lAD1Fo6bDo1BoUPV3ptqX9CPAPsrjRu4rZZcQMUe+hs8xy4HXWupqod45xnvOJp9A0Nt5KrxwjfkSI3bfKzeAg==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@hugeicons/react-native/-/react-native-1.0.7.tgz#490bd2a53d17971e99e400eb1e6f9b3b416b96d8"
+  integrity sha512-gynokVikfwMDBs6N0GHo22F6s03+ZUDJ7HXM1GPvmqk1fDkrz+WGz8M+3UjvMQ8j+Lim665OC5s4uaGtg2HZjw==
 
 "@humanfs/core@^0.19.1":
   version "0.19.1"
@@ -1876,22 +1876,22 @@
   integrity sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==
 
 "@humanfs/node@^0.16.6":
-  version "0.16.6"
-  resolved "https://registry.yarnpkg.com/@humanfs/node/-/node-0.16.6.tgz#ee2a10eaabd1131987bf0488fd9b820174cd765e"
-  integrity sha512-YuI2ZHQL78Q5HbhDiBA1X4LmYdXCKCMQIfw0pw7piHJwyREFebJUvrQN4cMssyES6x+vfUbx1CIpaQUKYdQZOw==
+  version "0.16.7"
+  resolved "https://registry.yarnpkg.com/@humanfs/node/-/node-0.16.7.tgz#822cb7b3a12c5a240a24f621b5a2413e27a45f26"
+  integrity sha512-/zUx+yOsIrG4Y43Eh2peDeKCxlRt/gET6aHfaKpuq267qXdYDFViVHfMaLyygZOnl0kGWxFIgsBy8QFuTLUXEQ==
   dependencies:
     "@humanfs/core" "^0.19.1"
-    "@humanwhocodes/retry" "^0.3.0"
+    "@humanwhocodes/retry" "^0.4.0"
 
 "@humanwhocodes/module-importer@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/module-importer/-/module-importer-1.0.1.tgz#af5b2691a22b44be847b0ca81641c5fb6ad0172c"
   integrity sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==
 
-"@humanwhocodes/retry@^0.3.0":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.3.1.tgz#c72a5c76a9fbaf3488e231b13dc52c0da7bab42a"
-  integrity sha512-JBxkERygn7Bv/GbN5Rv8Ul6LVknS+5Bp6RgDC/O8gEBU/yeH5Ui5C/OlWrTb6qct7LjjfT6Re2NxB0ln0yYybA==
+"@humanwhocodes/retry@^0.4.0":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.3.tgz#c2b9d2e374ee62c586d3adbea87199b1d7a7a6ba"
+  integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
 "@humanwhocodes/retry@^0.4.2":
   version "0.4.2"
