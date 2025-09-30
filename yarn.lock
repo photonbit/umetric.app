@@ -2316,9 +2316,9 @@
   integrity sha512-xhFWUBoHJFF77cJO1D6REjdgJEMRf2Y2Z+eKEPav8evGKcLSnj1ud5pLXQSbGuxF3VSvT1rWhMfVpXEKJLTL+A==
 
 "@hugeicons/core-free-icons@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@hugeicons/core-free-icons/-/core-free-icons-1.0.10.tgz#4aee0ca5b6de32260ad7604f38132f2839f486c8"
-  integrity sha512-XMjwTffefQGJ0B3gjnS9IV2UqM5qYT4WUJjD+cD7x6TfwE8rSAb+foGNbcyCjpXKVOnuyaJa+y4ukrPyNY/DBw==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hugeicons/core-free-icons/-/core-free-icons-1.1.0.tgz#e7db36c60628336c20c19075056d6b559eb411d6"
+  integrity sha512-xLLQcIiLKvazXjjhnO2qZ/piOo9yxAFQ5A67XP+HNpvFrO5hVEGv1qebHSHPK1tbSST9dZF3fhH4AfdyumqJsg==
 
 "@hugeicons/react-native@^1.0.3":
   version "1.0.7"
