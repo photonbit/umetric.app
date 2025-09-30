@@ -12,6 +12,7 @@ import { EditFlow } from './EditFlow'
 import { GoalsFlow } from './GoalsFlow'
 // import { QuestionnaireFlow } from "./QuestionnaireFlow"
 import { navigationRef } from './RootNavigation'
+import { ConfigurationFlow } from './ConfigurationFlow'
 
 const Drawer = createDrawerNavigator()
 
@@ -41,6 +42,7 @@ export default function CompleteFlow() {
         {/* Disable QuestionnaireFlow for the first version
         <Drawer.Screen name="Cuestionarios" component={QuestionnaireFlow} options={{ title: i18n.t('questionnaires') }} />
         */}
+        <Drawer.Screen name="Configuration" component={ConfigurationFlow} options={{ title: i18n.t('configuration') }} />
       </Drawer.Navigator>
     </NavigationContainer>
   )

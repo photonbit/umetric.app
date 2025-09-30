@@ -23,6 +23,10 @@ export default class User extends Model {
   @field('public_key') publicKey
   @field('private_key') privateKey
 
+  @field('server_url') serverUrl
+  @field('encryption_key') encryptionKey
+  @field('sync_frequency') syncFrequency
+
   @children('categories') categories
   @children('event_logs') eventLogs
   @children('goals') goals

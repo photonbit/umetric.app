@@ -48,6 +48,24 @@ const en = {
   noEventsAtAll: 'You need to have at least one event to add a goal',
   noEditCategories: 'Add categories to organize events',
   noEditEvents: 'Add events in this category and optionally associate an action to them. The action can be any URL that your phone can open',
+  // Configuration screen
+  configuration: 'Configuration',
+  synchronization: 'Synchronization',
+  sync_now: 'Sync Now',
+  user_information: 'User Information',
+  server_url: 'Server URL',
+  encryption_key: 'Encryption Key',
+  frequency: 'Frequency',
+  week_start_day: 'Week start day',
+  last_name: 'Last Name',
+  questionnaire_url: 'Questionnaire URL',
+  import_questionnaire: 'Import Questionnaire',
+  manual: 'Manual',
+  auto: 'Auto',
+  never: 'Never',
+  sunday: 'Sunday',
+  monday: 'Monday',
+  email: 'Email',
 }
 
 const es = {
@@ -100,6 +118,24 @@ const es = {
   noEventsAtAll: 'Necesitas tener al menos un evento para añadir una meta',
   noEditCategories: 'Añade categorias para organizar eventos',
   noEditEvents: 'Añade eventos en esta categoría y opcionalmente asocia una acción a ellos. La acción puede ser cualquier URL que tu teléfono pueda abrir',
+  // Pantalla de configuración
+  configuration: 'Configuración',
+  synchronization: 'Sincronización',
+  sync_now: 'Sincronizar ahora',
+  user_information: 'Información del usuario',
+  server_url: 'URL del servidor',
+  encryption_key: 'Clave de cifrado',
+  frequency: 'Frecuencia',
+  week_start_day: 'Día de inicio de semana',
+  last_name: 'Apellido',
+  questionnaire_url: 'URL del cuestionario',
+  import_questionnaire: 'Importar cuestionario',
+  manual: 'Manual',
+  auto: 'Auto',
+  never: 'Nunca',
+  sunday: 'Domingo',
+  monday: 'Lunes',
+  email: 'Correo electrónico',
 }
 
 const pt = {
@@ -152,6 +188,24 @@ const pt = {
   noEventsAtAll: 'Precisa ter pelo menos um evento para adicionar uma meta',
   noEditCategories: 'Adicione categorias para organizar eventos',
     noEditEvents: 'Adicione eventos nesta categoria e, opcionalmente, associe uma ação a eles. A ação pode ser qualquer URL que seu telefone possa abrir',
+  // Tela de configuração
+  configuration: 'Configuração',
+  synchronization: 'Sincronização',
+  sync_now: 'Sincronizar agora',
+  user_information: 'Informações do usuário',
+  server_url: 'URL do servidor',
+  encryption_key: 'Chave de criptografia',
+  frequency: 'Frequência',
+  week_start_day: 'Início da semana',
+  last_name: 'Sobrenome',
+  questionnaire_url: 'URL do questionário',
+  import_questionnaire: 'Importar questionário',
+  manual: 'Manual',
+  auto: 'Auto',
+  never: 'Nunca',
+  sunday: 'Domingo',
+  monday: 'Segunda-feira',
+  email: 'Email',
 }
 
 const jp = {
@@ -204,6 +258,24 @@ const jp = {
   noEventsAtAll: '目標を追加するには、少なくとも1つのイベントが必要です',
   noEditCategories: 'イベントを整理するためにカテゴリを追加します',
     noEditEvents: 'このカテゴリにイベントを追加し、必要に応じてアクションを関連付けます。アクションは、電話が開くことができるURLである必要があります',
+  // 設定画面
+  configuration: '設定',
+  synchronization: '同期',
+  sync_now: '今すぐ同期',
+  user_information: 'ユーザー情報',
+  server_url: 'サーバーURL',
+  encryption_key: '暗号鍵',
+  frequency: '頻度',
+  week_start_day: '週の開始日',
+  last_name: '姓',
+  questionnaire_url: 'アンケートURL',
+  import_questionnaire: 'アンケートをインポート',
+  manual: '手動',
+  auto: '自動',
+  never: 'しない',
+  sunday: '日曜日',
+  monday: '月曜日',
+  email: 'メール',
 }
 
 const zh = {
@@ -256,6 +328,24 @@ const zh = {
   noEventsAtAll: '您需要至少一个事件才能添加目标',
   noEditCategories: '添加类别以组织事件',
   noEditEvents: '在此类别中添加事件，必要时将其与操作关联。操作可以是您的电话可以打开的任何URL',
+  // 配置
+  configuration: '配置',
+  synchronization: '同步',
+  sync_now: '立即同步',
+  user_information: '用户信息',
+  server_url: '服务器URL',
+  encryption_key: '加密密钥',
+  frequency: '频率',
+  week_start_day: '一周开始日',
+  last_name: '姓',
+  questionnaire_url: '问卷URL',
+  import_questionnaire: '导入问卷',
+  manual: '手动',
+  auto: '自动',
+  never: '从不',
+  sunday: '星期日',
+  monday: '星期一',
+  email: '电子邮件',
 }
 
 const ru = {
@@ -308,6 +398,24 @@ const ru = {
   noEventsAtAll: 'Вам нужно иметь хотя бы одно событие, чтобы добавить цель',
   noEditCategories: 'Добавьте категории для организации событий',
     noEditEvents: 'Добавьте события в эту категорию и при необходимости свяжите их с действием. Действие может быть любым URL, который ваш телефон может открыть',
+  // Экран конфигурации
+  configuration: 'Конфигурация',
+  synchronization: 'Синхронизация',
+  sync_now: 'Синхронизировать сейчас',
+  user_information: 'Информация о пользователе',
+  server_url: 'URL сервера',
+  encryption_key: 'Ключ шифрования',
+  frequency: 'Частота',
+  week_start_day: 'Начало недели',
+  last_name: 'Фамилия',
+  questionnaire_url: 'URL опросника',
+  import_questionnaire: 'Импорт опросника',
+  manual: 'Вручную',
+  auto: 'Авто',
+  never: 'Никогда',
+  sunday: 'Воскресенье',
+  monday: 'Понедельник',
+  email: 'Эл. почта',
 }
 
 const ph = {
@@ -360,6 +468,24 @@ const ph = {
   noEventsAtAll: 'Kailangan mong magkaroon ng hindi bababa sa isang event upang magdagdag ng layunin',
   noEditCategories: 'Magdagdag ng mga kategorya upang organisahin ang mga event',
     noEditEvents: 'Magdagdag ng mga event sa kategoryang ito at kung kinakailangan ay i-associate ang mga ito sa isang aksyon. Ang aksyon ay maaaring anumang URL na maaaring buksan ng iyong telepono',
+  // Screen ng configuration
+  configuration: 'Configuration',
+  synchronization: 'Synchronization',
+  sync_now: 'Sync Now',
+  user_information: 'User Information',
+  server_url: 'Server URL',
+  encryption_key: 'Encryption Key',
+  frequency: 'Frequency',
+  week_start_day: 'Week start day',
+  last_name: 'Last Name',
+  questionnaire_url: 'Questionnaire URL',
+  import_questionnaire: 'Import Questionnaire',
+  manual: 'Manual',
+  auto: 'Auto',
+  never: 'Never',
+  sunday: 'Sunday',
+  monday: 'Monday',
+  email: 'Email',
 }
 
 const de = {
@@ -412,6 +538,24 @@ const de = {
   noEventsAtAll: 'Sie müssen mindestens ein Event haben, um ein Ziel hinzuzufügen',
   noEditCategories: 'Fügen Sie Kategorien hinzu, um Events zu organisieren',
   noEditEvents: 'Fügen Sie Events in dieser Kategorie hinzu und verknüpfen Sie sie optional mit einer Aktion. Die Aktion kann eine beliebige URL sein, die Ihr Telefon öffnen kann',
+  // Konfigurationsbildschirm
+  configuration: 'Konfiguration',
+  synchronization: 'Synchronisierung',
+  sync_now: 'Jetzt synchronisieren',
+  user_information: 'Benutzerinformationen',
+  server_url: 'Server-URL',
+  encryption_key: 'Verschlüsselungsschlüssel',
+  frequency: 'Frequenz',
+  week_start_day: 'Wochenanfang',
+  last_name: 'Nachname',
+  questionnaire_url: 'Fragebogen-URL',
+  import_questionnaire: 'Fragebogen importieren',
+  manual: 'Manuell',
+  auto: 'Auto',
+  never: 'Nie',
+  sunday: 'Sonntag',
+  monday: 'Montag',
+  email: 'E-Mail',
 }
 
 export { en, es, pt, jp, zh, ru, ph, de }

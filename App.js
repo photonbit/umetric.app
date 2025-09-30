@@ -44,6 +44,7 @@ import Questionnaire from './model/Questionnaire'
 import Response from './model/Response'
 import User from './model/User'
 import { setGenerator } from '@nozbe/watermelondb/utils/common/randomId'
+import { schemaMigrations, addColumns } from '@nozbe/watermelondb/Schema/migrations'
 
 i18n.fallbacks = true
 i18n.translations = { en, es, pt, jp, zh, ru, ph, de }
@@ -52,7 +53,24 @@ i18n.locale = Localization.getLocales()[0].languageCode
 LogBox.ignoreLogs(['Setting a timer'])
 
 setGenerator(() => uuidv4())
-const adapter = new SQLiteAdapter({ schema: umetricSchema })
+const migrations = schemaMigrations({
+  migrations: [
+    {
+      toVersion: 2,
+      steps: [
+        addColumns({
+          table: 'users',
+          columns: [
+            { name: 'server_url', type: 'string', isOptional: true },
+            { name: 'encryption_key', type: 'string', isOptional: true },
+            { name: 'sync_frequency', type: 'string', isOptional: true },
+          ],
+        }),
+      ],
+    },
+  ],
+})
+const adapter = new SQLiteAdapter({ schema: umetricSchema, migrations })
 const database = new Database({
   adapter,
   modelClasses: [
@@ -96,6 +114,30 @@ const App = () => {
         Linking.removeEventListener('url')
       }
     }
+  }, [])
+
+  // Ensure a user exists at app start
+  useEffect(() => {
+    const ensureUser = async () => {
+      const users = await database.collections.get('users').query().fetch()
+      if (users.length === 0) {
+        await database.write(async () => {
+          await database.get('users').create((u) => {
+            u.username = ''
+            u.email = ''
+            u.password = ''
+            u.createdAt = Date.now()
+            u.firstName = ''
+            u.lastName = ''
+            u.sundayWeekStart = false
+            u.serverUrl = ''
+            u.encryptionKey = ''
+            u.syncFrequency = 'Never'
+          })
+        })
+      }
+    }
+    ensureUser()
   }, [])
 
   return (

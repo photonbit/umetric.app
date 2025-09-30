@@ -2,7 +2,7 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb'
 
 export const umetricSchema = appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: 'users',
@@ -16,6 +16,9 @@ export const umetricSchema = appSchema({
         { name: 'sunday_week_start', type: 'boolean' },
         { name: 'public_key', type: 'string', isOptional: true },
         { name: 'private_key', type: 'string', isOptional: true },
+        { name: 'server_url', type: 'string', isOptional: true },
+        { name: 'encryption_key', type: 'string', isOptional: true },
+        { name: 'sync_frequency', type: 'string', isOptional: true },
       ],
     }),
     tableSchema({
