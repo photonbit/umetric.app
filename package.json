@@ -54,7 +54,7 @@
     "react-native-svg": "15.8.0",
     "react-native-svg-charts": "photonbit/react-native-svg-charts",
     "react-native-toast-message": "^2.1.6",
-    "react-native-web": "~0.19.13",
+    "react-native-web": "~0.21.0",
     "url-parse": "^1.5.10",
     "uuid": "^11.0.5"
   },
