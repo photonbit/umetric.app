@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import i18n from 'i18n-js'
+import { Feather } from '@expo/vector-icons'
 
 import IconSelector from '../components/IconSelector'
+import CategorySelector from '../components/CategorySelector'
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
@@ -14,6 +16,8 @@ function EditEventScreen({ event }) {
   const [name, setName] = useState(event.name)
   const [action, setAction] = useState(event.action)
   const [modalVisible, setModalVisible] = useState(false)
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState(null)
 
   const saveEvent = async () => {
     await database.write(async () => {
@@ -26,6 +30,12 @@ function EditEventScreen({ event }) {
     RootNavigation.navigate('ListEditEvents', { category_id: event.category_id })
   }
 
+  const handleCategorySelected = (category) => {
+    setSelectedCategory(category)
+    const deepLink = `umetric://category/${category.id}`
+    setAction(deepLink)
+  }
+
   return (
     <View style={styles.container}>
       <IconSelector
@@ -35,10 +45,31 @@ function EditEventScreen({ event }) {
         setIcon={setIcon}
       />
 
+      <CategorySelector
+        visible={categoryModalVisible}
+        setVisible={setCategoryModalVisible}
+        selected={selectedCategory?.id}
+        setCategory={handleCategorySelected}
+      />
+
       <Text style={styles.title}>{i18n.t('name')}</Text>
       <TextInput onChangeText={setName} defaultValue={name} style={styles.input} />
+      
       <Text style={styles.title}>{i18n.t('actionOptional')}</Text>
-      <TextInput onChangeText={setAction} defaultValue={action} style={styles.input} />
+      <View style={styles.actionContainer}>
+        <TextInput 
+          onChangeText={setAction} 
+          value={action} 
+          style={styles.actionInput} 
+          placeholder="https://... or umetric://..."
+        />
+        <TouchableOpacity
+          style={styles.categoryButton}
+          onPress={() => setCategoryModalVisible(true)}
+        >
+          <Feather name="folder" size={24} />
+        </TouchableOpacity>
+      </View>
       <Text style={styles.title}>{i18n.t('icon')}</Text>
       <TouchableOpacity
         style={styles.icon}
@@ -106,6 +137,36 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     marginBottom: 10,
     marginTop: 5
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+    marginTop: 5
+  },
+  actionInput: {
+    fontSize: 18,
+    flex: 1,
+    borderColor: '#CCCCCC',
+    backgroundColor: '#FAFAFA',
+    color: '#111111',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+  categoryButton: {
+    width: 52,
+    height: 52,
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#FAFAFA',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
 

@@ -103,37 +103,34 @@ const App = () => {
       console.log('Deep link received:', url)
       try {
         const parsedUrl = urlParse(url, true)
-        console.log('Parsed URL:', parsedUrl)
-        
-        // Handle different URL formats
         let category_id = null
         
-        // Format 1: umetric://category/123
+        // umetric://category/UUID
         if (parsedUrl.pathname) {
           const parts = parsedUrl.pathname.split('/').filter(part => part.length > 0)
-          console.log('URL parts:', parts)
-          
+
           if (parts.length >= 1) {
-            category_id = parseInt(parts[0])
-            console.log('Category ID from pathname:', category_id)
+            category_id = parts[0]
           }
         }
         
-        // Format 2: umetric://?category=123 (query params)
-        if (!category_id && parsedUrl.query.category) {
-          category_id = parseInt(parsedUrl.query.category)
-          console.log('Category ID from query:', category_id)
-        }
-        
-        // Format 3: umetric://123 (direct scheme)
-        if (!category_id && parsedUrl.hostname) {
-          category_id = parseInt(parsedUrl.hostname)
-          console.log('Category ID from hostname:', category_id)
-        }
-        
-        if (category_id && !isNaN(category_id)) {
-          console.log('Navigating to ListEvents with category_id:', category_id)
-          RootNavigation.navigate('ListEvents', { category_id: category_id })
+        if (category_id) {          
+          try {
+            const category = await database.collections
+              .get('categories')
+              .find(category_id.toString())
+
+            RootNavigation.navigate('Input', {
+              screen: 'ListEvents',
+              params: {
+                category_id: category_id,
+                category_name: category.name,
+                fromDeepLink: true
+              }
+            })
+          } catch (error) {
+            RootNavigation.navigate('Input', { screen: 'ListCategories' })
+          }
         } else {
           console.log('No valid category_id found in URL')
         }

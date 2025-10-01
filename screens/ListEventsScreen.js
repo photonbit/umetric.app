@@ -11,11 +11,20 @@ import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
 import EventLog from '../model/EventLog'
 
 function ListEventsScreen({ navigation, route, events, database }) {
+  const fromDeepLink = route.params?.fromDeepLink || false
+
   const onPress = async (item) => {
     EventLog.logEvent(database, item.id)
+    
+    // Guard rail: if we arrived via deep link and action is a umetric:// link, don't trigger it
     if (item.action) {
-      Linking.openURL(item.action)
+      const isUmetricLink = item.action.startsWith('umetric://')
+      
+      if (fromDeepLink && !!isUmetricLink) {
+        Linking.openURL(item.action)
+      }
     }
+    
     RootNavigation.navigate('ListCategories')
   }
 
