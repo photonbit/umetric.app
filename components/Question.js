@@ -14,7 +14,7 @@ const QuestionComponent = ({ question, likertScales, onSubmit }) => {
 
   const handleSubmit = () => {
     const adjustedValues = Object.entries(selectedValues).reduce((acc, [scaleId, value]) => {
-      const scale = likertScales.find((s) => s.id === parseInt(scaleId))
+      const scale = likertScales.find((s) => s.id === scaleId)
       const adjustedValue = value * scale.slope + scale.intercept
       return { ...acc, [scaleId]: adjustedValue }
     }, {})
