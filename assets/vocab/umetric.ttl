@@ -1,0 +1,105 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <http://schema.org/> .
+@prefix um:   <https://umetric.app/ns/> .
+
+#
+# uMetric Core Vocabulary
+# Base namespace: https://umetric.app/ns/
+#
+
+um:Questionnaire a rdfs:Class ;
+  rdfs:label "Questionnaire"@en ;
+  rdfs:comment "A set of questions tied to Likert scales, with metadata and translations."@en .
+
+um:LikertScale a rdfs:Class ;
+  rdfs:label "Likert Scale"@en ;
+  rdfs:comment "A Likert scale definition with labels, measure and optional calibration parameters."@en .
+
+um:Question a rdfs:Class ;
+  rdfs:label "Question"@en ;
+  rdfs:comment "A question belonging to a Questionnaire; can be associated to one or more Likert scales."@en .
+
+# Relationships (object properties)
+
+um:hasLikertScale a rdf:Property ;
+  rdfs:label "has Likert scale"@en ;
+  rdfs:domain um:Questionnaire ;
+  rdfs:range um:LikertScale .
+
+um:hasQuestion a rdf:Property ;
+  rdfs:label "has question"@en ;
+  rdfs:domain um:Questionnaire ;
+  rdfs:range um:Question .
+
+um:usesLikertScale a rdf:Property ;
+  rdfs:label "uses Likert scale"@en ;
+  rdfs:domain um:Question ;
+  rdfs:range um:LikertScale .
+
+# Common properties
+
+um:shortName a rdf:Property ;
+  rdfs:label "short name"@en ;
+  rdfs:domain um:Questionnaire ;
+  rdfs:range xsd:string .
+
+um:instructions a rdf:Property ;
+  rdfs:label "instructions"@en ;
+  rdfs:domain um:Questionnaire ;
+  rdfs:range xsd:string .
+
+um:source a rdf:Property ;
+  rdfs:label "source"@en ;
+  rdfs:domain um:Questionnaire ;
+  rdfs:range xsd:string .
+
+# Likert-specific
+
+um:choices a rdf:Property ;
+  rdfs:label "number of choices"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:integer .
+
+um:slope a rdf:Property ;
+  rdfs:label "slope"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:decimal .
+
+um:intercept a rdf:Property ;
+  rdfs:label "intercept"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:decimal .
+
+um:measure a rdf:Property ;
+  rdfs:label "measure"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:string .
+
+um:lowerChoiceLabel a rdf:Property ;
+  rdfs:label "lower choice label"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:string .
+
+um:upperChoiceLabel a rdf:Property ;
+  rdfs:label "upper choice label"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:string .
+
+um:middleChoiceLabel a rdf:Property ;
+  rdfs:label "middle choice label"@en ;
+  rdfs:domain um:LikertScale ;
+  rdfs:range xsd:string .
+
+# Question-specific
+
+um:text a rdf:Property ;
+  rdfs:label "text"@en ;
+  rdfs:domain um:Question ;
+  rdfs:range xsd:string .
+
+um:order a rdf:Property ;
+  rdfs:label "order"@en ;
+  rdfs:domain um:Question ;
+  rdfs:range xsd:integer .

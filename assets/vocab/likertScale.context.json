@@ -1,0 +1,20 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@vocab": "https://umetric.app/ns/",
+    "schema": "http://schema.org/",
+    "name": "schema:name",
+    "description": "schema:description",
+    "inLanguage": "schema:inLanguage",
+
+    "LikertScale": "https://umetric.app/ns/LikertScale",
+
+    "choices":   { "@id": "https://umetric.app/ns/choices",   "@type": "http://www.w3.org/2001/XMLSchema#integer" },
+    "slope":     { "@id": "https://umetric.app/ns/slope",     "@type": "http://www.w3.org/2001/XMLSchema#decimal" },
+    "intercept": { "@id": "https://umetric.app/ns/intercept", "@type": "http://www.w3.org/2001/XMLSchema#decimal" },
+    "measure":           { "@id": "https://umetric.app/ns/measure" },
+    "lowerChoiceLabel":  { "@id": "https://umetric.app/ns/lowerChoiceLabel" },
+    "upperChoiceLabel":  { "@id": "https://umetric.app/ns/upperChoiceLabel" },
+    "middleChoiceLabel": { "@id": "https://umetric.app/ns/middleChoiceLabel" }
+  }
+}
