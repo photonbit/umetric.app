@@ -1,26 +1,75 @@
 // screens/QuestionScreen.js
-import React from 'react'
-import { Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Text, View, ActivityIndicator } from 'react-native'
 import { withObservables, withDatabase } from '@nozbe/watermelondb/react'
-import { mergeMap } from 'rxjs/operators'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import Question from '../components/Question'
 import { Q } from '@nozbe/watermelondb'
 
-function QuestionScreen({ navigation, route, questionRaw, localizedQuestion }) {
-  const { questionnaire, responseId, questionIndex } = route.params
-  const likertScales = questionnaire.likert_scales.filter((scale) =>
-    localizedQuestion?.likert_scale_ids?.includes(scale.id),
-  )
+function QuestionScreen({ navigation, route, questions }) {
+  const database = useDatabase()
+  const { questionnaireId, responseId, questionIndex } = route.params
+  const [currentQuestion, setCurrentQuestion] = useState(null)
+  const [likertScales, setLikertScales] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadQuestionData = async () => {
+      if (!questions || questions.length === 0) {
+        console.error('No questions available')
+        setLoading(false)
+        return
+      }
+
+      const question = questions[questionIndex]
+      if (!question) {
+        console.error('Question not found at index:', questionIndex)
+        setLoading(false)
+        return
+      }
+
+      setCurrentQuestion(question)
+
+      // Load likert scales for this question
+      try {
+        const scales = await question.likertScales.fetch()
+        setLikertScales(scales)
+      } catch (error) {
+        console.error('Error loading likert scales:', error)
+        setLikertScales([])
+      }
+
+      setLoading(false)
+    }
+
+    loadQuestionData()
+  }, [questions, questionIndex])
+
+  const submitResponse = async (questionId, likertScaleId, value) => {
+    try {
+      await database.write(async () => {
+        await database.collections.get('responses').create((r) => {
+          r._raw.question_id = questionId
+          r._raw.questionnaire_response_id = responseId
+          r._raw.likert_scale_id = likertScaleId
+          r.value = value
+          r.date = Date.now()
+        })
+      })
+    } catch (error) {
+      console.error('Error submitting response:', error)
+    }
+  }
 
   const handleSubmit = async (questionId, responses) => {
     for (const key of Object.keys(responses)) {
-      await submitResponse(responseId, questionId, key, responses[key])
+      await submitResponse(questionId, key, responses[key])
     }
-    if (questionIndex < questionnaire.questions.length - 1) {
+    
+    if (questionIndex < questions.length - 1) {
       navigation.replace('Question', {
-        questionnaire,
-        responseId: responseId,
+        questionnaireId,
+        responseId,
         questionIndex: questionIndex + 1,
       })
     } else {
@@ -28,28 +77,37 @@ function QuestionScreen({ navigation, route, questionRaw, localizedQuestion }) {
     }
   }
 
-  if (!localizedQuestion)
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    )
+  }
+
+  if (!currentQuestion) {
     return (
       <View>
         <Text>No question found</Text>
       </View>
     )
+  }
+
   return (
     <View>
-      <Text>{localizedQuestion.text}</Text>
-      <Question question={localizedQuestion} likertScales={likertScales} onSubmit={handleSubmit} />
+      <Question question={currentQuestion} likertScales={likertScales} onSubmit={handleSubmit} />
     </View>
   )
 }
 
 const enhance = withObservables(['route'], ({ route, database }) => {
-  const questionId = route?.params?.question_id || ''
+  const questionnaireId = route?.params?.questionnaireId || ''
   return {
-    questionRaw: database.collections.get('questions').findAndObserve(questionId),
-    localizedQuestion: database.collections
+    questionnaireRaw: database.collections.get('questionnaires').findAndObserve(questionnaireId),
+    questions: database.collections
       .get('questions')
-      .findAndObserve(questionId)
-      .pipe(mergeMap(async (q) => (q ? q.getLocalizedInstance() : null))),
+      .query(Q.where('questionnaire_id', questionnaireId), Q.sortBy('order', 'asc'))
+      .observe(),
   }
 })
 

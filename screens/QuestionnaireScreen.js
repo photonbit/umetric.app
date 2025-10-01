@@ -5,28 +5,59 @@ import i18n from 'i18n-js'
 import { withObservables } from '@nozbe/watermelondb/react'
 import { mergeMap } from 'rxjs/operators'
 import { withDatabase } from '@nozbe/watermelondb/react'
+import { useDatabase } from '@nozbe/watermelondb/hooks'
+import { useUser } from '../contexts/UserContext'
 
 const QuestionnaireScreen = ({ navigation, questionnaireRaw, localizedQuestionnaire }) => {
-  const getRandomQuestions = () => {
-    const shuffledQuestions = [...questionnaireRaw.questions]
-    shuffledQuestions.sort(() => 0.5 - Math.random())
-    return shuffledQuestions.slice(0, 3)
+  const database = useDatabase()
+  const { user, loading } = useUser()
+
+  const getRandomQuestions = async () => {
+    if (!questionnaireRaw) return []
+    
+    try {
+      const questions = await questionnaireRaw.questions.fetch()
+      const shuffledQuestions = [...questions]
+      shuffledQuestions.sort(() => 0.5 - Math.random())
+      return shuffledQuestions.slice(0, 3)
+    } catch (error) {
+      console.error('Error fetching questions:', error)
+      return []
+    }
   }
 
-  const memoizedQuestions = useMemo(() => getRandomQuestions(), [questionnaireRaw.questions])
+  const [memoizedQuestions, setMemoizedQuestions] = React.useState([])
 
-  const startQuestionnaireResponse = () => {
-    startQuestionnaire(questionnaireRaw.id)
-      .then((response) => {
-        navigation.navigate('Question', {
-          questionnaire: questionnaireRaw,
-          responseId: response.id,
-          questionIndex: 0,
+  React.useEffect(() => {
+    if (questionnaireRaw) {
+      getRandomQuestions().then(setMemoizedQuestions)
+    }
+  }, [questionnaireRaw])
+
+  const startQuestionnaireResponse = async () => {
+    if (!user) {
+      console.error('No user available')
+      return
+    }
+
+    try {
+      const response = await database.write(async () => {
+        return await database.collections.get('questionnaire_responses').create((qr) => {
+          qr._raw.questionnaire_id = questionnaireRaw.id
+          qr._raw.user_id = user.id
+          qr.dateAnswered = new Date()
+          qr.language = i18n.locale
         })
       })
-      .catch((error) => {
-        console.log(error)
+
+      navigation.navigate('Question', {
+        questionnaireId: questionnaireRaw.id,
+        responseId: response.id,
+        questionIndex: 0,
       })
+    } catch (error) {
+      console.error('Error starting questionnaire:', error)
+    }
   }
 
   if (!localizedQuestionnaire) {
@@ -39,9 +70,13 @@ const QuestionnaireScreen = ({ navigation, questionnaireRaw, localizedQuestionna
       <Text style={styles.description}>{localizedQuestionnaire.description}</Text>
       <Text style={styles.instructions}>{localizedQuestionnaire.instructions}</Text>
       <Text style={styles.sampleTitle}>Sample Questions:</Text>
-      {memoizedQuestions.map((question, index) => (
-        <Text key={index} style={styles.sampleQuestion}>{`${index + 1}. ${question.text}`}</Text>
-      ))}
+      {memoizedQuestions.length > 0 ? (
+        memoizedQuestions.map((question, index) => (
+          <Text key={question.id || index} style={styles.sampleQuestion}>{`${index + 1}. ${question.text}`}</Text>
+        ))
+      ) : (
+        <Text style={styles.sampleQuestion}>No questions available</Text>
+      )}
       <TouchableOpacity
         style={styles.button}
         onPress={startQuestionnaireResponse}
@@ -60,7 +95,12 @@ const enhance = withObservables(['route'], ({ route, database }) => {
     localizedQuestionnaire: database.collections
       .get('questionnaires')
       .findAndObserve(questionnaireId)
-      .pipe(mergeMap(async (q) => (q ? q.getLocalizedInstance() : null))),
+      .pipe(
+        mergeMap(async (q) => {
+          if (!q) return null
+          return await q.getLocalizedInstance()
+        })
+      ),
   }
 })
 

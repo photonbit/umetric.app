@@ -1,6 +1,7 @@
 // screens/ListQuestionnairesScreen.js
 import React from 'react'
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native'
+import { mergeMap } from 'rxjs/operators'
 
 import { useNavigation } from '@react-navigation/native'
 import { withDatabase, withObservables } from '@nozbe/watermelondb/react'
@@ -52,6 +53,9 @@ export default withDatabase(enhance(ListQuestionnairesScreen))
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  flatlist: {
     flex: 1,
   },
   item: {

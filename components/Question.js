@@ -28,9 +28,9 @@ const QuestionComponent = ({ question, likertScales, onSubmit }) => {
         <View key={scale.id} style={styles.scale}>
           <Text style={styles.description}>{scale.description}</Text>
           <View style={styles.scaleLabels}>
-            <Text style={styles.lowerLabel}>{scale.lower_choice_label}</Text>
-            <Text style={styles.middleLabel}>{scale.middle_choice_label}</Text>
-            <Text style={styles.upperLabel}>{scale.upper_choice_label}</Text>
+            <Text style={styles.lowerLabel}>{scale.lowerChoiceLabel}</Text>
+            <Text style={styles.middleLabel}>{scale.middleChoiceLabel}</Text>
+            <Text style={styles.upperLabel}>{scale.upperChoiceLabel}</Text>
           </View>
           <SegmentedControl
             style={styles.scaleChooser}
@@ -75,13 +75,22 @@ const styles = StyleSheet.create({
   scaleLabels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 20,
   },
   middleLabel: {
     position: 'absolute',
     left: '45%',
     justifyContent: 'center',
     textAlign: 'right',
+  },
+  scaleChooser: {
+    height: 44,
+    marginTop: 12,
+    marginBottom: 16,
+    paddingHorizontal: 4,
+    borderColor: '#48BBEC',
+    borderWidth: 1,
+    borderRadius: 8,
   },
   button: {
     height: 36,

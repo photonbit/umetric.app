@@ -28,6 +28,7 @@ import { v4 as uuidv4 } from 'uuid'
 import CompleteFlow from './navigation/CompleteFlow'
 import * as RootNavigation from './navigation/RootNavigation'
 import { en, es, pt, jp, zh, ru, ph, de } from './i18n/supportedLanguages'
+import { UserProvider } from './contexts/UserContext'
 
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
@@ -38,9 +39,13 @@ import Event from './model/Event'
 import EventLog from './model/EventLog'
 import Goal from './model/Goal'
 import LikertScale from './model/LikertScale'
+import LikertScaleTranslation from './model/LikertScaleTranslation'
 import Question from './model/Question'
 import QuestionLikert from './model/QuestionLikert'
+import QuestionTranslation from './model/QuestionTranslation'
 import Questionnaire from './model/Questionnaire'
+import QuestionnaireResponse from './model/QuestionnaireResponse'
+import QuestionnaireTranslation from './model/QuestionnaireTranslation'
 import Response from './model/Response'
 import User from './model/User'
 import { setGenerator } from '@nozbe/watermelondb/utils/common/randomId'
@@ -79,9 +84,13 @@ const database = new Database({
     EventLog,
     Goal,
     LikertScale,
+    LikertScaleTranslation,
     Question,
     QuestionLikert,
+    QuestionTranslation,
     Questionnaire,
+    QuestionnaireResponse,
+    QuestionnaireTranslation,
     Response,
     User,
   ],
@@ -91,28 +100,62 @@ const database = new Database({
 const App = () => {
   useEffect(() => {
     const handleUrl = async (url) => {
-      const parsedUrl = urlParse(url, true)
-      const parts = parsedUrl.pathname.split('/')
-      if (parts.length === 2 && parts[1].length > 0) {
-        const category_id = parseInt(parts[1])
-        RootNavigation.navigate('ListEvents', { category_id: category_id })
+      console.log('Deep link received:', url)
+      try {
+        const parsedUrl = urlParse(url, true)
+        console.log('Parsed URL:', parsedUrl)
+        
+        // Handle different URL formats
+        let category_id = null
+        
+        // Format 1: umetric://category/123
+        if (parsedUrl.pathname) {
+          const parts = parsedUrl.pathname.split('/').filter(part => part.length > 0)
+          console.log('URL parts:', parts)
+          
+          if (parts.length >= 1) {
+            category_id = parseInt(parts[0])
+            console.log('Category ID from pathname:', category_id)
+          }
+        }
+        
+        // Format 2: umetric://?category=123 (query params)
+        if (!category_id && parsedUrl.query.category) {
+          category_id = parseInt(parsedUrl.query.category)
+          console.log('Category ID from query:', category_id)
+        }
+        
+        // Format 3: umetric://123 (direct scheme)
+        if (!category_id && parsedUrl.hostname) {
+          category_id = parseInt(parsedUrl.hostname)
+          console.log('Category ID from hostname:', category_id)
+        }
+        
+        if (category_id && !isNaN(category_id)) {
+          console.log('Navigating to ListEvents with category_id:', category_id)
+          RootNavigation.navigate('ListEvents', { category_id: category_id })
+        } else {
+          console.log('No valid category_id found in URL')
+        }
+      } catch (error) {
+        console.error('Error handling deep link:', error)
       }
     }
 
-    Linking.addEventListener('url', ({ url }) => {
+    const subscription = Linking.addEventListener('url', ({ url }) => {
+      console.log('URL event received:', url)
       handleUrl(url)
     })
 
     Linking.getInitialURL().then((url) => {
+      console.log('Initial URL:', url)
       if (url) {
         handleUrl(url)
       }
     })
 
     return () => {
-      if (Linking) {
-        Linking.removeEventListener('url')
-      }
+      subscription?.remove()
     }
   }, [])
 
@@ -142,8 +185,10 @@ const App = () => {
 
   return (
     <DatabaseProvider database={database}>
-      <CompleteFlow />
-      <Toast />
+      <UserProvider>
+        <CompleteFlow />
+        <Toast />
+      </UserProvider>
     </DatabaseProvider>
   )
 }

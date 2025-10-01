@@ -10,7 +10,7 @@ import i18n from 'i18n-js'
 import { BasicInputFlow } from './InputFlow'
 import { EditFlow } from './EditFlow'
 import { GoalsFlow } from './GoalsFlow'
-// import { QuestionnaireFlow } from "./QuestionnaireFlow"
+import { QuestionnaireFlow } from "./QuestionnaireFlow"
 import { navigationRef } from './RootNavigation'
 import { ConfigurationFlow } from './ConfigurationFlow'
 
@@ -39,9 +39,7 @@ export default function CompleteFlow() {
         />
         <Drawer.Screen name="Edit" component={EditFlow} options={{ title: i18n.t('edit') }} />
         <Drawer.Screen name="Metas" component={GoalsFlow} options={{ title: i18n.t('goals') }} />
-        {/* Disable QuestionnaireFlow for the first version
         <Drawer.Screen name="Cuestionarios" component={QuestionnaireFlow} options={{ title: i18n.t('questionnaires') }} />
-        */}
         <Drawer.Screen name="Configuration" component={ConfigurationFlow} options={{ title: i18n.t('configuration') }} />
       </Drawer.Navigator>
     </NavigationContainer>

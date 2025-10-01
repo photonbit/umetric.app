@@ -21,14 +21,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "umetric.apk"
+      "bundleIdentifier": "app.umetric"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive_icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "umetric.apk"
+      "package": "app.umetric"
     },
     "web": {
       "favicon": "./assets/favicon.png"
