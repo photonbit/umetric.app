@@ -6,11 +6,10 @@ import { withObservables } from '@nozbe/watermelondb/react'
 import { mergeMap } from 'rxjs/operators'
 import { withDatabase } from '@nozbe/watermelondb/react'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
-import { useUser } from '../contexts/UserContext'
+import { getCurrentUser } from '../utils/userUtils'
 
 const QuestionnaireScreen = ({ navigation, questionnaireRaw, localizedQuestionnaire }) => {
   const database = useDatabase()
-  const { user, loading } = useUser()
 
   const getRandomQuestions = async () => {
     if (!questionnaireRaw) return []
@@ -35,12 +34,13 @@ const QuestionnaireScreen = ({ navigation, questionnaireRaw, localizedQuestionna
   }, [questionnaireRaw])
 
   const startQuestionnaireResponse = async () => {
-    if (!user) {
-      console.error('No user available')
-      return
-    }
-
     try {
+      const user = await getCurrentUser(database)
+      if (!user) {
+        console.error('No user available')
+        return
+      }
+
       const response = await database.write(async () => {
         return await database.collections.get('questionnaire_responses').create((qr) => {
           qr._raw.questionnaire_id = questionnaireRaw.id

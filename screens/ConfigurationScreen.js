@@ -7,11 +7,11 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import Toast from 'react-native-toast-message'
 import { Feather } from '@expo/vector-icons'
 import { importQuestionnaireFromUrl } from '../utils/importQuestionnaire'
-import { useUser } from '../contexts/UserContext'
+import { getCurrentUser } from '../utils/userUtils'
 
 function ConfigurationScreen({}) {
   const database = useDatabase()
-  const { user, loading: userLoading } = useUser()
+  const [user, setUser] = useState(null)
 
   // Synchronization
   const [serverUrl, setServerUrl] = useState('')
@@ -33,13 +33,20 @@ function ConfigurationScreen({}) {
   // Baseline values from DB for change detection
   const [baseline, setBaseline] = useState(null)
 
-  // Animated collapse state for sync details (no measuring, use maxHeight)
   const expand = useSharedValue(0)
   const collapseStyle = useAnimatedStyle(() => {
     const maxHeight = withTiming(expand.value ? 1000 : 0, { duration: 220 })
     const opacity = withTiming(expand.value ? 1 : 0, { duration: 180 })
     return { maxHeight, opacity }
   })
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const currentUser = await getCurrentUser(database)
+      setUser(currentUser)
+    }
+    loadUser()
+  }, [database])
 
   useEffect(() => {
     if (!user) return
@@ -77,7 +84,6 @@ function ConfigurationScreen({}) {
     loadQuestionnaires()
   }, [database])
 
-  // Sync expand state with frequency
   useEffect(() => {
     expand.value = syncFrequency !== 'Never' ? 1 : 0
   }, [syncFrequency, expand])
@@ -113,7 +119,7 @@ function ConfigurationScreen({}) {
         u.sundayWeekStart = sundayWeekStart
       })
     })
-    // Reset baseline to current values after save
+
     setBaseline({
       serverUrl,
       username,
@@ -313,7 +319,6 @@ function ConfigurationScreen({}) {
 
         <Text style={styles.sectionTitle}>{i18n.t('questionnaires')}</Text>
         
-        {/* Existing Questionnaires */}
         {questionnaires.length > 0 && (
           <View style={styles.questionnaireList}>
             <Text style={styles.label}>{i18n.t('existing_questionnaires')}</Text>
@@ -331,7 +336,6 @@ function ConfigurationScreen({}) {
           </View>
         )}
 
-        {/* Import New Questionnaire */}
         <Text style={styles.label}>{i18n.t('questionnaire_url')}</Text>
         <TextInput style={styles.input} value={questionnaireUrl} onChangeText={setQuestionnaireUrl} placeholder="https://..." />
         <TouchableOpacity style={styles.button} onPress={onImportQuestionnaire}>

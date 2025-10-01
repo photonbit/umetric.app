@@ -28,7 +28,7 @@ import { v4 as uuidv4 } from 'uuid'
 import CompleteFlow from './navigation/CompleteFlow'
 import * as RootNavigation from './navigation/RootNavigation'
 import { en, es, pt, jp, zh, ru, ph, de } from './i18n/supportedLanguages'
-import { UserProvider } from './contexts/UserContext'
+import { getCurrentUser, createAndSetCurrentUser } from './utils/userUtils'
 
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
@@ -162,22 +162,9 @@ const App = () => {
   // Ensure a user exists at app start
   useEffect(() => {
     const ensureUser = async () => {
-      const users = await database.collections.get('users').query().fetch()
-      if (users.length === 0) {
-        await database.write(async () => {
-          await database.get('users').create((u) => {
-            u.username = ''
-            u.email = ''
-            u.password = ''
-            u.createdAt = Date.now()
-            u.firstName = ''
-            u.lastName = ''
-            u.sundayWeekStart = false
-            u.serverUrl = ''
-            u.encryptionKey = ''
-            u.syncFrequency = 'Never'
-          })
-        })
+      const user = await getCurrentUser(database)
+      if (!user) {
+        await createAndSetCurrentUser(database)
       }
     }
     ensureUser()
@@ -185,10 +172,8 @@ const App = () => {
 
   return (
     <DatabaseProvider database={database}>
-      <UserProvider>
-        <CompleteFlow />
-        <Toast />
-      </UserProvider>
+      <CompleteFlow />
+      <Toast />
     </DatabaseProvider>
   )
 }
