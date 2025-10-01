@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView } from 'react-native'
 import i18n from 'i18n-js'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
+import { Q } from '@nozbe/watermelondb'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import Toast from 'react-native-toast-message'
+import { Feather } from '@expo/vector-icons'
+import { importQuestionnaireFromUrl } from '../utils/importQuestionnaire'
+import { useUser } from '../contexts/UserContext'
 
 function ConfigurationScreen({}) {
   const database = useDatabase()
-  const [userId, setUserId] = useState(null)
+  const { user, loading: userLoading } = useUser()
 
   // Synchronization
   const [serverUrl, setServerUrl] = useState('')
@@ -23,6 +28,7 @@ function ConfigurationScreen({}) {
 
   // Questionnaires
   const [questionnaireUrl, setQuestionnaireUrl] = useState('')
+  const [questionnaires, setQuestionnaires] = useState([])
 
   // Baseline values from DB for change detection
   const [baseline, setBaseline] = useState(null)
@@ -36,36 +42,39 @@ function ConfigurationScreen({}) {
   })
 
   useEffect(() => {
-    const loadUser = async () => {
-      const usersCollection = database.get('users')
-      const allUsers = await usersCollection.query().fetch()
-      let user = allUsers[0]
+    if (!user) return
 
-      setBaseline({
-        serverUrl: user.serverUrl || '',
-        username: user.username || '',
-        password: user.password || '',
-        encryptionKey: user.encryptionKey || '',
-        syncFrequency: user.syncFrequency || 'Never',
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        email: user.email || '',
-        sundayWeekStart: !!user.sundayWeekStart,
-      })
+    setServerUrl(user.serverUrl || '')
+    setUsername(user.username || '')
+    setPassword(user.password || '')
+    setEncryptionKey(user.encryptionKey || '')
+    setSyncFrequency(user.syncFrequency || 'Never')
+    setFirstName(user.firstName || '')
+    setLastName(user.lastName || '')
+    setEmail(user.email || '')
+    setSundayWeekStart(!!user.sundayWeekStart)
 
-      setUserId(user.id)
-      setServerUrl(baseline.serverUrl)
-      setUsername(baseline.username)
-      setPassword(baseline.password)
-      setEncryptionKey(baseline.encryptionKey)
-      setSyncFrequency(baseline.syncFrequency)
-      setFirstName(baseline.firstName)
-      setLastName(baseline.lastName)
-      setEmail(baseline.email)
-      setSundayWeekStart(baseline.sundayWeekStart)
+    setBaseline({
+      serverUrl: user.serverUrl || '',
+      username: user.username || '',
+      password: user.password || '',
+      encryptionKey: user.encryptionKey || '',
+      syncFrequency: user.syncFrequency || 'Never',
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      email: user.email || '',
+      sundayWeekStart: !!user.sundayWeekStart,
+    })
+  }, [user])
+
+  useEffect(() => {
+    const loadQuestionnaires = async () => {
+      const questionnairesCollection = database.get('questionnaires')
+      const allQuestionnaires = await questionnairesCollection.query().fetch()
+      setQuestionnaires(allQuestionnaires)
     }
 
-    loadUser()
+    loadQuestionnaires()
   }, [database])
 
   // Sync expand state with frequency
@@ -89,8 +98,8 @@ function ConfigurationScreen({}) {
   ) : false
 
   const saveAll = async () => {
-    if (!userId || !hasChanges) return
-    const user = await database.get('users').find(userId)
+    if (!user || !hasChanges) return
+    
     await database.write(async () => {
       await user.update((u) => {
         u.serverUrl = serverUrl
@@ -120,6 +129,125 @@ function ConfigurationScreen({}) {
 
   const onChangeFrequency = (opt) => {
     setSyncFrequency(opt)
+  }
+
+  const onImportQuestionnaire = async () => {
+    const url = (questionnaireUrl || '').trim()
+    if (!url) {
+      Toast.show({ type: 'error', text1: i18n.t('somethingIsWrong'), text2: 'URL is empty' })
+      return
+    }
+    try {
+      const created = await importQuestionnaireFromUrl(database, url)
+      Toast.show({ type: 'success', text1: i18n.t('questionnaire'), text2: created.name })
+      // Refresh questionnaires list
+      const questionnairesCollection = database.get('questionnaires')
+      const allQuestionnaires = await questionnairesCollection.query().fetch()
+      setQuestionnaires(allQuestionnaires)
+      setQuestionnaireUrl('')
+    } catch (e) {
+      Toast.show({ type: 'error', text1: i18n.t('somethingIsWrong'), text2: String(e.message || e) })
+    }
+  }
+
+  const onDeleteQuestionnaire = async (questionnaire) => {
+    try {
+      await database.write(async () => {
+        console.log('Deleting questionnaire:', questionnaire.id, questionnaire.name)
+        
+        // Delete all responses first (they reference questionnaire responses)
+        const responses = await database.collections.get('responses')
+          .query(Q.where('questionnaire_response_id', questionnaire.id))
+          .fetch()
+        console.log('Deleting responses:', responses.length)
+        for (const response of responses) {
+          await response.destroyPermanently()
+        }
+
+        // Delete all questionnaire responses
+        const questionnaireResponses = await database.collections.get('questionnaire_responses')
+          .query(Q.where('questionnaire_id', questionnaire.id))
+          .fetch()
+        console.log('Deleting questionnaire responses:', questionnaireResponses.length)
+        for (const response of questionnaireResponses) {
+          await response.destroyPermanently()
+        }
+
+        // Delete all question-likert scale links for questions in this questionnaire
+        const questions = await database.collections.get('questions')
+          .query(Q.where('questionnaire_id', questionnaire.id))
+          .fetch()
+        
+        for (const question of questions) {
+          const questionLikertLinks = await database.collections.get('question_likert')
+            .query(Q.where('question_id', question.id))
+            .fetch()
+          console.log('Deleting question-likert links for question', question.id, ':', questionLikertLinks.length)
+          for (const link of questionLikertLinks) {
+            await link.destroyPermanently()
+          }
+        }
+
+        // Delete all questions
+        console.log('Deleting questions:', questions.length)
+        for (const question of questions) {
+          await question.destroyPermanently()
+        }
+
+        // Delete all likert scales for this questionnaire
+        const likertScales = await database.collections.get('likert_scales')
+          .query(Q.where('questionnaire_id', questionnaire.id))
+          .fetch()
+        console.log('Deleting likert scales:', likertScales.length)
+        for (const likertScale of likertScales) {
+          await likertScale.destroyPermanently()
+        }
+
+        // Delete all translations
+        const questionnaireTranslations = await database.collections.get('questionnaire_translations')
+          .query(Q.where('questionnaire_id', questionnaire.id))
+          .fetch()
+        console.log('Deleting questionnaire translations:', questionnaireTranslations.length)
+        for (const translation of questionnaireTranslations) {
+          await translation.destroyPermanently()
+        }
+
+        // Delete question translations for questions in this questionnaire
+        for (const question of questions) {
+          const questionTranslations = await database.collections.get('question_translations')
+            .query(Q.where('question_id', question.id))
+            .fetch()
+          console.log('Deleting question translations for question', question.id, ':', questionTranslations.length)
+          for (const translation of questionTranslations) {
+            await translation.destroyPermanently()
+          }
+        }
+
+        // Delete likert scale translations for likert scales in this questionnaire
+        for (const likertScale of likertScales) {
+          const likertScaleTranslations = await database.collections.get('likert_scale_translations')
+            .query(Q.where('likert_scale_id', likertScale.id))
+            .fetch()
+          console.log('Deleting likert scale translations for likert scale', likertScale.id, ':', likertScaleTranslations.length)
+          for (const translation of likertScaleTranslations) {
+            await translation.destroyPermanently()
+          }
+        }
+
+        // Finally, delete the questionnaire itself
+        console.log('Deleting questionnaire itself')
+        await questionnaire.destroyPermanently()
+      })
+      
+      // Refresh questionnaires list
+      const questionnairesCollection = database.get('questionnaires')
+      const allQuestionnaires = await questionnairesCollection.query().fetch()
+      setQuestionnaires(allQuestionnaires)
+      Toast.show({ type: 'success', text1: i18n.t('questionnaire'), text2: `${questionnaire.name} deleted` })
+    } catch (e) {
+      console.error('Error deleting questionnaire:', e)
+      Toast.show({ type: 'error', text1: i18n.t('somethingIsWrong'), text2: String(e.message || e) })
+    }
   }
 
   return (
@@ -184,9 +312,29 @@ function ConfigurationScreen({}) {
         </View>
 
         <Text style={styles.sectionTitle}>{i18n.t('questionnaires')}</Text>
+        
+        {/* Existing Questionnaires */}
+        {questionnaires.length > 0 && (
+          <View style={styles.questionnaireList}>
+            <Text style={styles.label}>{i18n.t('existing_questionnaires')}</Text>
+            {questionnaires.map((questionnaire) => (
+              <View key={questionnaire.id} style={styles.questionnaireItem}>
+                <Text style={styles.questionnaireName}>{questionnaire.name}</Text>
+                <TouchableOpacity 
+                  style={styles.deleteButton} 
+                  onPress={() => onDeleteQuestionnaire(questionnaire)}
+                >
+                  <Feather name="trash-2" size={20} color="#ff4444" />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Import New Questionnaire */}
         <Text style={styles.label}>{i18n.t('questionnaire_url')}</Text>
         <TextInput style={styles.input} value={questionnaireUrl} onChangeText={setQuestionnaireUrl} placeholder="https://..." />
-        <TouchableOpacity style={styles.buttonSecondary} onPress={() => { alert("Tus ganas") }}>
+        <TouchableOpacity style={styles.button} onPress={onImportQuestionnaire}>
           <Text style={styles.buttonText}>{i18n.t('import_questionnaire')}</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -299,5 +447,32 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
     backgroundColor: 'white'
+  },
+  questionnaireList: {
+    marginBottom: 20
+  },
+  questionnaireItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f8f8f8',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8
+  },
+  questionnaireName: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+    marginRight: 10
+  },
+  deleteButton: {
+    padding: 8,
+    borderRadius: 4,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ff4444'
   }
 }) 
