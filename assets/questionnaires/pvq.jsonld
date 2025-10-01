@@ -1,0 +1,117 @@
+{
+  "@context": "https://umetric.app/ns/questionnaire",
+  "@id": "https://umetric.app/id/pvq",
+  "@type": "Questionnaire",
+  "name": "Personal Values Questionnaire",
+  "shortName": "PVQ",
+  "inLanguage": "es",
+  "description": "A questionnaire that measures the execution of different personal values.",
+  "instructions": "Responde a las siguientes preguntas comparando la actividad de la última semana con la anterior.",
+  "source": "Part of uMetric original content",
+
+  "hasLikertScale": [
+    "https://umetric.app/id/pvq/salud",
+    "https://umetric.app/id/pvq/social",
+    "https://umetric.app/id/pvq/arte",
+    "https://umetric.app/id/pvq/trabajo"
+  ],
+
+  "hasQuestion": [
+    {
+      "@id": "https://umetric.app/id/pvq/q1",
+      "@type": "Question",
+      "order": 1,
+      "text": "¿He fumado?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/salud"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q2",
+      "@type": "Question",
+      "order": 2,
+      "text": "¿He cuidado la dieta?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/salud"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q3",
+      "@type": "Question",
+      "order": 3,
+      "text": "¿He hecho ejercicio?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/salud"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q4",
+      "@type": "Question",
+      "order": 4,
+      "text": "¿He mantenido el contacto?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/social"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q5",
+      "@type": "Question",
+      "order": 5,
+      "text": "¿He acudido a eventos sociales?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/social"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q6",
+      "@type": "Question",
+      "order": 6,
+      "text": "¿He iniciado conversaciones?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/social"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q7",
+      "@type": "Question",
+      "order": 7,
+      "text": "¿He continuado proyectos?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/arte"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q8",
+      "@type": "Question",
+      "order": 8,
+      "text": "¿He escrito poéticamente?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/arte"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q9",
+      "@type": "Question",
+      "order": 9,
+      "text": "¿He consumido arte?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/arte"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q10",
+      "@type": "Question",
+      "order": 10,
+      "text": "¿He realizado las tareas planeadas?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/trabajo"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q11",
+      "@type": "Question",
+      "order": 11,
+      "text": "¿He aprendido algo nuevo?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/trabajo"]
+    },
+    {
+      "@id": "https://umetric.app/id/pvq/q12",
+      "@type": "Question",
+      "order": 12,
+      "text": "¿He leído noticias de tecnología?",
+      "inLanguage": "es",
+      "usesLikertScale": ["https://umetric.app/id/pvq/trabajo"]
+    }
+  ]
+}

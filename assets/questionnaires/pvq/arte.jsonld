@@ -1,0 +1,14 @@
+{
+  "@context": "https://umetric.app/ns/likertScale",
+  "@type": "LikertScale",
+  "@id": "https://umetric.app/id/pvq/arte",
+  "inLanguage": "es",
+  "description": "Comparación con la semana pasada",
+  "measure": "Arte",
+  "lowerChoiceLabel": "Decremento",
+  "upperChoiceLabel": "Mantenimiento",
+  "middleChoiceLabel": "Aumento",
+  "choices": 5
+}
+
+
