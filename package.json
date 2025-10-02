@@ -41,7 +41,7 @@
     "expo-sqlite": "~15.1.2",
     "expo-status-bar": "~2.0.1",
     "expo-updates": "~0.26.17",
-    "i18n-js": "^3.9.2",
+    "i18n-js": "^4.0.0",
     "prettier": "^3.5.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
