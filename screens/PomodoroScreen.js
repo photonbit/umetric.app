@@ -7,6 +7,7 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import i18n from 'i18n-js'
 import EventLog from '../model/EventLog'
 import { withDatabase } from '@nozbe/watermelondb/react'
+import { DEFAULT_POMODORO_DURATION_MINUTES, POMODORO_DURATION_KEY } from '../constants/pomodoro'
 
 import Icon from '../components/Icon'
 
@@ -15,11 +16,21 @@ function PomodoroScreen({ route, database }) {
   const [state, setState] = useState('play')
   const [progressTimer, setProgressTimer] = useState()
   const [sound, setSound] = useState()
-
-  const minutes = 25
-  const seconds = minutes * 60
-  const [timeLeft, setTimeLeft] = useState(seconds)
+  const [minutes, setMinutes] = useState(DEFAULT_POMODORO_DURATION_MINUTES)
+  const [seconds, setSeconds] = useState(DEFAULT_POMODORO_DURATION_MINUTES * 60)
+  const [timeLeft, setTimeLeft] = useState(DEFAULT_POMODORO_DURATION_MINUTES * 60)
   const event = route.params.event
+
+  useEffect(() => {
+    const loadPomodoroDuration = async () => {
+      const storedDuration = await database.localStorage.get(POMODORO_DURATION_KEY)
+      const duration = storedDuration ? parseInt(storedDuration) : DEFAULT_POMODORO_DURATION_MINUTES
+      setMinutes(duration)
+      setSeconds(duration * 60)
+      setTimeLeft(duration * 60)
+    }
+    loadPomodoroDuration()
+  }, [database])
 
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(require('../assets/ring.wav'))

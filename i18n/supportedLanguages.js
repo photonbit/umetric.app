@@ -67,6 +67,9 @@ const en = {
   sunday: 'Sunday',
   monday: 'Monday',
   email: 'Email',
+  pomodoro_duration: 'Duration (minutes)',
+  server_url_placeholder: 'https://example.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const es = {
@@ -119,7 +122,6 @@ const es = {
   noEventsAtAll: 'Necesitas tener al menos un evento para añadir una meta',
   noEditCategories: 'Añade categorias para organizar eventos',
   noEditEvents: 'Añade eventos en esta categoría y opcionalmente asocia una acción a ellos. La acción puede ser cualquier URL que tu teléfono pueda abrir',
-  // Pantalla de configuración
   configuration: 'Configuración',
   synchronization: 'Sincronización',
   sync_now: 'Sincronizar ahora',
@@ -138,6 +140,9 @@ const es = {
   sunday: 'Domingo',
   monday: 'Lunes',
   email: 'Correo electrónico',
+  pomodoro_duration: 'Duración (minutos)',
+  server_url_placeholder: 'https://ejemplo.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const pt = {
@@ -189,8 +194,7 @@ const pt = {
   noGoals: 'Adicione metas semanais e acompanhe o progresso nesta tela',
   noEventsAtAll: 'Precisa ter pelo menos um evento para adicionar uma meta',
   noEditCategories: 'Adicione categorias para organizar eventos',
-    noEditEvents: 'Adicione eventos nesta categoria e, opcionalmente, associe uma ação a eles. A ação pode ser qualquer URL que seu telefone possa abrir',
-  // Tela de configuração
+  noEditEvents: 'Adicione eventos nesta categoria e, opcionalmente, associe uma ação a eles. A ação pode ser qualquer URL que seu telefone possa abrir',
   configuration: 'Configuração',
   synchronization: 'Sincronização',
   sync_now: 'Sincronizar agora',
@@ -209,6 +213,9 @@ const pt = {
   sunday: 'Domingo',
   monday: 'Segunda-feira',
   email: 'Email',
+  pomodoro_duration: 'Duração (minutos)',
+  server_url_placeholder: 'https://exemplo.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const jp = {
@@ -260,8 +267,7 @@ const jp = {
   noGoals: '週間のゴールを追加して、この画面で進捗を追跡してください',
   noEventsAtAll: '目標を追加するには、少なくとも1つのイベントが必要です',
   noEditCategories: 'イベントを整理するためにカテゴリを追加します',
-    noEditEvents: 'このカテゴリにイベントを追加し、必要に応じてアクションを関連付けます。アクションは、電話が開くことができるURLである必要があります',
-  // 設定画面
+  noEditEvents: 'このカテゴリにイベントを追加し、必要に応じてアクションを関連付けます。アクションは、電話が開くことができるURLである必要があります',
   configuration: '設定',
   synchronization: '同期',
   sync_now: '今すぐ同期',
@@ -280,6 +286,9 @@ const jp = {
   sunday: '日曜日',
   monday: '月曜日',
   email: 'メール',
+  pomodoro_duration: '時間（分）',
+  server_url_placeholder: 'https://example.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const zh = {
@@ -332,7 +341,6 @@ const zh = {
   noEventsAtAll: '您需要至少一个事件才能添加目标',
   noEditCategories: '添加类别以组织事件',
   noEditEvents: '在此类别中添加事件，必要时将其与操作关联。操作可以是您的电话可以打开的任何URL',
-  // 配置
   configuration: '配置',
   synchronization: '同步',
   sync_now: '立即同步',
@@ -351,6 +359,9 @@ const zh = {
   sunday: '星期日',
   monday: '星期一',
   email: '电子邮件',
+  pomodoro_duration: '时长（分钟）',
+  server_url_placeholder: 'https://example.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const ru = {
@@ -403,7 +414,6 @@ const ru = {
   noEventsAtAll: 'Вам нужно иметь хотя бы одно событие, чтобы добавить цель',
   noEditCategories: 'Добавьте категории для организации событий',
     noEditEvents: 'Добавьте события в эту категорию и при необходимости свяжите их с действием. Действие может быть любым URL, который ваш телефон может открыть',
-  // Экран конфигурации
   configuration: 'Конфигурация',
   synchronization: 'Синхронизация',
   sync_now: 'Синхронизировать сейчас',
@@ -421,6 +431,9 @@ const ru = {
   sunday: 'Воскресенье',
   monday: 'Понедельник',
   email: 'Эл. почта',
+  pomodoro_duration: 'Продолжительность (минуты)',
+  server_url_placeholder: 'https://example.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const ph = {
@@ -472,8 +485,7 @@ const ph = {
   noGoals: 'Magdagdag ng lingguhang mga layunin at subaybayan ang mga ito sa screen na ito',
   noEventsAtAll: 'Kailangan mong magkaroon ng hindi bababa sa isang event upang magdagdag ng layunin',
   noEditCategories: 'Magdagdag ng mga kategorya upang organisahin ang mga event',
-    noEditEvents: 'Magdagdag ng mga event sa kategoryang ito at kung kinakailangan ay i-associate ang mga ito sa isang aksyon. Ang aksyon ay maaaring anumang URL na maaaring buksan ng iyong telepono',
-  // Screen ng configuration
+  noEditEvents: 'Magdagdag ng mga event sa kategoryang ito at kung kinakailangan ay i-associate ang mga ito sa isang aksyon. Ang aksyon ay maaaring anumang URL na maaaring buksan ng iyong telepono',
   configuration: 'Configuration',
   synchronization: 'Synchronization',
   sync_now: 'Sync Now',
@@ -491,6 +503,9 @@ const ph = {
   sunday: 'Sunday',
   monday: 'Monday',
   email: 'Email',
+  pomodoro_duration: 'Duration (minutes)',
+  server_url_placeholder: 'https://example.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 const de = {
@@ -543,7 +558,6 @@ const de = {
   noEventsAtAll: 'Sie müssen mindestens ein Event haben, um ein Ziel hinzuzufügen',
   noEditCategories: 'Fügen Sie Kategorien hinzu, um Events zu organisieren',
   noEditEvents: 'Fügen Sie Events in dieser Kategorie hinzu und verknüpfen Sie sie optional mit einer Aktion. Die Aktion kann eine beliebige URL sein, die Ihr Telefon öffnen kann',
-  // Konfigurationsbildschirm
   configuration: 'Konfiguration',
   synchronization: 'Synchronisierung',
   sync_now: 'Jetzt synchronisieren',
@@ -561,6 +575,9 @@ const de = {
   sunday: 'Sonntag',
   monday: 'Montag',
   email: 'E-Mail',
+  pomodoro_duration: 'Dauer (Minuten)',
+  server_url_placeholder: 'https://beispiel.com',
+  questionnaire_url_placeholder: 'https://...',
 }
 
 export { en, es, pt, jp, zh, ru, ph, de }

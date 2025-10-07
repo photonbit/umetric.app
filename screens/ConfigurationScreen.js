@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message'
 import { Feather } from '@expo/vector-icons'
 import { importQuestionnaireFromUrl } from '../utils/importQuestionnaire'
 import { getCurrentUser } from '../utils/userUtils'
+import { DEFAULT_POMODORO_DURATION_MINUTES, POMODORO_DURATION_KEY } from '../constants/pomodoro'
 
 function ConfigurationScreen({}) {
   const database = useDatabase()
@@ -26,8 +27,12 @@ function ConfigurationScreen({}) {
   const [email, setEmail] = useState('')
   const [sundayWeekStart, setSundayWeekStart] = useState(false)
 
+  // Pomodoro (stored in localStorage, not in User model)
+  const [pomodoroDuration, setPomodoroDuration] = useState(String(DEFAULT_POMODORO_DURATION_MINUTES))
+  const [baselinePomodoroDuration, setBaselinePomodoroDuration] = useState(DEFAULT_POMODORO_DURATION_MINUTES)
+
   // Questionnaires
-  const [questionnaireUrl, setQuestionnaireUrl] = useState('')
+  const [questionnaireUrl, setQuestionnaireUrl] = useState('https://umetric.app/id/pvq')
   const [questionnaires, setQuestionnaires] = useState([])
 
   // Baseline values from DB for change detection
@@ -45,7 +50,16 @@ function ConfigurationScreen({}) {
       const currentUser = await getCurrentUser(database)
       setUser(currentUser)
     }
+    
+    const loadPomodoroDuration = async () => {
+      const duration = await database.localStorage.get(POMODORO_DURATION_KEY)
+      const parsedDuration = duration ? parseInt(duration) : DEFAULT_POMODORO_DURATION_MINUTES
+      setPomodoroDuration(String(parsedDuration))
+      setBaselinePomodoroDuration(parsedDuration)
+    }
+    
     loadUser()
+    loadPomodoroDuration()
   }, [database])
 
   useEffect(() => {
@@ -100,7 +114,8 @@ function ConfigurationScreen({}) {
     stringsEqual(firstName, baseline.firstName) &&
     stringsEqual(lastName, baseline.lastName) &&
     stringsEqual(email, baseline.email) &&
-    valuesEqual(!!sundayWeekStart, !!baseline.sundayWeekStart)
+    valuesEqual(!!sundayWeekStart, !!baseline.sundayWeekStart) &&
+    valuesEqual(parseInt(pomodoroDuration) || DEFAULT_POMODORO_DURATION_MINUTES, baselinePomodoroDuration)
   ) : false
 
   const saveAll = async () => {
@@ -119,6 +134,11 @@ function ConfigurationScreen({}) {
         u.sundayWeekStart = sundayWeekStart
       })
     })
+
+    // Save pomodoro duration to localStorage
+    const duration = parseInt(pomodoroDuration) || DEFAULT_POMODORO_DURATION_MINUTES
+    await database.localStorage.set(POMODORO_DURATION_KEY, String(duration))
+    setBaselinePomodoroDuration(duration)
 
     setBaseline({
       serverUrl,
@@ -277,7 +297,7 @@ function ConfigurationScreen({}) {
         <Animated.View style={[styles.collapseContainer, collapseStyle]}>
           <View>
             <Text style={styles.label}>{i18n.t('server_url')} *</Text>
-            <TextInput style={styles.input} value={serverUrl} onChangeText={setServerUrl} placeholder="https://example.com" />
+            <TextInput style={styles.input} value={serverUrl} onChangeText={setServerUrl} placeholder={i18n.t('server_url_placeholder')} />
 
             <Text style={styles.label}>{i18n.t('username')} *</Text>
             <TextInput style={styles.input} value={username} onChangeText={setUsername} />
@@ -317,6 +337,16 @@ function ConfigurationScreen({}) {
           ))}
         </View>
 
+        <Text style={styles.sectionTitle}>{i18n.t('pomodoro')}</Text>
+        <Text style={styles.label}>{i18n.t('pomodoro_duration')}</Text>
+        <TextInput 
+          style={styles.input} 
+          value={pomodoroDuration} 
+          onChangeText={setPomodoroDuration} 
+          keyboardType="numeric"
+          placeholder={String(DEFAULT_POMODORO_DURATION_MINUTES)}
+        />
+
         <Text style={styles.sectionTitle}>{i18n.t('questionnaires')}</Text>
         
         {questionnaires.length > 0 && (
@@ -337,7 +367,7 @@ function ConfigurationScreen({}) {
         )}
 
         <Text style={styles.label}>{i18n.t('questionnaire_url')}</Text>
-        <TextInput style={styles.input} value={questionnaireUrl} onChangeText={setQuestionnaireUrl} placeholder="https://..." />
+        <TextInput style={styles.input} value={questionnaireUrl} onChangeText={setQuestionnaireUrl} placeholder={i18n.t('questionnaire_url_placeholder')} />
         <TouchableOpacity style={styles.button} onPress={onImportQuestionnaire}>
           <Text style={styles.buttonText}>{i18n.t('import_questionnaire')}</Text>
         </TouchableOpacity>
