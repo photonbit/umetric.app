@@ -10466,10 +10466,10 @@ react-native-svg-charts@photonbit/react-native-svg-charts:
     d3-shape "^1.0.6"
     prop-types "^15.6.0"
 
-react-native-svg@15.8.0:
-  version "15.8.0"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-15.8.0.tgz#9b5fd4f5cf5675197b3f4cbfcc77c215de2b9502"
-  integrity sha512-KHJzKpgOjwj1qeZzsBjxNdoIgv2zNCO9fVcoq2TEhTRsVV5DGTZ9JzUZwybd7q4giT/H3RdtqC3u44dWdO0Ffw==
+react-native-svg@15.14.0:
+  version "15.14.0"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-15.14.0.tgz#e5e7e18bfc2be29347631734a1af409b63c582eb"
+  integrity sha512-B3gYc7WztcOT4N54AtUutbe0Nuqqh/nkresY0fAXzUHYLsWuIu/yGiCCD3DKfAs6GLv5LFtWTu7N333Q+e3bkg==
   dependencies:
     css-select "^5.1.0"
     css-tree "^1.1.3"
