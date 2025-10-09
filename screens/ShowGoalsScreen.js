@@ -75,11 +75,9 @@ function ShowGoalsScreen({ navigation, goals, eventsCount, eventLogs, database }
     return (
           <FlatList
               style={styles.flatlist}
-              persistentScrollbar={true}
-              contentContainerStyle={{alignItems: 'flex-end', justifyContent: 'space-between'}}
               data={commitments}
               renderItem={renderItem}
-              horizontal={true}
+              keyExtractor={(item) => '' + item.goal_id}
           />
     )
   }
@@ -98,9 +96,7 @@ export default withDatabase(enhance(ShowGoalsScreen))
 
 const styles = StyleSheet.create({
   flatlist: {
-    paddingTop: 15,
     flex: 1,
-    paddingBottom: 50,
   },
   actionIcon: {
     padding: 5,

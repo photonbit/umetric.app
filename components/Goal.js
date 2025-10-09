@@ -1,110 +1,122 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react'
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native'
+import {Feather} from '@expo/vector-icons'
 
 import Icon from '../components/Icon'
 import * as RootNavigation from '../navigation/RootNavigation'
 
-export default function Goal({ goal }) {
-  const [action, setAction] = useState(false)
+export default function Goal({goal}) {
+    const goToPomodoro = () => RootNavigation.navigate('Pomodoro', {event: goal.event})
+    const goToEdit = () => RootNavigation.navigate('EditGoal', {goal_id: goal.goal_id, event_id: goal.event.id})
 
-  const DoneSquare = (key) => {
-    return <View style={styles.done} key={key} />
-  }
+    const progressPercentage = goal.committed > 0 ? Math.min((goal.done / goal.committed) * 100, 100) : 0
+    const isOverdone = goal.done > goal.committed
 
-  const NotDoneSquare = (key) => {
-    return <View style={styles.notDone} key={key} />
-  }
+    return (
+        <View style={styles.container}>
+            <View style={styles.element}>
+                <TouchableOpacity style={styles.icon} onPress={goToEdit}>
+                    <Icon icon={goal.event.icon}/>
+                </TouchableOpacity>
 
-  const OverdoneSquare = (key) => {
-    return <View style={styles.overDone} key={key} />
-  }
+                <TouchableOpacity style={styles.title} onPress={goToEdit}>
+                    <Text numberOfLines={2} style={styles.text}>
+                        {goal.event.name}
+                    </Text>
+                </TouchableOpacity>
 
-  const drawGoal = () => {
-    const squares = []
+                {goal.kind === 'hours' && (
+                    <TouchableOpacity style={styles.pomodoroButton} onPress={goToPomodoro}>
+                        <Feather name="watch" size={40} color="#48BBEC"/>
+                    </TouchableOpacity>
+                )}
 
-    if (goal.committed > goal.done) {
-      for (let i = goal.done; i < goal.committed; i++) {
-        squares.push(<NotDoneSquare key={i} />)
-      }
-      for (let i = 0; i < goal.done; i++) {
-        squares.push(<DoneSquare key={i} />)
-      }
-    } else {
-      for (let i = goal.committed; i < goal.done; i++) {
-        squares.push(<OverdoneSquare key={i} />)
-      }
-      for (let i = 0; i < goal.committed; i++) {
-        squares.push(<DoneSquare key={i} />)
-      }
-    }
-    return squares
-  }
-
-  const drawFooter = () => {
-    const goToPomodoro = () => RootNavigation.navigate('Pomodoro', { event: goal.event })
-    const gotoEdit = () => RootNavigation.navigate('EditGoal', { goal_id: goal.goal_id, event_id: goal.event.id })
-
-    if (action) {
-      return (
-        <View>
-          <TouchableOpacity onPress={goToPomodoro} style={styles.icon}>
-            <Icon icon="Circle" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={gotoEdit} style={styles.icon}>
-            <Icon icon="Pencil" />
-          </TouchableOpacity>
+            </View>
+            <View style={styles.progressContainer}>
+                <View style={styles.progressBar}>
+                    <View
+                        style={[
+                            styles.progressFill,
+                            {
+                                width: `${progressPercentage}%`,
+                                backgroundColor: isOverdone ? '#2093C4' : '#48BBEC'
+                            }
+                        ]}
+                    />
+                </View>
+            </View>
         </View>
-      )
-    } else {
-      return (
-        <TouchableOpacity style={styles.icon} onPress={() => setAction(!action)}>
-          <Icon icon={goal.event.icon} />
-        </TouchableOpacity>
-      )
-    }
-  }
-
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => setAction(!action)}>{drawGoal()}</TouchableOpacity>
-      {drawFooter()}
-    </View>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: 50,
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  done: {
-    backgroundColor: '#48BBEC',
-    width: 40,
-    height: 40,
-    padding: 1,
-    margin: 5,
-  },
-  notDone: {
-    borderColor: '#48BBEC',
-    borderWidth: 4,
-    width: 40,
-    height: 40,
-    padding: 1,
-    margin: 5,
-  },
-  overDone: {
-    backgroundColor: '#2093C4',
-    width: 40,
-    height: 40,
-    padding: 1,
-    margin: 5,
-  },
-  icon: {
-    width: 50,
-    height: 50,
-    margin: 5,
-    padding: 1,
-  },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        borderBottomWidth: 4,
+        borderBottomColor: 'white',
+    },
+    element: {
+        flex: 1,
+        flexDirection: 'row',
+        alignContent: 'center',
+        flexWrap: 'wrap',
+        height: 100,
+        paddingLeft: 10,
+        paddingRight: 10,
+
+    },
+    order: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
+    upIcon: {
+        paddingBottom: 1,
+    },
+    downIcon: {
+        paddingTop: 1,
+    },
+    title: {
+        paddingTop: 16,
+        width: 240,
+        height: 60,
+        overflow: 'hidden',
+        paddingLeft: 10,
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        overflow: 'hidden'
+    },
+    icon: {
+        height: 60,
+        width: 60,
+    },
+    goalText: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 2,
+    },
+    pomodoroButton: {
+        padding: 5,
+        position: 'absolute',
+        right: 20,
+        top: 30,
+    },
+    progressContainer: {
+        width: '95%',
+        flex: 1,
+        alignSelf: 'center',
+        marginBottom: 10,
+    },
+    progressBar: {
+        height: 12,
+        backgroundColor: '#E0E0E0',
+        borderRadius: 6,
+        overflow: 'hidden',
+    },
+    progressFill: {
+        height: '100%',
+        borderRadius: 6,
+    },
 })
