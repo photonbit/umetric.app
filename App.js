@@ -29,6 +29,7 @@ import CompleteFlow from './navigation/CompleteFlow'
 import * as RootNavigation from './navigation/RootNavigation'
 import { en, es, pt, jp, zh, ru, ph, de } from './i18n/supportedLanguages'
 import { getCurrentUser, createAndSetCurrentUser } from './utils/userUtils'
+import { startAutomaticSync, stopAutomaticSync } from './utils/syncService'
 
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
@@ -156,15 +157,27 @@ const App = () => {
     }
   }, [])
 
-  // Ensure a user exists at app start
+  // Ensure a user exists at app start and initialize sync
   useEffect(() => {
     const ensureUser = async () => {
       const user = await getCurrentUser(database)
       if (!user) {
         await createAndSetCurrentUser(database)
+      } else {
+        // Start automatic sync if enabled
+        try {
+          await startAutomaticSync(database)
+        } catch (error) {
+          console.error('Failed to start automatic sync:', error)
+        }
       }
     }
     ensureUser()
+
+    // Cleanup on unmount
+    return () => {
+      stopAutomaticSync()
+    }
   }, [])
 
   return (

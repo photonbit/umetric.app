@@ -7,8 +7,17 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import Toast from 'react-native-toast-message'
 import { Feather } from '@expo/vector-icons'
 import { importQuestionnaireFromUrl } from '../utils/importQuestionnaire'
-import { getCurrentUser } from '../utils/userUtils'
+import { getCurrentUser, migrateUserId } from '../utils/userUtils'
 import { DEFAULT_POMODORO_DURATION_MINUTES, POMODORO_DURATION_KEY } from '../constants/pomodoro'
+import { 
+  performManualSync, 
+  startAutomaticSync, 
+  stopAutomaticSync, 
+  isSyncInProgress,
+  getSyncConfiguration,
+  validateSyncConfiguration 
+} from '../utils/syncService'
+import { SYNC_FREQUENCY } from '../constants/sync'
 
 function ConfigurationScreen({}) {
   const database = useDatabase()
@@ -19,7 +28,7 @@ function ConfigurationScreen({}) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [encryptionKey, setEncryptionKey] = useState('')
-  const [syncFrequency, setSyncFrequency] = useState('Never')
+  const [syncFrequency, setSyncFrequency] = useState(SYNC_FREQUENCY.NEVER)
 
   // User Information
   const [firstName, setFirstName] = useState('')
@@ -34,6 +43,17 @@ function ConfigurationScreen({}) {
   // Questionnaires
   const [questionnaireUrl, setQuestionnaireUrl] = useState('https://umetric.app/id/pvq')
   const [questionnaires, setQuestionnaires] = useState([])
+
+  // Sync status
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [lastSyncTime, setLastSyncTime] = useState(null)
+  const [syncError, setSyncError] = useState(null)
+  const [autoSyncActive, setAutoSyncActive] = useState(false)
+  const [syncConfig, setSyncConfig] = useState(null)
+
+  // Connection check state
+  const [checkInProgress, setCheckInProgress] = useState(false)
+  const [checkDone, setCheckDone] = useState(false)
 
   // Baseline values from DB for change detection
   const [baseline, setBaseline] = useState(null)
@@ -57,9 +77,15 @@ function ConfigurationScreen({}) {
       setPomodoroDuration(String(parsedDuration))
       setBaselinePomodoroDuration(parsedDuration)
     }
+
+    const loadSyncConfig = async () => {
+      const config = await getSyncConfiguration(database)
+      setSyncConfig(config)
+    }
     
     loadUser()
     loadPomodoroDuration()
+    loadSyncConfig()
   }, [database])
 
   useEffect(() => {
@@ -69,7 +95,7 @@ function ConfigurationScreen({}) {
     setUsername(user.username || '')
     setPassword(user.password || '')
     setEncryptionKey(user.encryptionKey || '')
-    setSyncFrequency(user.syncFrequency || 'Never')
+    setSyncFrequency(user.syncFrequency || SYNC_FREQUENCY.NEVER)
     setFirstName(user.firstName || '')
     setLastName(user.lastName || '')
     setEmail(user.email || '')
@@ -80,7 +106,7 @@ function ConfigurationScreen({}) {
       username: user.username || '',
       password: user.password || '',
       encryptionKey: user.encryptionKey || '',
-      syncFrequency: user.syncFrequency || 'Never',
+      syncFrequency: user.syncFrequency || SYNC_FREQUENCY.NEVER,
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       email: user.email || '',
@@ -98,9 +124,60 @@ function ConfigurationScreen({}) {
     loadQuestionnaires()
   }, [database])
 
+  // Reset check flag when server configuration changes again
   useEffect(() => {
-    expand.value = syncFrequency !== 'Never' ? 1 : 0
+    if (!baseline) return
+    const changed = !(
+      stringsEqual(serverUrl, baseline.serverUrl) &&
+      stringsEqual(username, baseline.username) &&
+      stringsEqual(password, baseline.password) &&
+      stringsEqual(encryptionKey, baseline.encryptionKey)
+    )
+    if (changed) {
+      setCheckDone(false)
+    }
+  }, [serverUrl, username, password, encryptionKey, baseline])
+
+  useEffect(() => {
+    expand.value = syncFrequency !== SYNC_FREQUENCY.NEVER ? 1 : 0
   }, [syncFrequency, expand])
+
+  // Start automatic sync if enabled
+  useEffect(() => {
+    const initializeSync = async () => {
+      if (user && user.syncFrequency === SYNC_FREQUENCY.AUTO) {
+        try {
+          await startAutomaticSync(database)
+          setAutoSyncActive(true)
+        } catch (error) {
+          console.error('Failed to start automatic sync:', error)
+          setAutoSyncActive(false)
+        }
+      } else {
+        setAutoSyncActive(false)
+      }
+    }
+
+    initializeSync()
+
+    // Cleanup on unmount
+    return () => {
+      stopAutomaticSync()
+      setAutoSyncActive(false)
+    }
+  }, [user, database])
+
+  // Periodically check sync status for auto sync
+  useEffect(() => {
+    if (autoSyncActive) {
+      const interval = setInterval(() => {
+        // This is a simple way to show that auto sync is working
+        console.log('Auto sync is active and running...')
+      }, 30000) // Check every 30 seconds
+
+      return () => clearInterval(interval)
+    }
+  }, [autoSyncActive])
 
   const valuesEqual = (a, b) => a === b
   const stringsEqual = (a, b) => (a || '').trim() === (b || '').trim()
@@ -118,8 +195,37 @@ function ConfigurationScreen({}) {
     valuesEqual(parseInt(pomodoroDuration) || DEFAULT_POMODORO_DURATION_MINUTES, baselinePomodoroDuration)
   ) : false
 
+  // Check connection availability: enabled when server config fields change
+  const serverConfigChanged = baseline ? !(
+    stringsEqual(serverUrl, baseline.serverUrl) &&
+    stringsEqual(username, baseline.username) &&
+    stringsEqual(password, baseline.password) &&
+    stringsEqual(encryptionKey, baseline.encryptionKey)
+  ) : false
+
+  const showCheckConnection = serverConfigChanged && !checkDone
+
   const saveAll = async () => {
     if (!user || !hasChanges) return
+    
+    // Validate sync configuration if sync is enabled
+    if (syncFrequency !== SYNC_FREQUENCY.NEVER) {
+      const validation = validateSyncConfiguration({
+        serverUrl,
+        username,
+        password,
+        syncFrequency
+      })
+      
+      if (!validation.isValid) {
+        Toast.show({ 
+          type: 'error', 
+          text1: i18n.t('sync_configuration_error'), 
+          text2: validation.errors.join(', ') 
+        })
+        return
+      }
+    }
     
     await database.write(async () => {
       await user.update((u) => {
@@ -151,10 +257,138 @@ function ConfigurationScreen({}) {
       email,
       sundayWeekStart: !!sundayWeekStart,
     })
+
+    // Handle sync configuration changes
+    if (syncFrequency === SYNC_FREQUENCY.NEVER) {
+      stopAutomaticSync()
+      setAutoSyncActive(false)
+    } else if (syncFrequency === SYNC_FREQUENCY.AUTO) {
+      // Restart automatic sync with new configuration
+      stopAutomaticSync()
+      try {
+        await startAutomaticSync(database)
+        setAutoSyncActive(true)
+      } catch (error) {
+        console.error('Failed to start automatic sync:', error)
+        setAutoSyncActive(false)
+      }
+    } else {
+      setAutoSyncActive(false)
+    }
+    // For SYNC_FREQUENCY.MANUAL, we don't need to do anything special
+
+    // Refresh sync configuration
+    const config = await getSyncConfiguration(database)
+    setSyncConfig(config)
+
+    Toast.show({ type: 'success', text1: i18n.t('settings_saved') })
   }
 
   const onChangeFrequency = (opt) => {
     setSyncFrequency(opt)
+  }
+
+  const onCheckConnection = async () => {
+    if (checkInProgress) return
+
+    setCheckInProgress(true)
+    try {
+      const trimmedUrl = (serverUrl || '').trim()
+      if (!trimmedUrl) {
+        throw new Error('Server URL is required')
+      }
+      // Validate URL
+      let base
+      try {
+        base = new URL(trimmedUrl)
+      } catch (e) {
+        throw new Error('Server URL must be a valid URL')
+      }
+      const baseStr = base.toString()
+      const baseWithSlash = baseStr.endsWith('/') ? baseStr : `${baseStr}/`
+      const endpoint = `${baseWithSlash}api/user_id`
+
+      if (!username || !password) {
+        throw new Error('Username and password are required')
+      }
+
+      const auth = btoa(`${username}:${password}`)
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Basic ${auth}`,
+        },
+      })
+
+      if (!response.ok) {
+        const text = await response.text()
+        throw new Error(`Connection failed: ${response.status} ${response.statusText} - ${text}`)
+      }
+
+      const data = await response.json()
+      const serverId = data && data.id
+      if (!serverId) {
+        throw new Error('Invalid response from server: missing id')
+      }
+
+      if (!user) {
+        throw new Error('No local user found')
+      }
+
+      if (serverId === user.id) {
+        setCheckDone(true)
+        Toast.show({ type: 'success', text1: i18n.t('connection_ok') || 'Connection OK', text2: 'User ID matches' })
+        return
+      }
+
+      // Migrate local data to new user id
+      await migrateUserId(database, user.id, serverId)
+      const updatedUser = await getCurrentUser(database)
+      setUser(updatedUser)
+      setCheckDone(true)
+      Toast.show({ type: 'success', text1: i18n.t('user_migrated') || 'User migrated', text2: 'Updated local data to server user ID' })
+    } catch (e) {
+      Toast.show({ type: 'error', text1: i18n.t('check_connection_failed') || 'Check connection failed', text2: String(e.message || e) })
+    } finally {
+      setCheckInProgress(false)
+    }
+  }
+
+  const onSyncNow = async () => {
+    if (isSyncing || isSyncInProgress()) {
+      Toast.show({ type: 'info', text1: i18n.t('sync_in_progress') })
+      return
+    }
+
+    setIsSyncing(true)
+    setSyncError(null)
+
+    try {
+      const result = await performManualSync(database)
+      setLastSyncTime(new Date())
+      setSyncError(null)
+      
+      // Refresh sync configuration
+      const config = await getSyncConfiguration(database)
+      setSyncConfig(config)
+      
+      Toast.show({ 
+        type: 'success', 
+        text1: i18n.t('sync_successful'), 
+        text2: `${result.changesPushed} changes pushed` 
+      })
+    } catch (error) {
+      console.error('Sync failed:', error)
+      setSyncError(error.message)
+      Toast.show({ 
+        type: 'error', 
+        text1: i18n.t('sync_failed'), 
+        text2: error.message 
+      })
+    } finally {
+      setIsSyncing(false)
+    }
   }
 
   const onImportQuestionnaire = async () => {
@@ -283,7 +517,7 @@ function ConfigurationScreen({}) {
 
         <Text style={styles.label}>{i18n.t('frequency')}</Text>
         <View style={styles.segmented}>
-          {['Manual', 'Auto', 'Never'].map((opt) => (
+          {[SYNC_FREQUENCY.MANUAL, SYNC_FREQUENCY.AUTO, SYNC_FREQUENCY.NEVER].map((opt) => (
             <TouchableOpacity
               key={opt}
               style={{ ...styles.segment, ...(syncFrequency === opt ? styles.segmentActive : {}) }}
@@ -308,9 +542,46 @@ function ConfigurationScreen({}) {
             <Text style={styles.label}>{i18n.t('encryption_key')}</Text>
             <TextInput style={styles.input} value={encryptionKey} onChangeText={setEncryptionKey} />
 
-            <TouchableOpacity style={styles.buttonSecondary} onPress={() => { alert("Tus ganas") }}>
-              <Text style={styles.buttonText}>{i18n.t('sync_now')}</Text>
+            {showCheckConnection && (
+              <TouchableOpacity 
+                style={[
+                  styles.buttonSecondary, 
+                  (checkInProgress) && styles.buttonDisabled
+                ]}
+                onPress={onCheckConnection}
+                disabled={checkInProgress}
+              >
+                <Text style={styles.buttonText}>
+                  {checkInProgress ? (i18n.t('checking_connection') || 'Checking...') : (i18n.t('check_connection') || 'Check connection')}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity 
+              style={[
+                styles.buttonSecondary, 
+                (isSyncing || isSyncInProgress()) && styles.buttonDisabled
+              ]} 
+              onPress={onSyncNow}
+              disabled={isSyncing || isSyncInProgress()}
+            >
+              <Text style={styles.buttonText}>
+                {isSyncing || isSyncInProgress() ? i18n.t('syncing') : i18n.t('sync_now')}
+              </Text>
             </TouchableOpacity>
+
+            {/* Sync Status */}
+            {lastSyncTime && (
+              <Text style={styles.syncStatus}>
+                {i18n.t('last_sync')}: {lastSyncTime.toLocaleString()}
+              </Text>
+            )}
+            
+            {syncError && (
+              <Text style={styles.syncError}>
+                {i18n.t('sync_error')}: {syncError}
+              </Text>
+            )}
           </View>
         </Animated.View>
 
@@ -508,5 +779,64 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#ff4444'
+  },
+  buttonDisabled: {
+    backgroundColor: '#cccccc',
+    borderColor: '#cccccc'
+  },
+  syncStatus: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
+    textAlign: 'center'
+  },
+  syncError: {
+    fontSize: 14,
+    color: '#ff4444',
+    marginTop: 8,
+    textAlign: 'center'
+  },
+  autoSyncIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E8F5E8',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 10
+  },
+  autoSyncText: {
+    fontSize: 14,
+    color: '#4CAF50',
+    marginLeft: 8,
+    fontWeight: '500'
+  },
+  syncConfigStatus: {
+    backgroundColor: '#f8f9fa',
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10
+  },
+  syncConfigRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+  syncConfigText: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8
+  },
+  syncConfigDetails: {
+    marginLeft: 24,
+    gap: 4
+  },
+  syncConfigDetailText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20
   }
 }) 
