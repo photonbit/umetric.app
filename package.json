@@ -56,7 +56,7 @@
     "react-native-toast-message": "^2.1.6",
     "react-native-web": "~0.19.13",
     "url-parse": "^1.5.10",
-    "uuid": "^11.0.5"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.28.4",
